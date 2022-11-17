@@ -1,9 +1,11 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -14,16 +16,25 @@ import java.util.List;
  * @since - 2022-11-17
  */
 
+@Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     private String orderDate;
     private String deliveryDate;
     private String orderStatus;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Discount discount;
     private double totalPrice;
-    private List<OrderItem> orderItemList;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Cart cart;
+    @OneToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "user_id")
+    private List<OrderItem> orderItemList;
 }
