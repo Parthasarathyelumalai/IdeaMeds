@@ -1,8 +1,12 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Simple JavaBean domain object representing a cart item.
@@ -12,11 +16,12 @@ import lombok.NoArgsConstructor;
  * @since - 2022-11-17
  */
 
+@Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class CartItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
-    private Cart cart;
-    private int quantity;
+    private Medicine medicine;
 }
