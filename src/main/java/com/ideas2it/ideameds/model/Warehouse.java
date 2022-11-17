@@ -28,7 +28,7 @@ public class Warehouse {
     private Long warehouseId;
     private String name;
     private String location;
-    @ManyToMany(mappedBy = "medicine")
+    @ManyToMany(mappedBy = "warehouses")
     private List<Medicine> medicines;
 
 }

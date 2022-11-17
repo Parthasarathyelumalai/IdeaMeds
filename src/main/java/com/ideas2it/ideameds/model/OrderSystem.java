@@ -19,7 +19,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class Order {
+public class OrderSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
