@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import java.util.List;
 
 /**
@@ -13,13 +18,17 @@ import java.util.List;
  * @version - 1.0
  * @since - 2022-11-17
  */
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Warehouse {
-    private long warehouseId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long warehouseId;
     private String name;
     private String location;
+    @ManyToMany(mappedBy = "medicine")
     private List<Medicine> medicines;
 
 }
