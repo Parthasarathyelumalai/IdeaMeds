@@ -29,16 +29,17 @@ public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long medicineId;
-    private String name;
+    private String medicineName;
     private String description;
     private String labelDosage;
-    private String usage;
+    private String medicineUses;
     private String sideEffect;
     private float price;
     private String manufacturedDate;
     private String expiryDate;
-    private String image;
+    private String medicineImage;
     private Boolean prescriptionRequired;
+
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "medicine_brand",
@@ -46,6 +47,7 @@ public class Medicine {
             inverseJoinColumns = { @JoinColumn(name = "brand_id") }
     )
     private List<Brand> brands;
+
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "medicine_warehouse",

@@ -39,13 +39,9 @@ public class User {
     private List<Address> addresses;
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name = "user_medicine",
+            name = "user_medicines",
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "medicine_id") }
     )
     private List<Medicine> medicines;
-    @OneToMany(cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "user_id")
-    private Prescription prescription;
 }

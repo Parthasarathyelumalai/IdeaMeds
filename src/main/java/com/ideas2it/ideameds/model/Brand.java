@@ -29,6 +29,7 @@ public class Brand {
     private String name;
     private String location;
     private String description;
-    @ManyToMany(mappedBy = "medicine")
+
+    @ManyToMany(mappedBy = "brands")
     private List<Medicine> medicines;
 }

@@ -21,6 +21,7 @@ public class UserMedicine {
     private Long userMedicineId;
     private int quantity;
     private String dosage;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

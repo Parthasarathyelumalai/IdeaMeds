@@ -3,10 +3,7 @@ package com.ideas2it.ideameds.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Simple JavaBean domain object representing a cart item.
@@ -23,5 +20,6 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
+    @OneToOne
     private Medicine medicine;
 }
