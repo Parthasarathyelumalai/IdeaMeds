@@ -33,10 +33,12 @@ public class User {
     private String name;
     private String phoneNumber;
     private String emailId;
+
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "user_id")
     private List<Address> addresses;
+
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "user_medicines",
