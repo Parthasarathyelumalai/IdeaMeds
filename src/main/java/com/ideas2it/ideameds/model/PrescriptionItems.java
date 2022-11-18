@@ -21,9 +21,11 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor
 @Entity
 public class PrescriptionItems {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long prescriptionItemsId;
+
     private int quantity;
     private int dosage;
     private String medicine_type;
