@@ -39,6 +39,9 @@ public class Medicine {
     private String expiryDate;
     private String medicineImage;
     private Boolean prescriptionRequired;
+    private Boolean deletedStatus;
+    private String createdAt;
+    private String modifiedAt;
 
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
