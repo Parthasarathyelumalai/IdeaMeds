@@ -22,6 +22,10 @@ public class MedicineServiceImpl implements MedicineService {
     public Medicine getMedicineById(Long medicineId) {
         return medicineRepository.findById(medicineId).get();
     }
+
+    public Medicine getMedicineByName(String medicineName) {
+        return medicineRepository.getMedicineByMedicineName(medicineName);
+    }
     public Medicine updateMedicine(Medicine medicine) {
         return medicineRepository.save(medicine);
     }

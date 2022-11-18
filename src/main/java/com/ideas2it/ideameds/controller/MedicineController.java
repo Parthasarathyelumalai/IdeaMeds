@@ -15,7 +15,6 @@ import java.util.List;
  * @version - 1.0
  */
 @RestController
-@RequestMapping("/ideameds")
 public class MedicineController {
 
     @Autowired
@@ -34,6 +33,11 @@ public class MedicineController {
     @GetMapping("/medicine/{medicineId}")
     public Medicine getMedicineById(@PathVariable("medicineId") Long medicineId) {
         return medicineService.getMedicineById(medicineId);
+    }
+
+    @GetMapping("/medicine/getByName/{medicineName}")
+    public Medicine getMedicineByName(@PathVariable("medicineName") String medicineName) {
+        return medicineService.getMedicineByName(medicineName);
     }
 
     @PutMapping("/medicine")
