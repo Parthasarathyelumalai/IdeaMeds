@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +29,8 @@ public class Warehouse {
     private Long warehouseId;
     private String name;
     private String location;
+    @ColumnDefault("false")
+    private Boolean deletedStatus;
     @ManyToMany(mappedBy = "warehouses")
     private List<Medicine> medicines;
 
