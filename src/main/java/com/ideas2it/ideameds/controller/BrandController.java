@@ -36,7 +36,7 @@ public class BrandController {
     public Brand updateBrand(@RequestBody Brand brand) {
         return brandService.updateBrand(brand);
     }
-    @PutMapping("/medicine/{brandId}")
+    @PutMapping("/brand/delete/{brandId}")
     public Brand deleteBrand(@PathVariable("brandId") Long brandId) {
         return brandService.deleteBrand(brandId);
     }

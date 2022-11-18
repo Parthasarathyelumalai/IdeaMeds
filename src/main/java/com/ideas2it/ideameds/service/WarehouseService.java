@@ -5,9 +5,9 @@ import com.ideas2it.ideameds.model.Warehouse;
 import java.util.List;
 
 public interface WarehouseService {
-    Warehouse deleteWarehouse(Long warehouseId);
-    Warehouse updateWarehouse(Warehouse warehouse);
-    Warehouse getWarehouseById(Long warehouseId);
-    List<Warehouse> getAllWarehouses();
-    Warehouse addWarehouse(Warehouse warehouse);
+    public Warehouse deleteWarehouse(Long warehouseId);
+    public Warehouse updateWarehouse(Warehouse warehouse);
+    public Warehouse getWarehouseById(Long warehouseId);
+    public List<Warehouse> getAllWarehouses();
+    public Warehouse addWarehouse(Warehouse warehouse);
 }

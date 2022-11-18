@@ -1,6 +1,5 @@
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.Warehouse;
 import com.ideas2it.ideameds.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class WarehouseController {
         return warehouseService.updateWarehouse(warehouse);
     }
 
-    @PutMapping("/warehouse/{warehouseId}")
+    @PutMapping("/warehouse/delete/{warehouseId}")
     public Warehouse deleteWarehouse(@PathVariable("warehouseId") Long warehouseId) {
         return warehouseService.deleteWarehouse(warehouseId);
     }
