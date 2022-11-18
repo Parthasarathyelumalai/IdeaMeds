@@ -1,4 +1,4 @@
-package com.ideas2it.ideameds.Repository;
+package com.ideas2it.ideameds.repository;
 
 import com.ideas2it.ideameds.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
