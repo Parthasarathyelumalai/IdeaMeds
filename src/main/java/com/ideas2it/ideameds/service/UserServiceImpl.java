@@ -1,6 +1,6 @@
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.Repository.UserRepository;
+import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

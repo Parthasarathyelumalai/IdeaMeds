@@ -2,7 +2,6 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.service.UserService;
-import com.ideas2it.ideameds.service.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
