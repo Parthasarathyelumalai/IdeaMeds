@@ -27,6 +27,7 @@ public class User {
     private String name;
     private String phoneNumber;
     private String emailId;
+
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "user_id")
