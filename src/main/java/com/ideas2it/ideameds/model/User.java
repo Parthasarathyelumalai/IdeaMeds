@@ -1,19 +1,13 @@
 package com.ideas2it.ideameds.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -37,11 +31,6 @@ public class User {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "user_id")
     private List<Address> addresses;
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "user_medicines",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "medicine_id") }
-    )
-    private List<Medicine> medicines;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean deletedStatus;
 }
