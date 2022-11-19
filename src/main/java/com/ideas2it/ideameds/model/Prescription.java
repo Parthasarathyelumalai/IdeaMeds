@@ -1,7 +1,8 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.List;
  * @since - 2022-11-17
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Prescription {
 
@@ -31,6 +33,7 @@ public class Prescription {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "prescription")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "prescription_id")
     private List<PrescriptionItems> prescriptionItems;
 }

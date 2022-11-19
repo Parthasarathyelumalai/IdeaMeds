@@ -1,15 +1,10 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Simple JavaBean domain object representing Prescription Items
@@ -17,7 +12,8 @@ import javax.persistence.OneToOne;
  * @version - 1.0
  * @since - 2022-11-17
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class PrescriptionItems {
@@ -28,13 +24,6 @@ public class PrescriptionItems {
 
     private int quantity;
     private int dosage;
-    private String medicine_type;
-
-    @ManyToOne
-    @JoinColumn(name="prescription_id")
-    private Prescription prescription;
-
-    @OneToOne
-    @JoinColumn(name="medicine_id")
-    private Medicine medicine;
+    private String medicineType;
+    private String medicineName;
 }
