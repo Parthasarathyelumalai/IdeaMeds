@@ -10,4 +10,6 @@ public interface MedicineService {
     public Medicine getMedicineById(Long medicineId);
     public Medicine updateMedicine(Medicine medicine);
     public Medicine deleteMedicine(long medicineId);
+
+    Medicine getMedicineByName(String medicineName);
 }

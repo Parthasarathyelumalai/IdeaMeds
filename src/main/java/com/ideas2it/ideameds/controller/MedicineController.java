@@ -1,5 +1,6 @@
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.model.Brand;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.service.MedicineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import java.util.List;
  * @version - 1.0
  */
 @RestController
-@RequestMapping("/ideameds")
 public class MedicineController {
 
     @Autowired
@@ -36,12 +36,22 @@ public class MedicineController {
         return medicineService.getMedicineById(medicineId);
     }
 
+    @GetMapping("/medicine/getByName/{medicineName}")
+    public Medicine getMedicineByName(@PathVariable("medicineName") String medicineName) {
+        return medicineService.getMedicineByName(medicineName);
+    }
+
     @PutMapping("/medicine")
     public Medicine updateMedicine(@RequestBody Medicine medicine) {
         return medicineService.updateMedicine(medicine);
     }
 
-    @PutMapping("/medicine/{medicineId}")
+    @PutMapping("/medicine/assignBrand/{brandId}")
+    public Medicine assignBrand(@PathVariable("brandId") String medicineId, @RequestBody Brand brand) {
+        return null;
+    }
+
+    @PutMapping("/medicine/delete/{medicineId}")
     public Medicine deleteMedicine(@PathVariable("medicineId") Long medicineId) {
         return medicineService.deleteMedicine(medicineId);
     }
