@@ -27,11 +27,10 @@ public class User {
     private String name;
     private String phoneNumber;
     private String emailId;
-
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id" ,referencedColumnName = "userId")
     private List<Address> addresses;
-    @Column(columnDefinition = "boolean default false")
-    private Boolean deletedStatus;
+    @Column(columnDefinition = "BIT default 0" )
+    private int deletedStatus;
 }

@@ -1,6 +1,6 @@
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.converter.PrescriptionConverter;
+import com.ideas2it.ideameds.mapper.PrescriptionMapper;
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.PrescriptionItems;
@@ -13,10 +13,10 @@ public class PrescriptionItemsServiceImpl implements PrescriptionItemsService{
     @Autowired
     private PrescriptionItemsRepository prescriptionItemsRepository;
     @Autowired
-    private PrescriptionConverter prescriptionConverter;
+    private PrescriptionMapper prescriptionMapper;
     @Override
     public Long addPrescriptionItems(PrescriptionItems prescriptionItems, PrescriptionDTO prescriptionDTO) {
-        Prescription prescription = prescriptionConverter.prescriptionDTOTOPrescription(prescriptionDTO);
+        Prescription prescription = prescriptionMapper.prescriptionDTOTOPrescription(prescriptionDTO);
         prescriptionItems.setPrescription(prescription);
         return prescriptionItemsRepository.save(prescriptionItems).getPrescriptionItemsId();
     }
