@@ -1,10 +1,12 @@
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.model.Brand;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,16 +24,24 @@ public class MedicineServiceImpl implements MedicineService {
     public Medicine getMedicineById(Long medicineId) {
         return medicineRepository.findById(medicineId).get();
     }
-
     public Medicine getMedicineByName(String medicineName) {
         return medicineRepository.getMedicineByMedicineName(medicineName);
     }
+
     public Medicine updateMedicine(Medicine medicine) {
         return medicineRepository.save(medicine);
     }
     public Medicine deleteMedicine(long medicineId) {
         Medicine medicine = getMedicineById(medicineId);
         medicine.setDeletedStatus(true);
+        return medicineRepository.save(medicine);
+    }
+
+    public Medicine assignBrand(Long medicineId, Brand brand) {
+        Medicine medicine = getMedicineById(medicineId);
+        List<Brand> brands =new ArrayList<>();
+        brands.add(brand);
+        medicine.setBrands(brands);
         return medicineRepository.save(medicine);
     }
 }

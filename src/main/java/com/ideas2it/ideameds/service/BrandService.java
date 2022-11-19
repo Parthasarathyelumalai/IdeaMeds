@@ -11,4 +11,5 @@ public interface BrandService {
     public Brand getBrandById(Long brandId);
     public Brand updateBrand(Brand brand);
     public Brand deleteBrand(Long brandId);
+    public List<Medicine> getMedicineByBrand(String medicineBrand);
 }
