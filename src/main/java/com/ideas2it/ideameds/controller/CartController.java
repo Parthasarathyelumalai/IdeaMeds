@@ -15,42 +15,45 @@ public class CartController {
     @Autowired
     CartService cartService;
 
-    @PostMapping("/api/cart")
-    private ResponseEntity<String> addCart(@RequestBody Cart cart) {
-        Cart  addedCart = cartService.addCart(cart);
-        if (addedCart != null) {
+    /**
+     * Medicines add in cart using id, cart.
+     * @param userId - To map user with cart.
+     * @param cart - To store the data in cart.
+     * @return Total price.
+     */
+    @PutMapping("/api/cart/{id}")
+    private ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody Cart cart) {
+        float cartTotalPrice = cartService.addCart(userId, cart);
+        if (cartTotalPrice > 0) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Cart added successfully. Total price is : " + addedCart.getTotalPrice());
+                    .body("Cart added successfully. Total price is : " + cartTotalPrice);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Can't add");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No items to list price");
         }
     }
 
+    /**
+     * Retrieve all data from database.
+     * @return All cart.
+     */
     @GetMapping("/api/allcart")
     public ResponseEntity<List<Cart>> getAllCart() {
         return (ResponseEntity.status(HttpStatus.ACCEPTED).body(cartService.getAllCart()));
     }
 
+    /**
+     * Get one cart by cart id.
+     * @param id - To get one cart.
+     * @return One cart.
+     */
     @GetMapping("/api/cart/{id}")
     public ResponseEntity<Cart> getById(@PathVariable("id") Long id) {
-        Cart getCart = cartService.getById(id);
-        if (getCart != null) {
+        Cart cart = cartService.getById(id);
+        if (cart != null) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(getCart);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-    @PutMapping("/api/cart/{id}")
-    public ResponseEntity<Cart> updateCart(@PathVariable("id") Long id, @RequestBody Cart cart) {
-        Cart updatedCart = cartService.updateCart(cart);
-        if (updatedCart != null) {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(updatedCart);
+                    .body(cart);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
