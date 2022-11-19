@@ -4,9 +4,9 @@ import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.service.PrescriptionItemsService;
 import com.ideas2it.ideameds.service.PrescriptionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ideas2it.ideameds.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,20 +16,20 @@ import java.util.List;
  * Contains the end Points for prescription
  * @author Nithish K
  * @version 1.0
- * @since - 2022-11-17
+ * @since - 2022-11-19
  */
 @RestController
+@RequiredArgsConstructor
 public class PrescriptionController {
-    @Autowired
-    private PrescriptionService prescriptionService;
+    private final PrescriptionService prescriptionService;
+    private final UserService userService;
 
-    @Autowired
-    private PrescriptionItemsService prescriptionItemsService;
-
-    @PostMapping("/prescription")
-    public String addPrescription(@RequestBody PrescriptionDTO prescriptionDTO){
+    @PostMapping("/prescription/{userId}")
+    public String addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription){
         String status;
-        Long prescriptionId = prescriptionService.addPrescription(prescriptionDTO);
+        User user = userService.getUser(userId);
+        prescription.setUser(user);
+        Long prescriptionId = prescriptionService.addPrescription(prescription);
         if(prescriptionId == 0) status = "Prescription Not Added";
         else status = "Prescription Successfully Added";
         return status;
@@ -37,24 +37,22 @@ public class PrescriptionController {
 
     @GetMapping("/prescription/{prescriptionId}")
     public PrescriptionDTO getPrescription(@PathVariable Long prescriptionId){
-        PrescriptionDTO prescriptionDTO = prescriptionService.getPrescription(prescriptionId);
-        return prescriptionDTO;
+        return prescriptionService.getPrescription(prescriptionId);
+    }
+
+    @GetMapping("/addtocart/{prescriptionId}")
+    public String addPrescriptionToCart(@PathVariable Long prescriptionId){
+        String status = null;
+/*        List<PrescriptionItems> prescriptionItems = prescriptionService.getPrescription(prescriptionId).getPrescriptionItems();
+        if(prescriptionItems != null)
+            prescriptionService.addToCart(prescriptionItems);*/
+        return status;
     }
 
     @GetMapping("/prescription/user/{userId}")
     public List<PrescriptionDTO> getPrescriptionByUserId(@PathVariable Long userId){
-        User user = null;
+        User user = userService.getUser(userId);
         List<PrescriptionDTO> prescriptionDTOs = prescriptionService.getPrescriptionByUser(user);
         return prescriptionDTOs;
-    }
-
-    @PostMapping("/prescriptionItems/{prescriptionId}")
-    public String addMedicineForPrescription(@PathVariable Long prescriptionId, @RequestBody PrescriptionItems prescriptionItems){
-        String status;
-        PrescriptionDTO prescriptionDTO = prescriptionService.getPrescription(prescriptionId);
-        Long prescriptionItemsId = prescriptionItemsService.addPrescriptionItems(prescriptionItems,prescriptionDTO);
-        if(prescriptionItemsId == 0) status = "Medicines not added";
-        else status = "Medicines added to prescription";
-        return status;
     }
 }

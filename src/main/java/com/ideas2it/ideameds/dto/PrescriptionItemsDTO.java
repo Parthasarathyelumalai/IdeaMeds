@@ -1,7 +1,8 @@
 package com.ideas2it.ideameds.dto;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents the Prescription Items DTO
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  * @since - 2022-11-17
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class PrescriptionItemsDTO {
     private Long prescriptionItemsId;
