@@ -5,11 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -27,11 +23,11 @@ public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandId;
-    private String name;
+    private String brandName;
     private String location;
     private String description;
-    @ColumnDefault("false")
-    private Boolean deletedStatus;
+    @Column(columnDefinition = "boolean default false")
+    private boolean deletedStatus;
     @ManyToMany(mappedBy = "brands")
     private List<Medicine> medicines;
 }

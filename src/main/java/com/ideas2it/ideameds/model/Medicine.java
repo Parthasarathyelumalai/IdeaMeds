@@ -4,14 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -38,8 +31,10 @@ public class Medicine {
     private String manufacturedDate;
     private String expiryDate;
     private String medicineImage;
-    private Boolean prescriptionRequired;
-    private Boolean deletedStatus;
+    @Column(columnDefinition = "boolean default false")
+    private boolean prescriptionRequired;
+    @Column(columnDefinition = "boolean default false")
+    private boolean deletedStatus;
     private String createdAt;
     private String modifiedAt;
 

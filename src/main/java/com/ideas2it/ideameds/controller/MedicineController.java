@@ -17,7 +17,6 @@ import java.util.List;
  */
 @RestController
 public class MedicineController {
-
     @Autowired
     private MedicineService medicineService;
 
@@ -25,32 +24,26 @@ public class MedicineController {
     public Medicine addMedicine(@RequestBody Medicine medicine) {
         return medicineService.addMedicine(medicine);
     }
-
     @GetMapping("/medicine")
     public List<Medicine> getAllMedicine() {
         return medicineService.getAllMedicine();
     }
-
     @GetMapping("/medicine/{medicineId}")
     public Medicine getMedicineById(@PathVariable("medicineId") Long medicineId) {
         return medicineService.getMedicineById(medicineId);
     }
-
     @GetMapping("/medicine/getByName/{medicineName}")
     public Medicine getMedicineByName(@PathVariable("medicineName") String medicineName) {
         return medicineService.getMedicineByName(medicineName);
     }
-
     @PutMapping("/medicine")
     public Medicine updateMedicine(@RequestBody Medicine medicine) {
         return medicineService.updateMedicine(medicine);
     }
-
-    @PutMapping("/medicine/assignBrand/{brandId}")
-    public Medicine assignBrand(@PathVariable("brandId") String medicineId, @RequestBody Brand brand) {
-        return null;
+    @PutMapping("/medicine/assignBrand/{medicineId}")
+    public Medicine assignBrand(@PathVariable("medicineId") Long medicineId, @RequestBody Brand brand) {
+        return medicineService.assignBrand(medicineId, brand);
     }
-
     @PutMapping("/medicine/delete/{medicineId}")
     public Medicine deleteMedicine(@PathVariable("medicineId") Long medicineId) {
         return medicineService.deleteMedicine(medicineId);
