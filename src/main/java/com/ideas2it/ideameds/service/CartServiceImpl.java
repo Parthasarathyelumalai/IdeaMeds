@@ -12,6 +12,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+/**
+ * Service implementation for cart.
+ *
+ * @author - Soundharrajan.S
+ * @version - 1.0
+ * @since - 2022-11-17
+ */
+
 @Service
 public class CartServiceImpl implements CartService {
 
@@ -30,25 +39,31 @@ public class CartServiceImpl implements CartService {
         float price = 0;
         if (user.getUserId() != null) {
             cart.setUser(user);
-            for(CartItem cartItem: cart.getCartItemList()) {
+            for (int i = 0; i < cart.getCartItemList().size(); i++) {
+                CartItem cartItem = cart.getCartItemList().get(i);
                 Medicine medicine = cartItem.getMedicine();
                 if (medicine != null) {
-                    Medicine medicine1 = medicineRepository.findById(medicine.getMedicineId()).get();
-                    price = price + medicine1.getPrice();
+                    Medicine medicineDb = medicineRepository.findById(medicine.getMedicineId()).get();
+                    price = price + (medicineDb.getPrice()* cartItem.getQuantity());
                 } else {
                     return 0;
                 }
             }
-        }
         cart.setTotalPrice(price);
         cartRepository.save(cart);
+        }
         return price;
     }
 
+
     @Override
-    public Cart getById(Long id) {
-        if (cartRepository.findById(id).get() != null) {
-            return cartRepository.findById(id).get();
+    public Cart getById(Long userId) {
+        User user = userRepository.findById(userId).get();
+        List<Cart> cartList = cartRepository.findAll();
+        for (Cart cart : cartList) {
+            if (user.getUserId() == cart.getUser().getUserId()) {
+                return cart;
+            }
         }
         return null;
     }
