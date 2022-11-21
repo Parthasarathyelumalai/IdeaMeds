@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service of User.
@@ -17,17 +18,31 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Override
-    public User addUser(User user) {
-        return userRepository.save(user);
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public User getUser(Long userId) {
-        return userRepository.findById(userId).get();
+    public Optional<User> addUser(User user) {
+        Optional<User> userOptional = Optional.of(userRepository.save(user));
+        if (userOptional.isPresent()) {
+            return userOptional;
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> getUser(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent() && (userOptional.get().getDeletedStatus() != 1)) {
+            return userOptional;
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -36,18 +51,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateUser(User user) {
+    public Optional<String> updateUser(User user) {
         User updatedUser = userRepository.save(user);
-        return updatedUser.getName() +" ."+ "Updated Successfully";
+        if (null != updatedUser) {
+            return Optional.of(updatedUser.getName() + " ." + "Updated Successfully");
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public String deleteUser(Long userId) {
+    public Optional<String> deleteUser(Long userId) {
         User user = userRepository.findById(userId).get();
-        if(user != null) {
-            user.setDeletedStatus(true);
+        if(null != user) {
+            user.setDeletedStatus(1);
+            User deletedUser = userRepository.save(user);
+            return Optional.of("Deleted Successfully");
+        } else {
+            return Optional.empty();
         }
-        User user1 = userRepository.save(user);
-        return "Deleted Successfully";
     }
 }

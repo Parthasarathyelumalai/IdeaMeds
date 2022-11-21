@@ -3,13 +3,8 @@ package com.ideas2it.ideameds.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -27,11 +22,10 @@ public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long warehouseId;
-    private String name;
+    private String warehouseName;
     private String location;
-    @ColumnDefault("false")
-    private Boolean deletedStatus;
+    @Column(columnDefinition = "boolean default false")
+    private boolean deletedStatus;
     @ManyToMany(mappedBy = "warehouses")
     private List<Medicine> medicines;
-
 }

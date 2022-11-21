@@ -1,6 +1,7 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.model.Brand;
+import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,11 @@ public class BrandController {
     public Brand getBrandById(@PathVariable("brandId") Long medicineId) {
         return brandService.getBrandById(medicineId);
     }
+    @GetMapping("/brand/getMedicine/{medicineBrand}")
+    public List<Medicine> getMedicineByBrand(@PathVariable("medicineBrand") String medicineBrand) {
+        return brandService.getMedicineByBrand(medicineBrand);
+    }
+
     @PutMapping("/brand")
     public Brand updateBrand(@RequestBody Brand brand) {
         return brandService.updateBrand(brand);

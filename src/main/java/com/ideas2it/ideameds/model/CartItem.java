@@ -20,6 +20,8 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
-    @OneToOne
+    private int quantity;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 }

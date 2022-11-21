@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface for UserService
@@ -13,14 +14,14 @@ import java.util.List;
  */
 public interface UserService {
 
-    User addUser(User user);
+    Optional<User> addUser(User user);
 
-    User getUser(Long userId);
+    Optional<User> getUser(Long userId);
 
     List<User> getAllUser();
 
-    String updateUser(User user);
+    Optional<String> updateUser(User user);
 
-    String deleteUser(Long userId);
+    Optional<String> deleteUser(Long userId);
 
 }
