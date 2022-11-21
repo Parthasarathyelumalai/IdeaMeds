@@ -1,11 +1,15 @@
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
+=======
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+>>>>>>> nithish_dev
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +27,7 @@ public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
 
+<<<<<<< HEAD
     @PostMapping("/prescription/{userId}")
     public String addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription){
         String status;
@@ -32,9 +37,30 @@ public class PrescriptionController {
         if(prescriptionId == 0) status = "Prescription Not Added";
         else status = "Prescription Successfully Added";
         return status;
+=======
+    /**
+     * Add the prescription to the user
+     * @param userId To map prescription with the user
+     * @param prescription To store the prescription object
+     * @return String
+     */
+    @PostMapping("/prescription/{userId}")
+    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription){
+        User user = userService.getUser(userId).get();
+        prescription.setUser(user);
+        Long prescriptionId = prescriptionService.addPrescription(prescription);
+        if(prescriptionId == 0) return ResponseEntity.status(HttpStatus.OK).body("Prescription Not Added");
+        else return ResponseEntity.status(HttpStatus.OK).body("Prescription Added Successfully");
+>>>>>>> nithish_dev
     }
 
+    /**
+     * Retrieve the prescription using prescription ID
+     * @param prescriptionId To get the required prescription
+     * @return Prescription
+     */
     @GetMapping("/prescription/{prescriptionId}")
+<<<<<<< HEAD
     public PrescriptionDTO getPrescription(@PathVariable Long prescriptionId){
         return prescriptionService.getPrescription(prescriptionId);
     }
@@ -46,12 +72,55 @@ public class PrescriptionController {
         if(prescriptionItems != null)
             prescriptionService.addToCart(prescriptionItems);*/
         return status;
+=======
+    public ResponseEntity<Prescription> getPrescription(@PathVariable Long prescriptionId){
+        return ResponseEntity.status(HttpStatus.FOUND).body(prescriptionService.getPrescription(prescriptionId));
+>>>>>>> nithish_dev
     }
 
+    /**
+     * Add the medicines to the cart based on prescription of the user
+     * The prescription ID will be given by the user
+     * @param prescriptionId To get the required prescription of the user
+     * @param userId To get the required User
+     * @return String
+     */
+    @GetMapping("/addToCart/{userId}/{prescriptionId}")
+    public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId){
+        Prescription prescription = prescriptionService.getPrescription(prescriptionId);
+        prescriptionService.addToCart(prescription.getPrescriptionItems(),userService.getUser(userId).get());
+        return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
+    }
+
+    /**
+     * Retrieve all the prescriptions associated with the user
+     * @param userId To get the
+     * @return List<Prescription>
+     */
     @GetMapping("/prescription/user/{userId}")
+<<<<<<< HEAD
     public List<PrescriptionDTO> getPrescriptionByUserId(@PathVariable Long userId){
         User user = userService.getUser(userId).get();
         List<PrescriptionDTO> prescriptionDTOs = prescriptionService.getPrescriptionByUser(user);
         return prescriptionDTOs;
     }
+=======
+    public ResponseEntity<List<Prescription>> getPrescriptionByUserId(@PathVariable Long userId){
+        User user = userService.getUser(userId).get();
+        return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.getPrescriptionByUser(user));
+    }
+
+    /**
+     * Delete the prescription of a user
+     * @param userId To get the required user
+     * @param prescriptionId To get the required prescription of the user
+     * @return String
+     */
+    @DeleteMapping("/prescription/{userId}/{prescriptionId}")
+    public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId, @PathVariable Long prescriptionId) {
+        Long prescription = prescriptionService.deletePrescriptionById(userId,prescriptionId);
+        if(prescription == 0) return ResponseEntity.status(HttpStatus.OK).body("Prescription Not Deleted");
+        else return  ResponseEntity.status(HttpStatus.OK).body("Prescription Deleted Successfully");
+    }
+>>>>>>> nithish_dev
 }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,6 +29,10 @@ public class Prescription {
     private String patientGender;
     private int patientAge;
     private String dateOfIssue;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+    @Column(columnDefinition = "BIT default 0")
+    private int deletedStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

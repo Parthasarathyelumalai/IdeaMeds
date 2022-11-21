@@ -59,6 +59,7 @@ public class BrandController {
     public Brand getBrandById(@PathVariable("brandId") Long brandId) {
         return brandService.getBrandById(brandId);
     }
+<<<<<<< HEAD
 
     /**
      * <p>
@@ -94,6 +95,13 @@ public class BrandController {
      *        brand to update
      * @return updated brand
      */
+=======
+    @GetMapping("/brand/getMedicine/{medicineBrand}")
+    public List<Medicine> getMedicineByBrand(@PathVariable("medicineBrand") String medicineBrand) {
+        return brandService.getMedicineByBrand(medicineBrand);
+    }
+
+>>>>>>> nithish_dev
     @PutMapping("/brand")
     public Brand updateBrand(@RequestBody Brand brand) {
         return brandService.updateBrand(brand);

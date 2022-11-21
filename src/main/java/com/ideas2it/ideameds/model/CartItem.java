@@ -27,7 +27,11 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
     private int quantity;
+<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
+=======
+    @OneToOne(cascade = CascadeType.ALL)
+>>>>>>> nithish_dev
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 }
