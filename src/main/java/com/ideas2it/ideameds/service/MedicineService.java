@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MedicineService {
     public Medicine addMedicine(Medicine medicine);
-    public List<Medicine> getAllMedicine();
+    public List<Medicine> getAllMedicines();
     public Medicine getMedicineById(Long medicineId);
     public Medicine updateMedicine(Medicine medicine);
     public Medicine deleteMedicine(long medicineId);

@@ -11,14 +11,15 @@ import java.util.List;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
-
-    @Autowired
-    private MedicineRepository medicineRepository;
+    private final MedicineRepository medicineRepository;
+    public MedicineServiceImpl(MedicineRepository medicineRepository) {
+        this.medicineRepository = medicineRepository;
+    }
 
     public Medicine addMedicine(Medicine medicine) {
         return medicineRepository.save(medicine);
     }
-    public List<Medicine> getAllMedicine() {
+    public List<Medicine> getAllMedicines() {
         return medicineRepository.findAll();
     }
     public Medicine getMedicineById(Long medicineId) {
@@ -33,7 +34,7 @@ public class MedicineServiceImpl implements MedicineService {
     }
     public Medicine deleteMedicine(long medicineId) {
         Medicine medicine = getMedicineById(medicineId);
-        medicine.setDeletedStatus(true);
+        medicine.setDeletedStatus(1);
         return medicineRepository.save(medicine);
     }
 

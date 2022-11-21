@@ -24,8 +24,8 @@ public class Warehouse {
     private Long warehouseId;
     private String warehouseName;
     private String location;
-    @Column(columnDefinition = "boolean default false")
-    private boolean deletedStatus;
+    @Column(columnDefinition = "BIT default 0" )
+    private int deletedStatus;
     @ManyToMany(mappedBy = "warehouses")
     private List<Medicine> medicines;
 }

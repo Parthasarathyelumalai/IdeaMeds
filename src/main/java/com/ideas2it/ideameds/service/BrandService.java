@@ -9,6 +9,7 @@ public interface BrandService {
     public Brand addBrand(Brand brand);
     public List<Brand> getAllBrands();
     public Brand getBrandById(Long brandId);
+    public Brand getBrandByBrandName(String brandName);
     public Brand updateBrand(Brand brand);
     public Brand deleteBrand(Long brandId);
     public List<Medicine> getMedicineByBrand(String medicineBrand);
