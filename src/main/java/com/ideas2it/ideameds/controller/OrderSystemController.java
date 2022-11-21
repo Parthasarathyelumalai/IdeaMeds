@@ -1,12 +1,14 @@
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -24,17 +26,20 @@ public class OrderSystemController {
     OrderSystemService orderSystemService;
 
     /**
-     * Add order items in repository.
-     * @param userId - To get user and cart details and map with order.
-     * @return - Total price of order.
+     * save order details in repository.
+     * @param userId - To get user and cart details. Then map with order.
+     * @return - Price of the order (total price, discount price, discount percentage).
      */
     @PutMapping("/order/{id}")
     private ResponseEntity<String> addOrder(@PathVariable("id") Long userId) {
-        float totalPrice = orderSystemService.addOrder(userId);
-        if (totalPrice > 0) {
+        OrderSystem orderSystem = orderSystemService.addOrder(userId);
+        if (orderSystem != null) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Order successful. Total price is : " + totalPrice);
+                    .body("Order successful."
+                            + "\nTotal price : " + orderSystem.getTotalPrice()
+                            + "\nDiscount : " + orderSystem.getDiscountPercentage() + "%"
+                            + "\nDiscount price : " + orderSystem.getDiscountPrice());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("order unsuccessful");
         }

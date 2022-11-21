@@ -6,7 +6,14 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 /**
@@ -14,7 +21,7 @@ import java.util.List;
  *
  * @author - Soundharrajan.S
  * @version - 1.0
- * @since - 2022-11-17
+ * @since - 2022-11-21
  */
 
 @Entity
@@ -28,11 +35,13 @@ public class OrderSystem {
     private String orderDate;
     private String deliveryDate;
     private String orderStatus;
+    private float totalPrice;
+    private float discountPrice;
+    private float discountPercentage;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "discount_id")
     private Discount discount;
-    private double totalPrice;
-    @OneToOne(cascade = CascadeType.ALL , targetEntity = User.class)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
     @OneToOne(cascade = CascadeType.ALL)
