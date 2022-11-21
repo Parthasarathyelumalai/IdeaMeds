@@ -82,9 +82,4 @@ public class UserController {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("there is no User under this id");
         }
     }
-
-/*    @PostMapping("/user/user_medicine/{id}")
-    public UserMedicine addMedicine(@PathVariable("id") @RequestBody UserMedicine userMedicine) {
-        Optional<UserMedicine> savedUserMedicine =
-    }*/
 }
