@@ -42,7 +42,7 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+/*    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException) {
         Map<String, String> errors = new HashMap<>();
@@ -53,5 +53,5 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
             errors.put(fieldName, errorMessage);
         });
         return errors;
-    }
+    }*/
 }

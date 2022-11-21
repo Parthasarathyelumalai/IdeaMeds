@@ -33,9 +33,6 @@ public class User {
     private List<Address> addresses;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-<<<<<<< HEAD
     @OneToMany(mappedBy = "user")
     private List<Prescription> prescription;
-=======
->>>>>>> nithish_dev
 }

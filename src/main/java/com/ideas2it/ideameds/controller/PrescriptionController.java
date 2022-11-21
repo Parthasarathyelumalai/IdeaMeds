@@ -5,11 +5,8 @@ import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
-=======
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
->>>>>>> nithish_dev
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,17 +24,6 @@ public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
 
-<<<<<<< HEAD
-    @PostMapping("/prescription/{userId}")
-    public String addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription){
-        String status;
-        User user = userService.getUser(userId).get();
-        prescription.setUser(user);
-        Long prescriptionId = prescriptionService.addPrescription(prescription);
-        if(prescriptionId == 0) status = "Prescription Not Added";
-        else status = "Prescription Successfully Added";
-        return status;
-=======
     /**
      * Add the prescription to the user
      * @param userId To map prescription with the user
@@ -51,7 +37,6 @@ public class PrescriptionController {
         Long prescriptionId = prescriptionService.addPrescription(prescription);
         if(prescriptionId == 0) return ResponseEntity.status(HttpStatus.OK).body("Prescription Not Added");
         else return ResponseEntity.status(HttpStatus.OK).body("Prescription Added Successfully");
->>>>>>> nithish_dev
     }
 
     /**
@@ -59,23 +44,9 @@ public class PrescriptionController {
      * @param prescriptionId To get the required prescription
      * @return Prescription
      */
-    @GetMapping("/prescription/{prescriptionId}")
-<<<<<<< HEAD
-    public PrescriptionDTO getPrescription(@PathVariable Long prescriptionId){
-        return prescriptionService.getPrescription(prescriptionId);
-    }
 
-    @GetMapping("/addtocart/{prescriptionId}")
-    public String addPrescriptionToCart(@PathVariable Long prescriptionId){
-        String status = null;
-/*        List<PrescriptionItems> prescriptionItems = prescriptionService.getPrescription(prescriptionId).getPrescriptionItems();
-        if(prescriptionItems != null)
-            prescriptionService.addToCart(prescriptionItems);*/
-        return status;
-=======
     public ResponseEntity<Prescription> getPrescription(@PathVariable Long prescriptionId){
         return ResponseEntity.status(HttpStatus.FOUND).body(prescriptionService.getPrescription(prescriptionId));
->>>>>>> nithish_dev
     }
 
     /**
@@ -98,13 +69,6 @@ public class PrescriptionController {
      * @return List<Prescription>
      */
     @GetMapping("/prescription/user/{userId}")
-<<<<<<< HEAD
-    public List<PrescriptionDTO> getPrescriptionByUserId(@PathVariable Long userId){
-        User user = userService.getUser(userId).get();
-        List<PrescriptionDTO> prescriptionDTOs = prescriptionService.getPrescriptionByUser(user);
-        return prescriptionDTOs;
-    }
-=======
     public ResponseEntity<List<Prescription>> getPrescriptionByUserId(@PathVariable Long userId){
         User user = userService.getUser(userId).get();
         return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.getPrescriptionByUser(user));
@@ -122,5 +86,4 @@ public class PrescriptionController {
         if(prescription == 0) return ResponseEntity.status(HttpStatus.OK).body("Prescription Not Deleted");
         else return  ResponseEntity.status(HttpStatus.OK).body("Prescription Deleted Successfully");
     }
->>>>>>> nithish_dev
 }

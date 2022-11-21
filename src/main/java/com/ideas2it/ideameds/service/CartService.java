@@ -5,10 +5,6 @@ import com.ideas2it.ideameds.model.Cart;
 import java.util.List;
 
 public interface CartService {
-<<<<<<< HEAD
-=======
-    float addCart(Long userId, Cart cart);
->>>>>>> nithish_dev
 
     /**
      * Medicines add in cart using id, cart details.
@@ -18,7 +14,6 @@ public interface CartService {
      */
     float addCart(Long userId, Cart cart);
 
-<<<<<<< HEAD
     /**
      * Get one cart by cart id.
      * @param userId - To get one cart.
@@ -30,7 +25,5 @@ public interface CartService {
      * Retrieve all data.
      * @return All carts.
      */
-=======
->>>>>>> nithish_dev
     List<Cart> getAllCart();
 }

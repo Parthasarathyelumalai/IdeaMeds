@@ -26,13 +26,9 @@ public class Brand {
     private String brandName;
     private String location;
     private String description;
-<<<<<<< HEAD
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-=======
-    @Column(columnDefinition = "boolean default false")
-    private boolean deletedStatus;
->>>>>>> nithish_dev
+
     @ManyToMany(mappedBy = "brands")
     private List<Medicine> medicines;
 }

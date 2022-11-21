@@ -33,7 +33,6 @@ public class Medicine {
     private String manufacturedDate;
     private String expiryDate;
     private String medicineImage;
-<<<<<<< HEAD
     @Enumerated(EnumType.STRING)
     private IllnessCategories illnessCategories;
     @Enumerated(EnumType.STRING)
@@ -42,12 +41,6 @@ public class Medicine {
     private boolean prescriptionRequired;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-=======
-    @Column(columnDefinition = "boolean default false")
-    private boolean prescriptionRequired;
-    @Column(columnDefinition = "boolean default false")
-    private boolean deletedStatus;
->>>>>>> nithish_dev
     private String createdAt;
     private String modifiedAt;
 

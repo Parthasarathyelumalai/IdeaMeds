@@ -17,16 +17,8 @@ import java.util.List;
  */
 @RestController
 public class MedicineController {
-<<<<<<< HEAD
-    private final MedicineService medicineService;
-
-    public MedicineController(MedicineService medicineService) {
-        this.medicineService = medicineService;
-    }
-=======
     @Autowired
     private MedicineService medicineService;
->>>>>>> nithish_dev
 
     /**
      * <p>
@@ -40,7 +32,6 @@ public class MedicineController {
     public Medicine addMedicine(@RequestBody Medicine medicine) {
         return medicineService.addMedicine(medicine);
     }
-<<<<<<< HEAD
 
     /**
      * <p>
@@ -48,13 +39,10 @@ public class MedicineController {
      * </p>
      * @return list of medicines
      */
-=======
->>>>>>> nithish_dev
     @GetMapping("/medicine")
     public List<Medicine> getAllMedicines() {
         return medicineService.getAllMedicines();
     }
-<<<<<<< HEAD
 
     /**
      * <p>
@@ -64,13 +52,10 @@ public class MedicineController {
      *        medicine id for getting medicine
      * @return medicine using the id
      */
-=======
->>>>>>> nithish_dev
     @GetMapping("/medicine/{medicineId}")
     public Medicine getMedicineById(@PathVariable("medicineId") Long medicineId) {
         return medicineService.getMedicineById(medicineId);
     }
-<<<<<<< HEAD
 
     /**
      * <p>
@@ -80,13 +65,10 @@ public class MedicineController {
      *        medicine name for getting medicine
      * @return medicine using the medicine name
      */
-=======
->>>>>>> nithish_dev
     @GetMapping("/medicine/getByName/{medicineName}")
     public Medicine getMedicineByName(@PathVariable("medicineName") String medicineName) {
         return medicineService.getMedicineByName(medicineName);
     }
-<<<<<<< HEAD
 
     /**
      * <p>
@@ -96,13 +78,10 @@ public class MedicineController {
      *        medicine to update
      * @return the updated medicine
      */
-=======
->>>>>>> nithish_dev
     @PutMapping("/medicine")
     public Medicine updateMedicine(@RequestBody Medicine medicine) {
         return medicineService.updateMedicine(medicine);
     }
-<<<<<<< HEAD
 
     /**
      * <p>
@@ -114,13 +93,10 @@ public class MedicineController {
      *        brand to be assigned with
      * @return medicine after brand has assigned
      */
-=======
->>>>>>> nithish_dev
     @PutMapping("/medicine/assignBrand/{medicineId}")
     public Medicine assignBrand(@PathVariable("medicineId") Long medicineId, @RequestBody Brand brand) {
         return medicineService.assignBrand(medicineId, brand);
     }
-<<<<<<< HEAD
 
     /**
      * <p>
@@ -130,8 +106,6 @@ public class MedicineController {
      *        corresponding medicine id to delete
      * @return response for deletion
      */
-=======
->>>>>>> nithish_dev
     @PutMapping("/medicine/delete/{medicineId}")
     public Medicine deleteMedicine(@PathVariable("medicineId") Long medicineId) {
         return medicineService.deleteMedicine(medicineId);

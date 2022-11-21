@@ -15,15 +15,8 @@ import java.util.List;
  */
 public interface PrescriptionService {
     Long addPrescription(Prescription prescription);
-<<<<<<< HEAD
-    PrescriptionDTO getPrescription(Long prescriptionId);
-    List<PrescriptionDTO> getPrescriptionByUser(User user);
-
-    void addToCart(List<PrescriptionItems> prescriptionItems);
-=======
     Prescription getPrescription(Long prescriptionId);
     List<Prescription> getPrescriptionByUser(User user);
     void addToCart(List<PrescriptionItems> prescriptionItems, User user);
     Long deletePrescriptionById(Long userId, Long prescriptionId);
->>>>>>> nithish_dev
 }

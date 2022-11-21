@@ -3,11 +3,8 @@ package com.ideas2it.ideameds.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-<<<<<<< HEAD
-=======
 
 import javax.validation.constraints.NotBlank;
->>>>>>> nithish_dev
 
 /**
  * Represents the Prescription DTO

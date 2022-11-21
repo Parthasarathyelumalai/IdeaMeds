@@ -24,13 +24,10 @@ public class Warehouse {
     private Long warehouseId;
     private String warehouseName;
     private String location;
-<<<<<<< HEAD
+
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-=======
-    @Column(columnDefinition = "boolean default false")
-    private boolean deletedStatus;
->>>>>>> nithish_dev
+
     @ManyToMany(mappedBy = "warehouses")
     private List<Medicine> medicines;
 }

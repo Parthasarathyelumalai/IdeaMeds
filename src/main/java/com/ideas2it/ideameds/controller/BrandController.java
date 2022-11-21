@@ -59,49 +59,12 @@ public class BrandController {
     public Brand getBrandById(@PathVariable("brandId") Long brandId) {
         return brandService.getBrandById(brandId);
     }
-<<<<<<< HEAD
 
-    /**
-     * <p>
-     *     Gets medicines using the brand name
-     * </p>
-     * @param brandName
-     *        brand name to get all medicine
-     * @return list of medicines
-     */
-    @GetMapping("/brand/getMedicine/{brandName}")
-    public List<Medicine> getMedicineByBrand(@PathVariable("brandName") String brandName) {
-        return brandService.getMedicineByBrand(brandName);
-    }
-
-    /**
-     * <p>
-     *     Gets brand by brand name
-     * </p>
-     * @param brandName
-     *        brand name to get brand
-     * @return brand using brand name
-     */
-    @GetMapping("/brand/byName/{brandName}")
-    public Brand getBrandByName(@PathVariable("brandName") String brandName) {
-        return brandService.getBrandByBrandName(brandName);
-    }
-
-    /**
-     * <p>
-     *     Updates the brand
-     * </p>
-     * @param brand
-     *        brand to update
-     * @return updated brand
-     */
-=======
     @GetMapping("/brand/getMedicine/{medicineBrand}")
     public List<Medicine> getMedicineByBrand(@PathVariable("medicineBrand") String medicineBrand) {
         return brandService.getMedicineByBrand(medicineBrand);
     }
 
->>>>>>> nithish_dev
     @PutMapping("/brand")
     public Brand updateBrand(@RequestBody Brand brand) {
         return brandService.updateBrand(brand);
