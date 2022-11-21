@@ -9,19 +9,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * controller for cart.
+ *
+ * @author - Soundharrajan.S
+ * @version - 1.0
+ * @since - 2022-11-17
+ */
+
 @RestController
-@RequestMapping
 public class CartController {
     @Autowired
     CartService cartService;
 
     /**
-     * Medicines add in cart using id, cart.
+     * Medicines add in cart using id, cart details.
      * @param userId - To map user with cart.
-     * @param cart - To store the data in cart.
-     * @return Total price.
+     * @param cart - To store all the cart data in repository.
+     * @return Total price of the cart.
      */
-    @PutMapping("/api/cart/{id}")
+    @PutMapping("/cart/{id}")
     private ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody Cart cart) {
         float cartTotalPrice = cartService.addCart(userId, cart);
         if (cartTotalPrice > 0) {
@@ -34,22 +41,22 @@ public class CartController {
     }
 
     /**
-     * Retrieve all data from database.
-     * @return All cart.
+     * Retrieve all data.
+     * @return All carts.
      */
-    @GetMapping("/api/allcart")
+    @GetMapping("/allcart")
     public ResponseEntity<List<Cart>> getAllCart() {
         return (ResponseEntity.status(HttpStatus.ACCEPTED).body(cartService.getAllCart()));
     }
 
     /**
      * Get one cart by cart id.
-     * @param id - To get one cart.
+     * @param userId - To get one cart.
      * @return One cart.
      */
-    @GetMapping("/api/cart/{id}")
-    public ResponseEntity<Cart> getById(@PathVariable("id") Long id) {
-        Cart cart = cartService.getById(id);
+    @GetMapping("/cart/{id}")
+    public ResponseEntity<Cart> getById(@PathVariable("id") Long userId) {
+        Cart cart = cartService.getById(userId);
         if (cart != null) {
             return ResponseEntity
                     .status(HttpStatus.OK)
