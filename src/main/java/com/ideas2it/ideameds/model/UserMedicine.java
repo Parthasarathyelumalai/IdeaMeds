@@ -19,6 +19,7 @@ public class UserMedicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userMedicineId;
+    private String medicineName;
     private int quantity;
     private String dosage;
     @ManyToOne
