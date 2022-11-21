@@ -26,8 +26,8 @@ public class Brand {
     private String brandName;
     private String location;
     private String description;
-    @Column(columnDefinition = "boolean default false")
-    private boolean deletedStatus;
+    @Column(columnDefinition = "BIT default 0" )
+    private int deletedStatus;
     @ManyToMany(mappedBy = "brands")
     private List<Medicine> medicines;
 }

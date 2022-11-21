@@ -1,5 +1,7 @@
 package com.ideas2it.ideameds.model;
 
+import com.ideas2it.ideameds.util.IllnessCategories;
+import com.ideas2it.ideameds.util.MedicineType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,10 +33,14 @@ public class Medicine {
     private String manufacturedDate;
     private String expiryDate;
     private String medicineImage;
+    @Enumerated(EnumType.STRING)
+    private IllnessCategories illnessCategories;
+    @Enumerated(EnumType.STRING)
+    private MedicineType medicineType;
     @Column(columnDefinition = "boolean default false")
     private boolean prescriptionRequired;
-    @Column(columnDefinition = "boolean default false")
-    private boolean deletedStatus;
+    @Column(columnDefinition = "BIT default 0" )
+    private int deletedStatus;
     private String createdAt;
     private String modifiedAt;
 

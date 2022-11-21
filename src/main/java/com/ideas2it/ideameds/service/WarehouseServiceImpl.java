@@ -8,14 +8,11 @@ import java.util.List;
 
 @Service
 public class WarehouseServiceImpl implements WarehouseService {
-    private WarehouseRepository warehouseRepository;
+    private final WarehouseRepository warehouseRepository;
 
-    public Warehouse deleteWarehouse(Long warehouseId) {
-        Warehouse warehouse = getWarehouseById(warehouseId);
-        warehouse.setDeletedStatus(true);
-        return warehouseRepository.save(warehouse);
+    public WarehouseServiceImpl(WarehouseRepository warehouseRepository) {
+        this.warehouseRepository = warehouseRepository;
     }
-
     public Warehouse updateWarehouse(Warehouse warehouse) {
         return warehouseRepository.save(warehouse);
     }
@@ -26,6 +23,12 @@ public class WarehouseServiceImpl implements WarehouseService {
         return warehouseRepository.findAll();
     }
     public Warehouse addWarehouse(Warehouse warehouse) {
+        return warehouseRepository.save(warehouse);
+    }
+
+    public Warehouse deleteWarehouse(Long warehouseId) {
+        Warehouse warehouse = getWarehouseById(warehouseId);
+        warehouse.setDeletedStatus(1);
         return warehouseRepository.save(warehouse);
     }
 }

@@ -11,8 +11,11 @@ import java.util.List;
 @Service
 public class BrandServiceImpl implements BrandService{
 
-    @Autowired
-    private BrandRepository brandRepository;
+    private final BrandRepository brandRepository;
+
+    public BrandServiceImpl(BrandRepository brandRepository) {
+        this.brandRepository = brandRepository;
+    }
 
     public Brand addBrand(Brand brand) {
         return brandRepository.save(brand);
@@ -31,6 +34,7 @@ public class BrandServiceImpl implements BrandService{
     }
     public Brand deleteBrand(Long brandId) {
         Brand brand = getBrandById(brandId);
+        brand.setDeletedStatus(1);
         return brandRepository.save(brand);
     }
     public List<Medicine> getMedicineByBrand(String medicineBrand) {
