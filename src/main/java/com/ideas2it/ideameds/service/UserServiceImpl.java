@@ -2,6 +2,7 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUser(Long userId) {
+    public Optional<User> getUserById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
+
         if (userOptional.isPresent() && (userOptional.get().getDeletedStatus() != 1)) {
             return userOptional;
         } else {
@@ -54,6 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<String> updateUser(User user) {
         User updatedUser = userRepository.save(user);
+
         if (null != updatedUser) {
             return Optional.of(updatedUser.getName() + " ." + "Updated Successfully");
         } else {
@@ -62,15 +65,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<String> deleteUser(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-
-        if(user.isPresent() && user.get().getDeletedStatus() != 1) {
-            user.get().setDeletedStatus(1);
-            User deletedUser = userRepository.save(user.get());
-            return Optional.of(deletedUser.getName() + "." +"Deleted Successfully");
-        } else {
-            return Optional.empty();
+    public Optional<String> deleteUser(User user) {
+        Optional<User> userOptional = userRepository.findById(user.getUserId());
+        if (userOptional.isPresent()) {
+            Optional<User> deleteUser = Optional.of(userRepository.save(user));
+            if (deleteUser.isPresent()) {
+                return Optional.of(deleteUser.get().getName() + "." +"Deleted Successfully");
+            }
         }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean isUserExist(Long userId) {
+        return userRepository.existsById(userId);
     }
 }

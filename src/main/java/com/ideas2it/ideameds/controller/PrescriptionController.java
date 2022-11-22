@@ -32,7 +32,7 @@ public class PrescriptionController {
      */
     @PostMapping("/prescription/{userId}")
     public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription){
-        User user = userService.getUser(userId).get();
+        User user = userService.getUserById(userId).get();
         prescription.setUser(user);
         Long prescriptionId = prescriptionService.addPrescription(prescription);
         if(prescriptionId == 0) return ResponseEntity.status(HttpStatus.OK).body("Prescription Not Added");
@@ -59,7 +59,7 @@ public class PrescriptionController {
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId){
         Prescription prescription = prescriptionService.getPrescription(prescriptionId);
-        prescriptionService.addToCart(prescription.getPrescriptionItems(),userService.getUser(userId).get());
+        prescriptionService.addToCart(prescription.getPrescriptionItems(),userService.getUserById(userId).get());
         return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
     }
 
@@ -70,7 +70,7 @@ public class PrescriptionController {
      */
     @GetMapping("/prescription/user/{userId}")
     public ResponseEntity<List<Prescription>> getPrescriptionByUserId(@PathVariable Long userId){
-        User user = userService.getUser(userId).get();
+        User user = userService.getUserById(userId).get();
         return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.getPrescriptionByUser(user));
     }
 

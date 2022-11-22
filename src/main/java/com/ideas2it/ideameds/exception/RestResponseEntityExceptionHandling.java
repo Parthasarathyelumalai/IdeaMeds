@@ -29,7 +29,7 @@ import java.util.Map;
 public class RestResponseEntityExceptionHandling extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserException.class)
-    public ResponseEntity<ErrorMessage> commonException(UserException userException, WebRequest webRequest) {
+    public ResponseEntity<ErrorMessage> commonException(UserException userException) {
         ErrorMessage errorMessage = new ErrorMessage(userException.getMessage());
         log.error(userException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);

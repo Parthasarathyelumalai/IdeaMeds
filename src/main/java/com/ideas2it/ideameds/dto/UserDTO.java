@@ -1,6 +1,8 @@
 package com.ideas2it.ideameds.dto;
 
 import com.ideas2it.ideameds.model.Address;
+import com.ideas2it.ideameds.model.Prescription;
+import com.ideas2it.ideameds.model.UserMedicine;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyCollection;
@@ -23,5 +25,6 @@ public class UserDTO {
     private String phoneNumber;
     private String emailId;
     private List<Address> addresses;
-    private int deletedStatus;
+    private List<Prescription> prescription;
+    private  List<UserMedicine> userMedicines;
 }

@@ -35,4 +35,6 @@ public class User {
     private int deletedStatus;
     @OneToMany(mappedBy = "user")
     private List<Prescription> prescription;
+    @OneToMany(mappedBy = "user")
+    private  List<UserMedicine> userMedicines;
 }
