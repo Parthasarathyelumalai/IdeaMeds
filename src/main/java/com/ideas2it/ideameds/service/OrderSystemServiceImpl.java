@@ -5,6 +5,7 @@ import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.OrderItem;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.CartItemRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.OrderSystemRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Service implementation for placing order(order system).
@@ -29,6 +32,9 @@ public class OrderSystemServiceImpl implements OrderSystemService {
 
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @Autowired
     private OrderSystemRepository orderSystemRepository;
@@ -94,11 +100,13 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      */
     @Override
     public OrderSystem getById(Long userId) {
-        User user = userRepository.findById(userId).get();
+        Optional<User> user = userRepository.findById(userId);
         List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
-        for (OrderSystem orderSystem : orderSystemList) {
-            if (user.getUserId() == orderSystem.getUser().getUserId()) {
-                return orderSystem;
+        if (user.isPresent()) {
+            for (OrderSystem orderSystem : orderSystemList) {
+                if (Objects.equals(user.get().getUserId(), orderSystem.getUser().getUserId())) {
+                    return orderSystem;
+                }
             }
         }
         return null;

@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.model.Cart;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service for cart.
@@ -20,14 +21,14 @@ public interface CartService {
      * @param cart - To store the data in cart repository.
      * @return Total price, discount price and discount.
      */
-    Cart addCart(Long userId, Cart cart);
+    Optional<Cart> addCart(Long userId, Cart cart);
 
     /**
      * Get one cart by user id.
      * @param userId - To get one cart.
      * @return One cart.
      */
-    Cart getById(Long userId);
+    Optional<Cart> getById(Long userId);
 
     /**
      * Retrieve all data from cart repository.

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * controller for cart.
@@ -33,17 +34,13 @@ public class CartController {
      * @return Total price, discount price and discount.
      */
     @PutMapping("/cart/{id}")
-    private ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody Cart cart) {
-        Cart addedCart = cartService.addCart(userId, cart);
-        if (addedCart != null) {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Cart added successfully. \nTotal price : " + addedCart.getTotalPrice()
-                            + "\nDiscount : " + addedCart.getDiscountPercentage()
-                            + "\nDiscount price : " + addedCart.getDiscountPrice());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No items to list price");
-        }
+    public ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody Cart cart) {
+        Optional<Cart> addedCart = cartService.addCart(userId, cart);
+        return addedCart.map(value -> ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Cart added successfully. \nTotal price : " + value.getTotalPrice()
+                        + "\nDiscount : " + value.getDiscountPercentage() + "%"
+                        + "\nDiscount price : " + value.getDiscountPrice())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("No items to list price"));
     }
 
     /**
@@ -62,11 +59,11 @@ public class CartController {
      */
     @GetMapping("/cart/{id}")
     public ResponseEntity<Cart> getById(@PathVariable("id") Long userId) {
-        Cart cart = cartService.getById(userId);
-        if (cart != null) {
+        Optional<Cart> cart = cartService.getById(userId);
+        if (cart.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(cart);
+                    .body(cart.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

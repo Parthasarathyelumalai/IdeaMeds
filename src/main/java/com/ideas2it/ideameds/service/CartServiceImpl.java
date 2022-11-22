@@ -1,6 +1,10 @@
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.model.*;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.Discount;
+import com.ideas2it.ideameds.model.Medicine;
+import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.MedicineRepository;
@@ -9,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 /**
@@ -38,17 +44,17 @@ public class CartServiceImpl implements CartService {
      *{@inheritDoc}
      */
     @Override
-    public Cart addCart(Long userId, Cart cart) {
-        User user = userRepository.findById(userId).get();
+    public Optional<Cart> addCart(Long userId, Cart cart) {
+        Optional<User> user = userRepository.findById(userId);
         float price = 0;
-        if (user.getUserId() != null) {
-            cart.setUser(user);
+        if (user.isPresent()) {
+            cart.setUser(user.get());
             for (int i = 0; i < cart.getCartItemList().size(); i++) {
                 CartItem cartItem = cart.getCartItemList().get(i);
                 Medicine medicine = cartItem.getMedicine();
-                if (medicine != null) {
-                    Medicine medicineDb = medicineRepository.findById(medicine.getMedicineId()).get();
-                    price = price + (medicineDb.getPrice() * cartItem.getQuantity());
+                Optional<Medicine> medicineDb = medicineRepository.findById(medicine.getMedicineId());
+                if (medicineDb.isPresent()) {
+                    price = price + (medicineDb.get().getPrice() * cartItem.getQuantity());
                     cart.setTotalPrice(price);
                     price = calculateDiscount(price, cart);
                     cart.setDiscountPrice(price);
@@ -56,7 +62,7 @@ public class CartServiceImpl implements CartService {
             }
         cartRepository.save(cart);
         }
-        return cart;
+        return Optional.ofNullable(cart);
     }
 
     /**
@@ -76,12 +82,10 @@ public class CartServiceImpl implements CartService {
                 cart.setDiscountPercentage(discount.getDiscount());
                 float discountPrice = (price * discount.getDiscount()) / 100;
                 afterDiscount = price - discountPrice;
-                break;
             } else if (price > 1000 && price < 2000 && discount.getDiscount() == 10) {
                 cart.setDiscountPercentage(discount.getDiscount());
                 float discountPrice = (price * discount.getDiscount()) / 100;
                 afterDiscount = price - discountPrice;
-                break;
             } else {
                 afterDiscount = price;
             }
@@ -93,15 +97,17 @@ public class CartServiceImpl implements CartService {
      *{@inheritDoc}
      */
     @Override
-    public Cart getById(Long userId) {
-        User user = userRepository.findById(userId).get();
+    public Optional<Cart> getById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
         List<Cart> cartList = cartRepository.findAll();
-        for (Cart cart : cartList) {
-            if (user.getUserId() == cart.getUser().getUserId()) {
-                return cart;
+        if (user.isPresent()) {
+            for (Cart cart : cartList) {
+                if (Objects.equals(user.get().getUserId(), cart.getUser().getUserId())) {
+                    return Optional.of(cart);
+                }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
