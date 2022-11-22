@@ -1,10 +1,13 @@
 package com.ideas2it.ideameds.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ideas2it.ideameds.util.IllnessCategories;
 import com.ideas2it.ideameds.util.MedicineType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,19 +23,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Where(clause = "deletedStatus = 0")
 public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long medicineId;
     private String medicineName;
     private String description;
-    private String labelDosage;
-    private String medicineUses;
-    private String sideEffect;
-    private float price;
-    private String manufacturedDate;
-    private String expiryDate;
-    private String medicineImage;
     @Enumerated(EnumType.STRING)
     private IllnessCategories illnessCategories;
     @Enumerated(EnumType.STRING)
@@ -44,13 +41,9 @@ public class Medicine {
     private String createdAt;
     private String modifiedAt;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "medicine_brand",
-            joinColumns = { @JoinColumn(name = "medicine_id") },
-            inverseJoinColumns = { @JoinColumn(name = "brand_id") }
-    )
-    private List<Brand> brands;
+    @JsonBackReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
+    private List<BrandItems> brandItems;
 
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(

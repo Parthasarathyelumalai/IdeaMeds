@@ -36,7 +36,7 @@ public class PrescriptionController {
      */
     @PostMapping("/prescription/{userId}")
     public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription) throws UserException {
-        Optional<User> user = userService.getUser(userId);
+        Optional<User> user = userService.getUserById(userId);
         List<Prescription> prescriptions = new ArrayList<>();
         if(user.isPresent()) {
             prescriptions.add(prescription);
@@ -67,7 +67,7 @@ public class PrescriptionController {
      */
     @GetMapping("/prescription/user/{userId}")
     public ResponseEntity<List<Prescription>> getPrescriptionByUserId(@PathVariable Long userId) throws PrescriptionNotFoundException, UserException {
-        Optional<User> user = userService.getUser(userId);
+        Optional<User> user = userService.getUserById(userId);
 
         if (user.isEmpty()) throw new UserException("User not found");
         else {
@@ -86,7 +86,7 @@ public class PrescriptionController {
      */
     @DeleteMapping("/prescription/{userId}/{prescriptionId}")
     public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId, @PathVariable Long prescriptionId) throws UserException, PrescriptionNotFoundException {
-        Optional<User> user = userService.getUser(userId);
+        Optional<User> user = userService.getUserById(userId);
 
         if(user.isPresent()) {
             List<Prescription> prescriptions = user.get().getPrescription();
@@ -114,7 +114,7 @@ public class PrescriptionController {
      */
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws PrescriptionNotFoundException, UserException {
-        Optional<User> user = userService.getUser(userId);
+        Optional<User> user = userService.getUserById(userId);
         Optional<Prescription> prescription = prescriptionService.getPrescription(prescriptionId);
 
         if(user.isPresent()) {

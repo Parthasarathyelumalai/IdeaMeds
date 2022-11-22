@@ -3,7 +3,6 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.model.Brand;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.repository.BrandRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,9 +35,5 @@ public class BrandServiceImpl implements BrandService{
         Brand brand = getBrandById(brandId);
         brand.setDeletedStatus(1);
         return brandRepository.save(brand);
-    }
-    public List<Medicine> getMedicineByBrand(String medicineBrand) {
-        Brand brand = getBrandByBrandName(medicineBrand);
-        return brand.getMedicines();
     }
 }
