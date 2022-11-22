@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Simple JavaBean domain object representing a User Medicine.
@@ -19,8 +20,11 @@ public class UserMedicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userMedicineId;
+    @NotNull
     private String medicineName;
+    @NotNull
     private int quantity;
+    @NotNull
     private String dosage;
     @ManyToOne
     @JoinColumn(name = "user_id")

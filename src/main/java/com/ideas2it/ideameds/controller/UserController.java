@@ -1,19 +1,21 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.exception.UserException;
+import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.model.UserMedicine;
+import com.ideas2it.ideameds.service.OrderSystemService;
 import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Controller for User
@@ -23,29 +25,29 @@ import java.util.Optional;
  * @since - 2022-11-18
  */
 @RestController
-@RequestMapping
 @Slf4j
 public class UserController {
-
     private UserService userService;
-
     private UserMedicineService userMedicineService;
+    private OrderSystemService orderSystemService;
 
-
-    @Autowired
     public UserController(UserService userService, UserMedicineService userMedicineService) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
     }
 
     @PostMapping("/user")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        Optional<User> savedUser = userService.addUser(user);
-
-        if ( savedUser.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
+    public ResponseEntity<User> addUser(@RequestBody User user) throws UserException {
+        Optional<User> savedUser;
+        if (!validUser(user.getPhoneNumber()) ) {
+            savedUser = userService.addUser(user);
+            if ( savedUser.isPresent() ) {
+                return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
+            throw new UserException("This number is already registered");
         }
     }
 
@@ -98,5 +100,20 @@ public class UserController {
             throw new UserException("there is no user under this id");
         }
         return ResponseEntity.status(HttpStatus.OK).body(savedUserMedicines.get());
+    }
+
+//    @GetMapping("/user/user-medicine/{id}")
+//    public List<OrderSystem> getUserPreviousOrder(@PathVariable("id") Long userId) {
+//        return orderSystemService. getUserPreviousOrder(userId);
+//    }
+
+    private boolean validUser(String userPhoneNumber) {
+        List<String> list = userService.getUserPhoneNumber();
+        for (String number : list) {
+            if ( number.equals(userPhoneNumber)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

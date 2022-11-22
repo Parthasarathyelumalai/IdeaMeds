@@ -26,4 +26,6 @@ public interface UserService {
 
     boolean isUserExist(Long userId);
 
+    List<String> getUserPhoneNumber();
+
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service of User.
@@ -79,5 +80,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserExist(Long userId) {
         return userRepository.existsById(userId);
+    }
+
+    @Override
+    public List<String> getUserPhoneNumber() {
+        return userRepository.findAll().stream().map(User::getPhoneNumber).collect(Collectors.toList());
     }
 }
