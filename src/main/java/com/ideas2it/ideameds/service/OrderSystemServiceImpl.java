@@ -5,11 +5,10 @@ import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.OrderItem;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.repository.CartItemRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.OrderSystemRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,34 +24,30 @@ import java.util.Optional;
  * @since - 2022-11-21
  */
 @Service
+@RequiredArgsConstructor
 public class OrderSystemServiceImpl implements OrderSystemService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
-    @Autowired
-    private CartItemRepository cartItemRepository;
+    private final OrderSystemRepository orderSystemRepository;
 
-    @Autowired
-    private OrderSystemRepository orderSystemRepository;
 
     /**
      *{@inheritDoc}
      */
     @Override
     public OrderSystem addOrder(Long userId) {
-        User user = userRepository.findById(userId).get();
+        Optional<User> user = userRepository.findById(userId);
         List<CartItem> cartItemList = null;
         OrderSystem orderSystem =  null;
         List<Cart> cartList = cartRepository.findAll();
         for (Cart oneCart : cartList) {
-            if(user.getUserId() == oneCart.getUser().getUserId()) {
+            if(Objects.equals(user.get().getUserId(), oneCart.getUser().getUserId())) {
                 cartItemList = oneCart.getCartItemList();
                 orderSystem = new OrderSystem();
-                orderSystem.setUser(user);
+                orderSystem.setUser(user.get());
                 orderSystem.setCart(oneCart);
                 orderSystem.setTotalPrice(oneCart.getTotalPrice());
                 orderSystem.setDiscountPercentage(oneCart.getDiscountPercentage());
@@ -64,6 +59,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
             List<OrderItem> orderItemList = cartItemToOrderItem(cartItemList);
             orderSystem.setOrderItemList(orderItemList);
             orderSystemRepository.save(orderSystem);
+            cartRepository.deleteById(orderSystem.getCart().getCartId());
         }
         return orderSystem;
     }
@@ -110,5 +106,20 @@ public class OrderSystemServiceImpl implements OrderSystemService {
             }
         }
         return null;
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    public List<OrderSystem> getUserPreviousOrder(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
+        List<OrderSystem> previousOrder = new ArrayList<>();
+        for (OrderSystem orderSystem : orderSystemList) {
+            if (user.get().getUserId() == orderSystem.getUser().getUserId()) {
+                previousOrder.add(orderSystem);
+            }
+        }
+        return previousOrder;
     }
 }

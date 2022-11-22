@@ -1,10 +1,10 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -25,9 +25,9 @@ import java.util.List;
  */
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@Component
 public class OrderSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
