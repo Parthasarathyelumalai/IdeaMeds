@@ -37,12 +37,4 @@ public class MedicineServiceImpl implements MedicineService {
         medicine.setDeletedStatus(1);
         return medicineRepository.save(medicine);
     }
-
-    public Medicine assignBrand(Long medicineId, Brand brand) {
-        Medicine medicine = getMedicineById(medicineId);
-        List<Brand> brands =new ArrayList<>();
-        brands.add(brand);
-        medicine.setBrands(brands);
-        return medicineRepository.save(medicine);
-    }
 }

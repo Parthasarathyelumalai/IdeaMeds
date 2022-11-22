@@ -1,15 +1,17 @@
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.model.Brand;
+import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Medicine;
+import com.ideas2it.ideameds.service.BrandItemsService;
 import com.ideas2it.ideameds.service.MedicineService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
+ * <p>
  * Controller for Medicine details
+ * </p>
  *
  * @author Dinesh Kumar R
  * @since 18/11/2022
@@ -17,8 +19,14 @@ import java.util.List;
  */
 @RestController
 public class MedicineController {
-    @Autowired
-    private MedicineService medicineService;
+    private final MedicineService medicineService;
+    private final BrandItemsService brandItemsService;
+
+    public MedicineController(MedicineService medicineService, BrandItemsService brandItemsService) {
+        this.medicineService = medicineService;
+        this.brandItemsService = brandItemsService;
+    }
+
 
     /**
      * <p>
@@ -83,20 +91,6 @@ public class MedicineController {
         return medicineService.updateMedicine(medicine);
     }
 
-    /**
-     * <p>
-     *     Assigns a brand to a medicine
-     * </p>
-     * @param medicineId
-     *        medicine id for assigning
-     * @param brand
-     *        brand to be assigned with
-     * @return medicine after brand has assigned
-     */
-    @PutMapping("/medicine/assignBrand/{medicineId}")
-    public Medicine assignBrand(@PathVariable("medicineId") Long medicineId, @RequestBody Brand brand) {
-        return medicineService.assignBrand(medicineId, brand);
-    }
 
     /**
      * <p>
@@ -108,6 +102,11 @@ public class MedicineController {
      */
     @PutMapping("/medicine/delete/{medicineId}")
     public Medicine deleteMedicine(@PathVariable("medicineId") Long medicineId) {
+        Medicine medicine = medicineService.getMedicineById(medicineId);
+        List<BrandItems> brandItems = medicine.getBrandItems();
+        for (BrandItems brandItem: brandItems) {
+            brandItemsService.deleteBrandItem(brandItem);
+        }
         return medicineService.deleteMedicine(medicineId);
     }
 }
