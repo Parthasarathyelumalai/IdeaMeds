@@ -43,7 +43,7 @@ public class PrescriptionController {
      * @return String
      */
     @PostMapping("/prescription/{userId}")
-    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription) throws UserException, PrescriptionExpiredException {
+    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription) throws UserException {
         Optional<User> user = userService.getUserById(userId);
         List<Prescription> prescriptions = new ArrayList<>();
         if(user.isPresent()) {
