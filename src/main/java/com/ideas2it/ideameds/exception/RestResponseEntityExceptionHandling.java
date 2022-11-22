@@ -1,7 +1,7 @@
 package com.ideas2it.ideameds.exception;
 
+import com.ideas2it.ideameds.dto.ErrorMessageDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.spi.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,15 +29,15 @@ import java.util.Map;
 public class RestResponseEntityExceptionHandling extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserException.class)
-    public ResponseEntity<ErrorMessage> commonException(UserException userException) {
-        ErrorMessage errorMessage = new ErrorMessage(userException.getMessage());
+    public ResponseEntity<ErrorMessageDTO> commonException(UserException userException) {
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, userException.getMessage());
         log.error(userException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
     @ExceptionHandler(MedicineNotFoundException.class)
-    public ResponseEntity<ErrorMessage> medicineNotFoundException(MedicineNotFoundException medicineNotFoundException, WebRequest webRequest) {
-        ErrorMessage errorMessage = new ErrorMessage(medicineNotFoundException.getMessage());
+    public ResponseEntity<ErrorMessageDTO> medicineNotFoundException(MedicineNotFoundException medicineNotFoundException) {
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, medicineNotFoundException.getMessage());
         log.error(medicineNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
@@ -54,4 +54,11 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
         });
         return errors;
     }*/
+
+    @ExceptionHandler(PrescriptionNotFoundException.class)
+    public ResponseEntity<ErrorMessageDTO> prescriptionNotFoundException(PrescriptionNotFoundException prescriptionNotFoundException) {
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, prescriptionNotFoundException.getMessage());
+        log.error(prescriptionNotFoundException.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
 }

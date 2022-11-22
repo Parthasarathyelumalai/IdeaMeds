@@ -17,5 +17,5 @@ public class PrescriptionItemsDTO {
     private Long prescriptionItemsId;
     private int quantity;
     private int dosage;
-    private String medicine_type;
+    private String medicineType;
 }

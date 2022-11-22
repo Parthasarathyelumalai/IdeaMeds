@@ -1,10 +1,12 @@
 package com.ideas2it.ideameds.model;
 
+import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,15 +25,32 @@ public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long prescriptionId;
+
+    @NotNull
     private String doctorName;
+
+    @NotNull
     private String clinicAddress;
+
+    @NotNull
     private String patientName;
-    private String patientGender;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Gender patientGender;
+
+    @NotNull
     private int patientAge;
+
+    @NotNull
     private String dateOfIssue;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime modifiedAt;
+
     @Column(columnDefinition = "BIT default 0")
+    @NotNull
     private int deletedStatus;
 
     @ManyToOne
@@ -40,5 +59,6 @@ public class Prescription {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "prescription_id")
+    @NotNull
     private List<PrescriptionItems> prescriptionItems;
 }

@@ -1,17 +1,29 @@
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.model.*;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.OrderItem;
+import com.ideas2it.ideameds.model.OrderSystem;
+import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.CartItemRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
-import com.ideas2it.ideameds.repository.MedicineRepository;
 import com.ideas2it.ideameds.repository.OrderSystemRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+/**
+ * Service implementation for placing order(order system).
+ *
+ * @author - Soundharrajan.S
+ * @version - 1.0
+ * @since - 2022-11-21
+ */
 @Service
 public class OrderSystemServiceImpl implements OrderSystemService {
 
@@ -22,23 +34,30 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     private CartRepository cartRepository;
 
     @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
     private OrderSystemRepository orderSystemRepository;
 
+    /**
+     *{@inheritDoc}
+     */
     @Override
-    public float addOrder(Long userId) {
+    public OrderSystem addOrder(Long userId) {
         User user = userRepository.findById(userId).get();
         List<CartItem> cartItemList = null;
         OrderSystem orderSystem =  null;
-        float price = 0;
         List<Cart> cartList = cartRepository.findAll();
         for (Cart oneCart : cartList) {
             if(user.getUserId() == oneCart.getUser().getUserId()) {
                 cartItemList = oneCart.getCartItemList();
                 orderSystem = new OrderSystem();
-                orderSystem.setTotalPrice(oneCart.getTotalPrice());
-                orderSystem.setCart(oneCart);
                 orderSystem.setUser(user);
-                price = (float) orderSystem.getTotalPrice();
+                orderSystem.setCart(oneCart);
+                orderSystem.setTotalPrice(oneCart.getTotalPrice());
+                orderSystem.setDiscountPercentage(oneCart.getDiscountPercentage());
+                orderSystem.setDiscountPrice(oneCart.getDiscountPrice());
+                orderSystem.setDiscount(oneCart.getDiscount());
             }
         }
         if (cartItemList != null) {
@@ -46,9 +65,14 @@ public class OrderSystemServiceImpl implements OrderSystemService {
             orderSystem.setOrderItemList(orderItemList);
             orderSystemRepository.save(orderSystem);
         }
-        return price;
+        return orderSystem;
     }
 
+    /**
+     * Copy cart item to order item.
+     * @param cartItemList - To copy cart item list to order item list.
+     * @return - List of order items.
+     */
     public List<OrderItem> cartItemToOrderItem(List<CartItem> cartItemList) {
         List<OrderItem> orderItemList = new ArrayList<>();
         if (cartItemList != null) {
@@ -63,18 +87,26 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         return orderItemList;
     }
 
+    /**
+     *{@inheritDoc}
+     */
     @Override
     public List<OrderSystem> getAllOrder() {
         return orderSystemRepository.findAll();
     }
 
+    /**
+     *{@inheritDoc}
+     */
     @Override
     public OrderSystem getById(Long userId) {
-        User user = userRepository.findById(userId).get();
+        Optional<User> user = userRepository.findById(userId);
         List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
-        for (OrderSystem orderSystem : orderSystemList) {
-            if (user.getUserId() == orderSystem.getUser().getUserId()) {
-                return orderSystem;
+        if (user.isPresent()) {
+            for (OrderSystem orderSystem : orderSystemList) {
+                if (Objects.equals(user.get().getUserId(), orderSystem.getUser().getUserId())) {
+                    return orderSystem;
+                }
             }
         }
         return null;

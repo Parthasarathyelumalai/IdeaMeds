@@ -1,18 +1,25 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.model.OrderSystem;
-import org.hibernate.criterion.Order;
 
 import java.util.List;
+
+/**
+ * Service for placing order(order system).
+ *
+ * @author - Soundharrajan.S
+ * @version - 1.0
+ * @since - 2022-11-17
+ */
 
 public interface OrderSystemService {
 
     /**
-     * Add order items in repository.
-     * @param userId - To get user and cart details and map with order.
+     * add and save order items in repository.
+     * @param userId - To get user and cart details to map with order.
      * @return - Total price of order.
      */
-    float addOrder(Long userId);
+    OrderSystem addOrder(Long userId);
 
     /**
      * All users order details.

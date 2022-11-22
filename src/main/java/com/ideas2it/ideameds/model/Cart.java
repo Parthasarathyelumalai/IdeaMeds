@@ -5,7 +5,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 /**
@@ -13,7 +20,7 @@ import java.util.List;
  *
  * @author - Soundharrajan.S
  * @version - 1.0
- * @since - 2022-11-17
+ * @since - 2022-11-21
  */
 @Entity
 @Data
@@ -22,8 +29,13 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
-    private double totalPrice;
-    @OneToOne(cascade = CascadeType.ALL , targetEntity = User.class)
+    private float totalPrice;
+    private float discountPrice;
+    private float discountPercentage;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "discount_id")
+    private Discount discount;
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(cascade = CascadeType.ALL)

@@ -1,41 +1,72 @@
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.dto.PrescriptionDTO;
-import com.ideas2it.ideameds.model.*;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.Medicine;
+import com.ideas2it.ideameds.model.Prescription;
+import com.ideas2it.ideameds.model.PrescriptionItems;
+import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.MedicineRepository;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
-import com.ideas2it.ideameds.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Service Interface Implementation
+ * Performs Create, Read, Update and Delete operations for the Prescription
+ * @author Nithish K
+ * @version 1.0
+ * @since 2022-11-18
+ */
 @Service
 @RequiredArgsConstructor
 public class PrescriptionServiceImpl implements PrescriptionService{
-    ModelMapper modelMapper = new ModelMapper();
     private final PrescriptionRepository prescriptionRepository;
     private final MedicineRepository medicineRepository;
     private final CartServiceImpl cartService;
-    private final UserRepository userRepository;
 
+    /**
+     *{@inheritDoc}
+     */
     @Override
-    public Long addPrescription(Prescription prescription) {
-        return prescriptionRepository.save(prescription).getPrescriptionId();
+    public Optional<Prescription> addPrescription(Prescription prescription) {
+        return Optional.of(prescriptionRepository.save(prescription));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Prescription getPrescription(Long prescriptionId) {
-        return prescriptionRepository.findById(prescriptionId).get();
+    public Optional<Prescription> getPrescription(Long prescriptionId) {
+        return prescriptionRepository.findById(prescriptionId);
     }
 
+    /**
+     *{@inheritDoc}
+     */
     @Override
     public List<Prescription> getPrescriptionByUser(User user) {
         return prescriptionRepository.getPrescriptionByUser(user);
     }
 
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public Long deletePrescriptionById(Prescription prescription) {
+        final int DELETED = 1;
+        prescription.setDeletedStatus(DELETED);
+        prescriptionRepository.save(prescription);
+        return prescription.getPrescriptionId();
+    }
+
+    /**
+     *{@inheritDoc}
+     */
     @Override
     public void addToCart(List<PrescriptionItems> prescriptionItems, User user) {
         Cart cart = new Cart();
@@ -55,20 +86,5 @@ public class PrescriptionServiceImpl implements PrescriptionService{
             }
         }
         cartService.addCart(user.getUserId(), cart);
-    }
-
-    @Override
-    public Long deletePrescriptionById(Long userId, Long prescriptionId) {
-        final int DELETED = 1;
-        User user = userRepository.findById(userId).get();
-        List<Prescription> prescriptions = null;//user.getPrescriptions();
-        if(null != prescriptions)
-        for(Prescription prescription : prescriptions) {
-            if(prescription.getPrescriptionId() == prescriptionId) {
-                prescription.setDeletedStatus(DELETED);
-                prescriptionRepository.save(prescription);
-            }
-        }
-        return prescriptionId;
     }
 }
