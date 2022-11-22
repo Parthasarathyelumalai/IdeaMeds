@@ -1,11 +1,13 @@
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
 import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
 import com.ideas2it.ideameds.exception.UserException;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
+    private final DateTimeValidation dateTimeValidation;
 
     /**
      * Add the prescription to the user
@@ -35,12 +38,13 @@ public class PrescriptionController {
      * @return String
      */
     @PostMapping("/prescription/{userId}")
-    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription) throws UserException {
-        Optional<User> user = userService.getUser(userId);
+    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription) throws UserException, PrescriptionExpiredException {
+        Optional<User> user = userService.getUserById(userId);
         List<Prescription> prescriptions = new ArrayList<>();
         if(user.isPresent()) {
             prescriptions.add(prescription);
             user.get().setPrescription(prescriptions);
+            dateTimeValidation.validateDateOfIssue(prescription.getDateOfIssue());
             Optional<Prescription> prescriptionSaved = prescriptionService.addPrescription(prescription);
             if (prescriptionSaved.isPresent())
                 return ResponseEntity.status(HttpStatus.OK).body("Prescription Added Successfully");
@@ -67,7 +71,7 @@ public class PrescriptionController {
      */
     @GetMapping("/prescription/user/{userId}")
     public ResponseEntity<List<Prescription>> getPrescriptionByUserId(@PathVariable Long userId) throws PrescriptionNotFoundException, UserException {
-        Optional<User> user = userService.getUser(userId);
+        Optional<User> user = userService.getUserById(userId);
 
         if (user.isEmpty()) throw new UserException("User not found");
         else {
@@ -86,7 +90,7 @@ public class PrescriptionController {
      */
     @DeleteMapping("/prescription/{userId}/{prescriptionId}")
     public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId, @PathVariable Long prescriptionId) throws UserException, PrescriptionNotFoundException {
-        Optional<User> user = userService.getUser(userId);
+        Optional<User> user = userService.getUserById(userId);
 
         if(user.isPresent()) {
             List<Prescription> prescriptions = user.get().getPrescription();
@@ -114,7 +118,7 @@ public class PrescriptionController {
      */
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws PrescriptionNotFoundException, UserException {
-        Optional<User> user = userService.getUser(userId);
+        Optional<User> user = userService.getUserById(userId);
         Optional<Prescription> prescription = prescriptionService.getPrescription(prescriptionId);
 
         if(user.isPresent()) {
