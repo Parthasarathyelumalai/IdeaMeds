@@ -4,9 +4,11 @@ import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +22,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Where(clause = "deletedStatus = 0")
 public class Prescription {
 
     @Id
@@ -43,7 +46,7 @@ public class Prescription {
     private int patientAge;
 
     @NotNull
-    private String dateOfIssue;
+    private LocalDate dateOfIssue;
 
     private LocalDateTime createdAt;
 

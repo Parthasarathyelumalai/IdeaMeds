@@ -1,11 +1,13 @@
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
 import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
 import com.ideas2it.ideameds.exception.UserException;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ import java.util.Optional;
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
+    private final DateTimeValidation dateTimeValidation;
 
     /**
      * Add the prescription to the user
@@ -40,12 +43,13 @@ public class PrescriptionController {
      * @return String
      */
     @PostMapping("/prescription/{userId}")
-    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription) throws UserException {
+    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody Prescription prescription) throws UserException, PrescriptionExpiredException {
         Optional<User> user = userService.getUserById(userId);
         List<Prescription> prescriptions = new ArrayList<>();
         if(user.isPresent()) {
             prescriptions.add(prescription);
             user.get().setPrescription(prescriptions);
+            dateTimeValidation.validateDateOfIssue(prescription.getDateOfIssue());
             Optional<Prescription> prescriptionSaved = prescriptionService.addPrescription(prescription);
             if (prescriptionSaved.isPresent())
                 return ResponseEntity.status(HttpStatus.OK).body("Prescription Added Successfully");
