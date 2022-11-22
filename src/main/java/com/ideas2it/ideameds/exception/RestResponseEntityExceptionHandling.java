@@ -29,14 +29,14 @@ import java.util.Map;
 public class RestResponseEntityExceptionHandling extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserException.class)
-    public ResponseEntity<ErrorMessageDTO> commonException(UserException userException, WebRequest webRequest) {
+    public ResponseEntity<ErrorMessageDTO> commonException(UserException userException) {
         ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, userException.getMessage());
         log.error(userException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
     @ExceptionHandler(MedicineNotFoundException.class)
-    public ResponseEntity<ErrorMessageDTO> medicineNotFoundException(MedicineNotFoundException medicineNotFoundException, WebRequest webRequest) {
+    public ResponseEntity<ErrorMessageDTO> medicineNotFoundException(MedicineNotFoundException medicineNotFoundException) {
         ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, medicineNotFoundException.getMessage());
         log.error(medicineNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);

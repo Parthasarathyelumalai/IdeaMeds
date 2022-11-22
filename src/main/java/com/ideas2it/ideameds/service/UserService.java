@@ -16,12 +16,14 @@ public interface UserService {
 
     Optional<User> addUser(User user);
 
-    Optional<User> getUser(Long userId);
+    Optional<User> getUserById(Long userId);
 
     List<User> getAllUser();
 
     Optional<String> updateUser(User user);
 
-    Optional<String> deleteUser(Long userId);
+    Optional<String> deleteUser(User user);
+
+    boolean isUserExist(Long userId);
 
 }
