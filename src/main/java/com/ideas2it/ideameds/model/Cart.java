@@ -1,7 +1,8 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -23,7 +24,8 @@ import java.util.List;
  * @since - 2022-11-21
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Cart {
     @Id

@@ -33,4 +33,11 @@ public interface OrderSystemService {
      * @return - One user order details
      */
     OrderSystem getById(Long userId);
+
+    /**
+     * Get all previous order items for given user id.
+     * @param userId - To get previous order items.
+     * @return All previous order items.
+     */
+    List<OrderSystem> getUserPreviousOrder(Long userId);
 }
