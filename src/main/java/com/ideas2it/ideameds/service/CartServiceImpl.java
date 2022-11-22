@@ -9,9 +9,10 @@ import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.MedicineRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,19 +27,16 @@ import java.util.Optional;
  */
 
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private MedicineRepository medicineRepository;
+    private final MedicineRepository medicineRepository;
 
-    @Autowired
-    private DiscountRepository discountRepository;
+    private final DiscountRepository discountRepository;
 
     /**
      *{@inheritDoc}
@@ -47,20 +45,26 @@ public class CartServiceImpl implements CartService {
     public Optional<Cart> addCart(Long userId, Cart cart) {
         Optional<User> user = userRepository.findById(userId);
         float price = 0;
+
         if (user.isPresent()) {
             cart.setUser(user.get());
-            for (int i = 0; i < cart.getCartItemList().size(); i++) {
-                CartItem cartItem = cart.getCartItemList().get(i);
-                Medicine medicine = cartItem.getMedicine();
-                Optional<Medicine> medicineDb = medicineRepository.findById(medicine.getMedicineId());
-                if (medicineDb.isPresent()) {
-                    price = price + (medicineDb.get().getPrice() * cartItem.getQuantity());
-                    cart.setTotalPrice(price);
-                    price = calculateDiscount(price, cart);
-                    cart.setDiscountPrice(price);
+            List<CartItem> cartItems = new ArrayList<>();
+            CartItem cartItem = new CartItem();
+            List<CartItem> cartItemList = cart.getCartItemList();
+            for(CartItem cartItemTemp : cartItemList) {
+                Optional<Medicine> medicine = medicineRepository.findById(cartItemTemp.getMedicine().getMedicineId());
+                if (medicine.isPresent()) {
+                    cartItem.setMedicine(medicine.get());
+                    cartItem.setQuantity(cartItem.getQuantity());
+                    cartItems.add(cartItem);
+                    price = price + (medicine.get().getPrice() * cartItem.getQuantity());
                 }
             }
-        cartRepository.save(cart);
+            cart.setCartItemList(cartItems);
+            cart.setTotalPrice(price);
+            price = calculateDiscount(price, cart);
+            cart.setDiscountPrice(price);
+            cartRepository.save(cart);
         }
         return Optional.ofNullable(cart);
     }
@@ -92,6 +96,7 @@ public class CartServiceImpl implements CartService {
         }
         return afterDiscount;
     }
+
 
     /**
      *{@inheritDoc}
