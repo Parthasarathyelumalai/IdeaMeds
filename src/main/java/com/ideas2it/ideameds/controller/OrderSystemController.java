@@ -2,7 +2,7 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.service.OrderSystemService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +21,9 @@ import java.util.List;
  */
 
 @RestController
+@RequiredArgsConstructor
 public class OrderSystemController {
-    @Autowired
+
     OrderSystemService orderSystemService;
 
     /**
@@ -69,5 +70,18 @@ public class OrderSystemController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    /**
+     * Get all previous order items for given user id.
+     * @param userId - To get previous order items.
+     * @return All previous order items.
+     */
+    @GetMapping("/previousorder/{id}")
+    public ResponseEntity<List<OrderSystem>> getUserPreviousOrder(@PathVariable("id") Long userId) {
+        List<OrderSystem> orderSystemList = orderSystemService.getUserPreviousOrder(userId);
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(orderSystemList);
     }
 }

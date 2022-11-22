@@ -2,7 +2,7 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.service.CartService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +23,9 @@ import java.util.Optional;
  */
 
 @RestController
+@RequiredArgsConstructor
 public class CartController {
-    @Autowired
+
     CartService cartService;
 
     /**

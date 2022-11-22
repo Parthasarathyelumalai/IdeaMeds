@@ -9,7 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
@@ -59,6 +58,13 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
     public ResponseEntity<ErrorMessageDTO> prescriptionNotFoundException(PrescriptionNotFoundException prescriptionNotFoundException) {
         ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, prescriptionNotFoundException.getMessage());
         log.error(prescriptionNotFoundException.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(PrescriptionExpiredException.class)
+    public ResponseEntity<ErrorMessageDTO> prescriptionExpiredException(PrescriptionExpiredException prescriptionExpiredException) {
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, prescriptionExpiredException.getMessage());
+        log.error(prescriptionExpiredException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 }
