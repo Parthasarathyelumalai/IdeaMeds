@@ -1,5 +1,10 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.dto;
 
+import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +17,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Represents the Prescription DTO
@@ -49,5 +56,7 @@ public class PrescriptionDTO {
 
     @NotBlank(message = "Prescription issued date is required")
     @PastOrPresent(message = "Prescription date should not be in future")
-    private String dateOfIssue;
+    private LocalDate dateOfIssue;
+
+    private List<PrescriptionItems> prescriptionItems;
 }

@@ -38,7 +38,7 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Optional<Cart> addCart(Long userId, Cart cart) {
-        Optional<User> user = userRepository.findById(userId);
+ /*       Optional<User> user = userRepository.findById(userId);
         float price = 0;
 
         if (user.isPresent()) {
@@ -61,8 +61,8 @@ public class CartServiceImpl implements CartService {
             price = calculateDiscount(price, cart);
             cart.setDiscountPrice(price);
             cartRepository.save(cart);
-        }
-        return Optional.ofNullable(cart);
+        }*/
+        return null/*Optional.ofNullable(cart)*/;
     }
 
     /**

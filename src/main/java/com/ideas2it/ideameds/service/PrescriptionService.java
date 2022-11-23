@@ -1,13 +1,17 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.PrescriptionDTO;
+import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
 import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
 import com.ideas2it.ideameds.exception.UserException;
-import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service Interface
@@ -21,25 +25,40 @@ public interface PrescriptionService {
     /**
      * Get the prescription object from the controller and
      * passes to the repository to add the prescription to the user
-     * @param prescription To save prescription object
-     * @return Long returns the prescription ID will be
+     * @param prescriptionDTO To pass prescriptionDTO object
+     * @return returns the prescriptionDTO object
+     * @throws UserException occurs when user not found
+     * @throws PrescriptionExpiredException occurs when prescription was exceeded by 6 months
      */
-    Optional<Prescription> addPrescription(Prescription prescription);
+    PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws PrescriptionExpiredException, UserException;
 
     /**
      * Get the Prescription from the repository
      *
      * @param prescriptionId To get the required prescription
      * @return Prescription - returns the Prescription object
+     * @throws PrescriptionNotFoundException occurs when prescription was not found
      */
-    Optional<Prescription> getPrescription(Long prescriptionId) throws PrescriptionNotFoundException;
+    PrescriptionDTO getPrescription(Long prescriptionId) throws PrescriptionNotFoundException;
 
     /**
      * Get all the Prescriptions from the repository of a user
-     * @param user To get prescription of required user
-     * @return List - returns the list of prescription
+     * @param userId To get all the prescriptions of the required user
+     * @return returns the list of prescription
+     * @throws UserException occurs when user not found
+     * @throws PrescriptionNotFoundException occurs when prescription was not found
      */
-    List<Prescription> getPrescriptionByUser(User user) throws PrescriptionNotFoundException;
+    List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws PrescriptionNotFoundException, UserException;
+
+    /**
+     * Delete the prescription of the user from the user
+     * @param prescriptionId To map the prescription
+     * @param userId TO get the required user
+     * @return Long - returns the deleted prescription's ID
+     * @throws UserException occurs when user not found
+     * @throws PrescriptionNotFoundException occurs when prescription was not found
+     */
+    Long deletePrescriptionById(Long prescriptionId, Long userId) throws UserException, PrescriptionNotFoundException;
 
     /**
      * Add the prescribed medicines to the cart
@@ -47,11 +66,4 @@ public interface PrescriptionService {
      * @param user To add the medicines to required user's cart
      */
     void addToCart(List<PrescriptionItems> prescriptionItems, User user);
-
-    /**
-     * Delete the prescription of the user from the user
-     * @param prescription To map the prescription
-     * @return Long - returns the deleted prescription's ID
-     */
-    Long deletePrescriptionById(Prescription prescription) throws UserException, PrescriptionNotFoundException;
 }

@@ -21,7 +21,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "deletedStatus = 0")
+/*@Where(clause = "deletedStatus = 0")*/
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,6 @@ public class Brand {
     private String description;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     private List<BrandItems> brandItems;
 }

@@ -63,7 +63,7 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
 
     @ExceptionHandler(PrescriptionExpiredException.class)
     public ResponseEntity<ErrorMessageDTO> prescriptionExpiredException(PrescriptionExpiredException prescriptionExpiredException) {
-        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, prescriptionExpiredException.getMessage());
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_ACCEPTABLE, prescriptionExpiredException.getMessage());
         log.error(prescriptionExpiredException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }

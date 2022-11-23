@@ -1,5 +1,13 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.PrescriptionDTO;
+import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
+import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
+import com.ideas2it.ideameds.exception.UserException;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.Medicine;
@@ -8,7 +16,10 @@ import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.MedicineRepository;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
+import com.ideas2it.ideameds.repository.UserRepository;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,40 +39,69 @@ public class PrescriptionServiceImpl implements PrescriptionService{
     private final PrescriptionRepository prescriptionRepository;
     private final MedicineRepository medicineRepository;
     private final CartServiceImpl cartService;
+    private final UserRepository userRepository;
+    private final DateTimeValidation dateTimeValidation;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public Optional<Prescription> addPrescription(Prescription prescription) {
-        return Optional.of(prescriptionRepository.save(prescription));
+    public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws PrescriptionExpiredException, UserException {
+        Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()) {
+            prescription.setUser(user.get());
+            dateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
+            return modelMapper.map(prescriptionRepository.save(prescription), PrescriptionDTO.class);
+        } else throw new UserException("User Not Found");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Prescription> getPrescription(Long prescriptionId) {
-        return prescriptionRepository.findById(prescriptionId);
+    public PrescriptionDTO getPrescription(Long prescriptionId) throws PrescriptionNotFoundException {
+        Optional<Prescription> prescription = prescriptionRepository.findById(prescriptionId);
+        if (prescription.isPresent()) return modelMapper.map(prescription,PrescriptionDTO.class);
+        else throw new PrescriptionNotFoundException("Prescription Not Found");
     }
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public List<Prescription> getPrescriptionByUser(User user) {
-        return prescriptionRepository.getPrescriptionByUser(user);
+    public List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws UserException {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent())
+            return prescriptionRepository.getPrescriptionByUser(user.get()).stream()
+                        .map(prescription -> modelMapper
+                        .map(prescription, PrescriptionDTO.class))
+                        .toList();
+        else throw new UserException("User Not Found");
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public Long deletePrescriptionById(Prescription prescription) {
-        final int DELETED = 1;
-        prescription.setDeletedStatus(DELETED);
-        prescriptionRepository.save(prescription);
-        return prescription.getPrescriptionId();
+    public Long deletePrescriptionById(Long prescriptionId, Long userId) throws PrescriptionNotFoundException, UserException {
+        Optional<User> user = userRepository.findById(userId);
+
+        if(user.isPresent()) {
+            List<Prescription> prescriptions = user.get().getPrescription();
+
+            if (prescriptions.isEmpty()) throw new PrescriptionNotFoundException("Prescription Not Found");
+            else {
+                for (Prescription prescription : prescriptions) {
+                    if (prescription.getPrescriptionId().equals(prescriptionId)) {
+                        prescription.setDeletedStatus(true);
+                        return prescriptionRepository.save(prescription).getPrescriptionId();
+                    }
+                }
+            }
+        } else throw new UserException("User Not Found");
+        return null;
     }
 
     /**

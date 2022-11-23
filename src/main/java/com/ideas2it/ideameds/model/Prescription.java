@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.model;
 
 import com.ideas2it.ideameds.util.Gender;
@@ -22,7 +26,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "deletedStatus = 0")
 public class Prescription {
 
     @Id
@@ -54,7 +57,7 @@ public class Prescription {
 
     @Column(columnDefinition = "BIT default 0")
     @NotNull
-    private int deletedStatus;
+    private boolean deletedStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
