@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderSystemController {
 
-    OrderSystemService orderSystemService;
+    private final OrderSystemService orderSystemService;
 
     /**
      * save order details in repository.
@@ -32,7 +32,7 @@ public class OrderSystemController {
      * @return - Price of the order (total price, discount price, discount percentage).
      */
     @PutMapping("/order/{id}")
-    private ResponseEntity<String> addOrder(@PathVariable("id") Long userId) {
+    public ResponseEntity<String> addOrder(@PathVariable("id") Long userId) {
         OrderSystem orderSystem = orderSystemService.addOrder(userId);
         if (orderSystem != null) {
             return ResponseEntity

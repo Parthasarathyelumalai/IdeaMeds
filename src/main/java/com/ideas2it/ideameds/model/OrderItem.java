@@ -4,13 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Simple JavaBean domain object representing a order item.
@@ -32,4 +26,7 @@ public class OrderItem {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "brand_items_id")
+    private BrandItems brandItems;
 }
