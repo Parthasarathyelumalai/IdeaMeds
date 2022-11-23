@@ -1,5 +1,6 @@
 package com.ideas2it.ideameds.model;
 
+import com.ideas2it.ideameds.util.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,4 +43,7 @@ public class User {
     private List<Prescription> prescription;
     @OneToMany(mappedBy = "user")
     private  List<UserMedicine> userMedicines;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Role roleType;
 }

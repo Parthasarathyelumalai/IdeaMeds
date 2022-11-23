@@ -1,9 +1,13 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.util;
 
 public enum Gender {
-    MALE(1),
-    FEMALE(2),
-    OTHER(3);
+    MALE(0),
+    FEMALE(1),
+    OTHER(2);
 
     public final int value;
 

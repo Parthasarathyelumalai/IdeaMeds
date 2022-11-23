@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.exception.UserException;
@@ -36,10 +40,16 @@ public class UserController {
         this.userMedicineService = userMedicineService;
     }
 
+    /**
+     * Add User in database
+     * @param user - send the user to store
+     * @return user - gives a response as user details
+     * @throws UserException - throw an error message
+     */
     @PostMapping("/user")
     public ResponseEntity<User> addUser(@RequestBody User user) throws UserException {
         Optional<User> savedUser;
-        if (!validUser(user.getPhoneNumber()) ) {
+        if (!validUserByPhoneNumber(user.getPhoneNumber()) && !validUserByEmailId(user.getEmailId())) {
             savedUser = userService.addUser(user);
             if ( savedUser.isPresent() ) {
                 return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
@@ -47,49 +57,63 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
             }
         } else {
-            throw new UserException("This number is already registered");
+            throw new UserException("This number or EmailId are already registered");
         }
     }
 
+    /**
+     * Get a user details by id
+     * @param userId - send the user id
+     * @return user - give response as user details
+     * @throws UserException - throw an error message
+     */
     @GetMapping("/user/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
-        Optional<User> fetchedUser = userService.getUserById(userId);
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws UserException {
+        User fetchedUser = userService.getUserById(userId);
 
-        if ( fetchedUser.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(fetchedUser.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(fetchedUser);
     }
 
+    /**
+     * Get list of user details
+     * @return list of user - gives a response as list of user details
+     */
     @GetMapping("/user")
     public List<User> getAllUser() {
         return userService.getAllUser();
     }
 
+    /**
+     * Updated a user details
+     * @param user - to store an updated user details
+     * @return String - give a response statement as a response
+     * @throws UserException - throw a error message
+     */
     @PutMapping("/user")
-    public ResponseEntity<String> updateUser(@RequestBody User user) {
-        Optional<String> updateUser = userService.updateUser(user);
-
-        if ( updateUser.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(updateUser.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("there is no User under this id");
-        }
+    public ResponseEntity<String> updateUser(@RequestBody User user) throws UserException {
+        String updateUser = userService.updateUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(updateUser);
     }
 
+    /**
+     * Delete the user in databases(Soft -delete)
+     * @param user - send a user to delete
+     * @return String - give a response as
+     * @throws UserException - throw an error message
+     */
     @DeleteMapping("/user")
-    public ResponseEntity<String> deleteUser(@RequestBody User user) {
-        user.setDeletedStatus(1);
-        Optional<String> deletedStatus = userService.deleteUser(user);
-
-        if ( deletedStatus.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(deletedStatus.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("there is no User under this id");
-        }
+    public ResponseEntity<String> deleteUser(@RequestBody User user) throws UserException {
+        String deletedStatus = userService.deleteUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(deletedStatus);
     }
 
+    /**
+     * Add user medicines for specific user
+     * @param userId - send user id to set medicines
+     * @param userMedicines - send user medicines
+     * @return list of medicine - gives a response as list of user medicines
+     * @throws UserException - throw an error message
+     */
     @PostMapping("/user/user-medicine/{id}")
     public ResponseEntity<List<UserMedicine>> addUserMedicine(@PathVariable("id") Long userId, @RequestBody List<UserMedicine> userMedicines) throws UserException {
         boolean isUserExist = userService.isUserExist(userId);
@@ -102,15 +126,41 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(savedUserMedicines.get());
     }
 
-//    @GetMapping("/user/user-medicine/{id}")
-//    public List<OrderSystem> getUserPreviousOrder(@PathVariable("id") Long userId) {
-//        return orderSystemService. getUserPreviousOrder(userId);
-//    }
+    /**
+     * Get a user previous order details
+     * @param userId - send user id
+     * @return list of order - gives response as list of order by user
+     */
+    @GetMapping("/user/user-medicine/{id}")
+    public List<OrderSystem> getUserPreviousOrder(@PathVariable("id") Long userId) {
+        return orderSystemService. getUserPreviousOrder(userId);
+    }
 
-    private boolean validUser(String userPhoneNumber) {
-        List<String> list = userService.getUserPhoneNumber();
-        for (String number : list) {
+    /**
+     * To valid User By phone number
+     * @param userPhoneNumber - send a user Email id to validate
+     * @return boolean - true or false
+     */
+    private boolean validUserByPhoneNumber(String userPhoneNumber) {
+        List<String> userPhoneNumbers = userService.getUserPhoneNumber();
+        List<String> userEmailIds = userService.getUserEmail();
+        for (String number : userPhoneNumbers) {
             if ( number.equals(userPhoneNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * To valid User By EmailId
+     * @param userEmailId - send a user Email id to validate
+     * @return boolean - true or false
+     */
+    private boolean validUserByEmailId(String userEmailId) {
+        List<String> userEmailIds = userService.getUserEmail();
+        for (String emailId : userEmailIds) {
+            if ( userEmailId.equals(emailId)) {
                 return true;
             }
         }
