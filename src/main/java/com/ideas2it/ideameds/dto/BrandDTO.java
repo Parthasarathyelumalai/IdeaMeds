@@ -19,12 +19,12 @@ import javax.validation.constraints.NotBlank;
 public class BrandDTO {
     private Long brandId;
 
-    @NotBlank(message = "brand name should be mentioned")
+    //@NotBlank(message = "brand name should be mentioned")
     private String brandName;
 
-    @NotBlank(message = "brand location should be mentioned")
+    //@NotBlank(message = "brand location should be mentioned")
     private String location;
 
-    @NotBlank(message = "Brand description should be mentioned")
+    //@NotBlank(message = "Brand description should be mentioned")
     private String description;
 }

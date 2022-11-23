@@ -1,5 +1,7 @@
 package com.ideas2it.ideameds.dto;
 
+import com.ideas2it.ideameds.util.IllnessCategories;
+import com.ideas2it.ideameds.util.MedicineType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,11 +22,7 @@ public class MedicineDTO {
     private Long medicineId;
     private String medicineName;
     private String description;
-    private String labelDosage;
-    private String medicineUses;
-    private String sideEffect;
-    private float price;
-    private String manufacturedDate;
-    private String expiryDate;
-    private String medicineImage;
+    private IllnessCategories illnessCategories;
+    private MedicineType medicineType;
+    private boolean prescriptionRequired;
 }

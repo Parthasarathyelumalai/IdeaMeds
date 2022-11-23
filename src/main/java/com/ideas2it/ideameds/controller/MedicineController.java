@@ -1,5 +1,6 @@
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.service.BrandItemsService;
@@ -32,13 +33,13 @@ public class MedicineController {
      * <p>
      *     Adds the medicine
      * </p>
-     * @param medicine
+     * @param medicineDTO
      *        new medicine to add
      * @return medicine which was added
      */
     @PostMapping("/medicine")
-    public Medicine addMedicine(@RequestBody Medicine medicine) {
-        return medicineService.addMedicine(medicine);
+    public MedicineDTO addMedicine(@RequestBody MedicineDTO medicineDTO) {
+        return medicineService.addMedicine(medicineDTO);
     }
 
     /**
@@ -61,7 +62,7 @@ public class MedicineController {
      * @return medicine using the id
      */
     @GetMapping("/medicine/{medicineId}")
-    public Medicine getMedicineById(@PathVariable("medicineId") Long medicineId) {
+    public MedicineDTO getMedicineById(@PathVariable("medicineId") Long medicineId) {
         return medicineService.getMedicineById(medicineId);
     }
 
