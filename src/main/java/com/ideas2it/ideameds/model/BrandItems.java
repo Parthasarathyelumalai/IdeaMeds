@@ -16,7 +16,7 @@ public class BrandItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandItemsId;
 
-    private String itemName;
+    private String brandItemName;
 
     private float price;
 
@@ -31,9 +31,6 @@ public class BrandItems {
     private String medicineImage;
 
     private int packageQuantity;
-    @ManyToOne
-    @JoinColumn(name = "medicine_id")
-    private Medicine medicine;
     @ManyToOne
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;

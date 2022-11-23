@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class BrandItemsDTO {
     private Long brandItemsId;
 
-    private String itemName;
+    private String brandItemName;
 
     private float price;
 
