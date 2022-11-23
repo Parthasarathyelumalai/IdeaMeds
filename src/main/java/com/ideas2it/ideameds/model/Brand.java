@@ -1,6 +1,5 @@
 package com.ideas2it.ideameds.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +30,6 @@ public class Brand {
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
 
-    @JsonBackReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     private List<BrandItems> brandItems;
 }

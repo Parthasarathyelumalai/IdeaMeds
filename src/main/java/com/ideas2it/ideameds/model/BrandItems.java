@@ -1,7 +1,5 @@
 package com.ideas2it.ideameds.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +18,8 @@ public class BrandItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandItemsId;
 
+    private String itemName;
+
     private float price;
 
     private String sideEffect;
@@ -34,12 +34,10 @@ public class BrandItems {
 
     private int packageQuantity;
 
-    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 
-    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
