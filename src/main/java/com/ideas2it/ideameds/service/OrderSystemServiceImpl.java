@@ -40,26 +40,24 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     @Override
     public OrderSystem addOrder(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-        List<CartItem> cartItemList = null;
-        OrderSystem orderSystem =  null;
+        List<CartItem> cartItemList = new ArrayList<>();
+        OrderSystem orderSystem =  new OrderSystem();
         List<Cart> cartList = cartRepository.findAll();
-        for (Cart oneCart : cartList) {
-            if(Objects.equals(user.get().getUserId(), oneCart.getUser().getUserId())) {
-                cartItemList = oneCart.getCartItemList();
-                orderSystem = new OrderSystem();
-                orderSystem.setUser(user.get());
-                orderSystem.setCart(oneCart);
-                orderSystem.setTotalPrice(oneCart.getTotalPrice());
-                orderSystem.setDiscountPercentage(oneCart.getDiscountPercentage());
-                orderSystem.setDiscountPrice(oneCart.getDiscountPrice());
-                orderSystem.setDiscount(oneCart.getDiscount());
+        if (user.isPresent()) {
+            for (Cart cart : cartList) {
+                if(Objects.equals(user.get().getUserId(), cart.getUser().getUserId())) {
+                    cartItemList = cart.getCartItemList();
+                    orderSystem = new OrderSystem();
+                    orderSystem.setUser(user.get());
+                    orderSystem.setCart(cart);
+                    orderSystem.setTotalPrice(cart.getTotalPrice());
+                    orderSystem.setDiscountPercentage(cart.getDiscountPercentage());
+                    orderSystem.setDiscountPrice(cart.getDiscountPrice());
+                    orderSystem.setDiscount(cart.getDiscount());
+                    orderSystem.setOrderItemList(cartItemToOrderItem(cartItemList));
+                    orderSystemRepository.save(orderSystem);
+                }
             }
-        }
-        if (cartItemList != null) {
-            List<OrderItem> orderItemList = cartItemToOrderItem(cartItemList);
-            orderSystem.setOrderItemList(orderItemList);
-            orderSystemRepository.save(orderSystem);
-            cartRepository.deleteById(orderSystem.getCart().getCartId());
         }
         return orderSystem;
     }
@@ -72,11 +70,11 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     public List<OrderItem> cartItemToOrderItem(List<CartItem> cartItemList) {
         List<OrderItem> orderItemList = new ArrayList<>();
         if (cartItemList != null) {
-            OrderItem orderItem;
+            OrderItem orderItem  = new OrderItem();
             for(CartItem cartItem : cartItemList) {
-                orderItem = new OrderItem();
                 orderItem.setMedicine(cartItem.getMedicine());
                 orderItem.setQuantity(cartItem.getQuantity());
+                orderItem.setBrandItems(cartItem.getBrandItems());
                 orderItemList.add(orderItem);
             }
         }
