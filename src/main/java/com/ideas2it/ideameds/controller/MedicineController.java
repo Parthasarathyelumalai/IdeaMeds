@@ -75,7 +75,7 @@ public class MedicineController {
      * @return medicine using the medicine name
      */
     @GetMapping("/medicine/getByName/{medicineName}")
-    public Medicine getMedicineByName(@PathVariable("medicineName") String medicineName) {
+    public MedicineDTO getMedicineByName(@PathVariable("medicineName") String medicineName) {
         return medicineService.getMedicineByName(medicineName);
     }
 
@@ -103,11 +103,7 @@ public class MedicineController {
      */
     @PutMapping("/medicine/delete/{medicineId}")
     public Medicine deleteMedicine(@PathVariable("medicineId") Long medicineId) {
-        Medicine medicine = medicineService.getMedicineById(medicineId);
-        List<BrandItems> brandItems = medicine.getBrandItems();
-        for (BrandItems brandItem: brandItems) {
-            brandItemsService.deleteBrandItem(brandItem);
-        }
-        return medicineService.deleteMedicine(medicineId);
+
+        return null;
     }
 }

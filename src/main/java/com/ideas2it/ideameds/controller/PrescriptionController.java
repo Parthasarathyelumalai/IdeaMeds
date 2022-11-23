@@ -107,7 +107,7 @@ public class PrescriptionController {
      */
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws PrescriptionNotFoundException, UserException {
-        Optional<User> user = userService.getUserById(userId);
+        Optional<User> user = Optional.ofNullable(userService.getUserById(userId));
         PrescriptionDTO prescription = prescriptionService.getPrescription(prescriptionId);
 
         if(user.isPresent()) {
