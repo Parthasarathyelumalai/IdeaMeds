@@ -38,6 +38,7 @@ public class User {
     @JoinColumn(name = "user_id" ,referencedColumnName = "userId")
     private List<Address> addresses;
     @Column(columnDefinition = "BIT default 0" )
+    @NotNull
     private int deletedStatus;
     @OneToMany(mappedBy = "user")
     private List<Prescription> prescription;
