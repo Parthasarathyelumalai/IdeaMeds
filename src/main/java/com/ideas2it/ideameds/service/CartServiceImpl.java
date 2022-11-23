@@ -1,14 +1,7 @@
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.model.Cart;
-import com.ideas2it.ideameds.model.CartItem;
-import com.ideas2it.ideameds.model.Discount;
-import com.ideas2it.ideameds.model.Medicine;
-import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.repository.CartRepository;
-import com.ideas2it.ideameds.repository.DiscountRepository;
-import com.ideas2it.ideameds.repository.MedicineRepository;
-import com.ideas2it.ideameds.repository.UserRepository;
+import com.ideas2it.ideameds.model.*;
+import com.ideas2it.ideameds.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +31,8 @@ public class CartServiceImpl implements CartService {
 
     private final DiscountRepository discountRepository;
 
+    private final BrandItemsRepository brandItemsRepository;
+
     /**
      *{@inheritDoc}
      */
@@ -50,14 +45,15 @@ public class CartServiceImpl implements CartService {
             cart.setUser(user.get());
             List<CartItem> cartItems = new ArrayList<>();
             CartItem cartItem = new CartItem();
-            List<CartItem> cartItemList = cart.getCartItemList();
-            for(CartItem cartItemTemp : cartItemList) {
-                Optional<Medicine> medicine = medicineRepository.findById(cartItemTemp.getMedicine().getMedicineId());
-                if (medicine.isPresent()) {
-                    cartItem.setMedicine(medicine.get());
-                    cartItem.setQuantity(cartItem.getQuantity());
+            List<CartItem> clientCartItems = cart.getCartItemList();
+            for(CartItem cartItemTemp : clientCartItems) {
+                Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemTemp.getBrandItems().getBrandItemsId());
+                if (brandItems.isPresent()) {
+                    cartItem.setQuantity(cartItemTemp.getQuantity());
+                    cartItem.setBrandItems(brandItems.get());
+                    cartItem.setMedicine(brandItems.get().getMedicine());
                     cartItems.add(cartItem);
-                    price = price + (medicine.get().getPrice() * cartItem.getQuantity());
+                    price = price + (brandItems.get().getPrice() * cartItem.getQuantity());
                 }
             }
             cart.setCartItemList(cartItems);
@@ -87,6 +83,7 @@ public class CartServiceImpl implements CartService {
                 float discountPrice = (price * discount.getDiscount()) / 100;
                 afterDiscount = price - discountPrice;
             } else if (price > 1000 && price < 2000 && discount.getDiscount() == 10) {
+                cart.setDiscount(discount);
                 cart.setDiscountPercentage(discount.getDiscount());
                 float discountPrice = (price * discount.getDiscount()) / 100;
                 afterDiscount = price - discountPrice;

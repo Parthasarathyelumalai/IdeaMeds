@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Where(clause = "deletedStatus = 0")
+//@Where(clause = "deletedStatus = 0")
 public class BrandItems {
 
     @Id
@@ -34,10 +34,12 @@ public class BrandItems {
 
     private int packageQuantity;
 
+//    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
 
+//    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
