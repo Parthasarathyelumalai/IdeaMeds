@@ -1,6 +1,5 @@
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.service.BrandItemsService;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +16,12 @@ public class BrandItemsController {
     }
 
     @PostMapping("/brandItems")
-    public BrandItemsDTO addBrandItem(@RequestBody BrandItemsDTO brandItemsDTO) {
-        return brandItemsService.addBrandItem(brandItemsDTO);
+    public BrandItems addBrandItem(@RequestBody BrandItems brandItems) {
+        return brandItemsService.addBrandItem(brandItems);
     }
 
     @GetMapping("/brandItem/{brandItemsId}")
-    public BrandItemsDTO getBrandItemById(@PathVariable("brandItemsId") Long brandItemsId) {
+    public BrandItems getBrandItemById(@PathVariable("brandItemsId") Long brandItemsId) {
         return brandItemsService.getBrandItemById(brandItemsId);
     }
 
