@@ -34,12 +34,12 @@ public class BrandItems {
 
     private int packageQuantity;
 
-    @JsonManagedReference
+/*    @JsonManagedReference*/
     @ManyToOne
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
-
-    @JsonManagedReference
+/*
+    @JsonManagedReference*/
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;

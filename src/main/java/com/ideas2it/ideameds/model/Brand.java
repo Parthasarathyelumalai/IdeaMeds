@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "deletedStatus = 0")
+/*@Where(clause = "deletedStatus = 0")*/
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Brand {
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
 
-    @JsonBackReference
+/*    @JsonBackReference*/
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     private List<BrandItems> brandItems;
 }

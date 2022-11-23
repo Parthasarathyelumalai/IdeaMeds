@@ -41,7 +41,7 @@ public class Medicine {
     private String createdAt;
     private String modifiedAt;
 
-    @JsonBackReference
+/*    @JsonBackReference*/
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
     private List<BrandItems> brandItems;
 
