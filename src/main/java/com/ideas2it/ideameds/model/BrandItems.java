@@ -1,11 +1,8 @@
 package com.ideas2it.ideameds.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -13,12 +10,13 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Where(clause = "deletedStatus = 0")
 public class BrandItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandItemsId;
+
+    private String itemName;
 
     private float price;
 
@@ -33,13 +31,12 @@ public class BrandItems {
     private String medicineImage;
 
     private int packageQuantity;
-
-/*    @JsonManagedReference*/
     @ManyToOne
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
-/*
-    @JsonManagedReference*/
+    @ManyToOne
+    @JoinColumn(name = "medicine_id")
+    private Medicine medicine;
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;

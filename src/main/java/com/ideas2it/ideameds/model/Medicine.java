@@ -7,7 +7,6 @@ import com.ideas2it.ideameds.util.MedicineType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "deletedStatus = 0")
 public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +39,6 @@ public class Medicine {
     private String createdAt;
     private String modifiedAt;
 
-/*    @JsonBackReference*/
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
     private List<BrandItems> brandItems;
 

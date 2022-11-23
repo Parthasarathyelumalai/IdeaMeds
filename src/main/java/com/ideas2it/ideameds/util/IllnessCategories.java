@@ -1,10 +1,14 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.util;
 
 public enum IllnessCategories {
 
-    STOMACHPAIN(1),
-    HEADACHE(2),
-    BODYPAIN(3);
+    STOMACHPAIN(0),
+    HEADACHE(1),
+    BODYPAIN(2);
 
 
     public final int value;

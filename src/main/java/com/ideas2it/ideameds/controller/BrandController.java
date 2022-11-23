@@ -77,4 +77,6 @@ public class BrandController {
     public Brand deleteBrand(@PathVariable("brandId") Long brandId) {
         return brandService.deleteBrand(brandId);
     }
+
 }
+

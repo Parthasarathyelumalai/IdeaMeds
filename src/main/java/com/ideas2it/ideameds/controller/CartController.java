@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CartController {
 
-    CartService cartService;
+    private final CartService cartService;
 
     /**
      * Medicines add in cart and save in cart repository.
@@ -37,11 +37,15 @@ public class CartController {
     @PutMapping("/cart/{id}")
     public ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody Cart cart) {
         Optional<Cart> addedCart = cartService.addCart(userId, cart);
-        return addedCart.map(value -> ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body("Cart added successfully. \nTotal price : " + value.getTotalPrice()
-                        + "\nDiscount : " + value.getDiscountPercentage() + "%"
-                        + "\nDiscount price : " + value.getDiscountPrice())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("No items to list price"));
+        if (addedCart.get().getTotalPrice() != 0) {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Cart added successfully. \nTotal price : " + addedCart.get().getTotalPrice()
+                            + "\nDiscount : " + addedCart.get().getDiscountPercentage() + "%"
+                            + "\nDiscount price : " + addedCart.get().getDiscountPrice());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No items to list price");
+        }
     }
 
     /**
