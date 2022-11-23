@@ -1,9 +1,13 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.util;
 
 public enum MedicineType {
 
-    TABLET(1),
-    SYRUP(2);
+    TABLET(0),
+    SYRUP(1);
 
     public final int value;
 
