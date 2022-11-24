@@ -5,9 +5,7 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
-import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
-import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
-import com.ideas2it.ideameds.exception.UserException;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
@@ -39,7 +37,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
      *{@inheritDoc}
      */
     @Override
-    public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws PrescriptionExpiredException, CustomException {
+    public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws CustomException {
         Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
@@ -53,10 +51,10 @@ public class PrescriptionServiceImpl implements PrescriptionService{
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionDTO getPrescription(Long prescriptionId) throws PrescriptionNotFoundException {
+    public PrescriptionDTO getPrescription(Long prescriptionId) throws CustomException {
         Optional<Prescription> prescription = prescriptionRepository.findById(prescriptionId);
         if (prescription.isPresent()) return modelMapper.map(prescription,PrescriptionDTO.class);
-        else throw new PrescriptionNotFoundException("Prescription Not Found");
+        else throw new CustomException("Prescription Not Found");
     }
 
     /**
@@ -77,13 +75,13 @@ public class PrescriptionServiceImpl implements PrescriptionService{
      * {@inheritDoc}
      */
     @Override
-    public Long deletePrescriptionById(Long prescriptionId, Long userId) throws PrescriptionNotFoundException, CustomException {
+    public Long deletePrescriptionById(Long prescriptionId, Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
 
         if(user.isPresent()) {
             List<Prescription> prescriptions = user.get().getPrescription();
 
-            if (prescriptions.isEmpty()) throw new PrescriptionNotFoundException("Prescription Not Found");
+            if (prescriptions.isEmpty()) throw new CustomException("Prescription Not Found");
             else {
                 for (Prescription prescription : prescriptions) {
                     if (prescription.getPrescriptionId().equals(prescriptionId)) {

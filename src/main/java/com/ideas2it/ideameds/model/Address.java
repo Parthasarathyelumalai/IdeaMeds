@@ -1,15 +1,12 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 /**
  * Simple JavaBean domain object representing an Address.
@@ -19,9 +16,10 @@ import javax.validation.constraints.Pattern;
  * @since - 2022-11-17
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-public class Address {
+public class Address extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;

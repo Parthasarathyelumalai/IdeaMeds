@@ -5,9 +5,7 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
-import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
-import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
-import com.ideas2it.ideameds.exception.UserException;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
@@ -53,10 +51,10 @@ public class PrescriptionController {
      * @param prescriptionDTO To store the prescriptionDTO object
      * @return returns the httpStatus and message
      * @throws CustomException occurs when user not found
-     * @throws PrescriptionExpiredException occurs when prescription was exceeded by 6 months
+     * @throws CustomException occurs when prescription was exceeded by 6 months
      */
     @PostMapping("/prescription/{userId}")
-    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody PrescriptionDTO prescriptionDTO) throws PrescriptionExpiredException, CustomException {
+    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody PrescriptionDTO prescriptionDTO) throws CustomException {
         PrescriptionDTO prescriptionSaved = prescriptionService.addPrescription(prescriptionDTO, userId);
 
         if (null != prescriptionSaved) return ResponseEntity.status(HttpStatus.OK).body("Prescription Added Successfully");
@@ -67,10 +65,10 @@ public class PrescriptionController {
      * Retrieve the prescription using prescription ID
      * @param prescriptionId To get the required prescription
      * @return returns the httpStatus and Prescription DTO
-     * @throws PrescriptionNotFoundException occurs when prescription was not found
+     * @throws CustomException occurs when prescription was not found
      */
     @GetMapping("/prescription/{prescriptionId}")
-    public ResponseEntity<PrescriptionDTO> getPrescription(@PathVariable Long prescriptionId) throws PrescriptionNotFoundException {
+    public ResponseEntity<PrescriptionDTO> getPrescription(@PathVariable Long prescriptionId) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(prescriptionService.getPrescription(prescriptionId));
     }
 
@@ -79,13 +77,13 @@ public class PrescriptionController {
      * @param userId To get the
      * @return returns the httpStatus and list of prescription DTOs
      * @throws CustomException occurs when user not found
-     * @throws PrescriptionNotFoundException occurs when prescription was not found
+     * @throws CustomException occurs when prescription was not found
      */
     @GetMapping("/prescription/user/{userId}")
-    public ResponseEntity<List<PrescriptionDTO>> getPrescriptionByUserId(@PathVariable Long userId) throws PrescriptionNotFoundException, CustomException {
+    public ResponseEntity<List<PrescriptionDTO>> getPrescriptionByUserId(@PathVariable Long userId) throws CustomException {
         List<PrescriptionDTO> prescriptions = prescriptionService.getPrescriptionByUser(userId);
         if (prescriptions.isEmpty())
-            throw new PrescriptionNotFoundException("Prescription not Found");
+            throw new CustomException("Prescription not Found");
         return ResponseEntity.status(HttpStatus.OK).body(prescriptions);
     }
 
@@ -95,10 +93,10 @@ public class PrescriptionController {
      * @param prescriptionId To get the required prescription of the user
      * @return returns the httpStatus and a message
      * @throws CustomException occurs when user not found
-     * @throws PrescriptionNotFoundException occurs when prescription was not found
+     * @throws CustomException occurs when prescription was not found
      */
     @DeleteMapping("/prescription/{userId}/{prescriptionId}")
-    public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId, @PathVariable Long prescriptionId) throws CustomException, PrescriptionNotFoundException {
+    public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId, @PathVariable Long prescriptionId) throws CustomException {
         Long prescriptionById = prescriptionService.deletePrescriptionById(prescriptionId, userId);
 
         if (null != prescriptionById) return ResponseEntity.status(HttpStatus.OK).body("Prescription Deleted Successfully");
@@ -112,10 +110,10 @@ public class PrescriptionController {
      * @param userId To get the required User
      * @return returns the http status and a message
      * @throws CustomException occurs when user not found
-     * @throws PrescriptionNotFoundException occurs when prescription was not found
+     * @throws CustomException occurs when prescription was not found
      */
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
-    public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws PrescriptionNotFoundException, CustomException {
+    public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws CustomException {
         Optional<User> user = Optional.ofNullable(userService.getUserById(userId));
         PrescriptionDTO prescription = prescriptionService.getPrescription(prescriptionId);
 
@@ -123,7 +121,7 @@ public class PrescriptionController {
             if (null != prescription) {
                 addToCart(prescription.getPrescriptionItems(), user.get());
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
-            } else throw new PrescriptionNotFoundException("Prescription Not Found");
+            } else throw new CustomException("Prescription Not Found");
         } else throw new CustomException("User not found");
     }
 

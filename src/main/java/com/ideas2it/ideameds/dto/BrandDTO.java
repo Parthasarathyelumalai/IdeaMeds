@@ -1,7 +1,9 @@
 package com.ideas2it.ideameds.dto;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
@@ -14,7 +16,8 @@ import javax.validation.constraints.NotBlank;
  * @version 1.0
  * @since - 2022-11-18
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class BrandDTO {
     private Long brandId;

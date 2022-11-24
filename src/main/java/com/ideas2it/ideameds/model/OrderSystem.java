@@ -28,7 +28,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderSystem {
+public class OrderSystem extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;

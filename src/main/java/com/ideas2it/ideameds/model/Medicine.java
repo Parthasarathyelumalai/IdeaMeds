@@ -3,11 +3,19 @@ package com.ideas2it.ideameds.model;
 import com.ideas2it.ideameds.util.IllnessCategories;
 import com.ideas2it.ideameds.util.MedicineType;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 /**
@@ -18,10 +26,10 @@ import java.util.List;
  * @since - 2022-11-17
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class Medicine {
+public class Medicine extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long medicineId;
@@ -35,9 +43,6 @@ public class Medicine {
     private boolean prescriptionRequired;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-    private String createdAt;
-    private String modifiedAt;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
     private List<BrandItems> brandItems;
 }

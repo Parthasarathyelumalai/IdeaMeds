@@ -21,7 +21,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Discount {
+public class Discount extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long discountId;
