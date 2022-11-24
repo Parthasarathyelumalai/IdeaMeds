@@ -32,7 +32,7 @@ public interface OrderSystemService {
      * @param userId - To get one user order.
      * @return - One user order details
      */
-    OrderSystem getById(Long userId);
+    OrderSystem getOrderByUserId(Long userId);
 
     /**
      * Get all previous order items for given user id.

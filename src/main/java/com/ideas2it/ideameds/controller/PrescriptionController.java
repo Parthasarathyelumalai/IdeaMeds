@@ -8,7 +8,13 @@ import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
 import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
 import com.ideas2it.ideameds.exception.UserException;
+import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.service.BrandItemsService;
+import com.ideas2it.ideameds.service.CartServiceImpl;
 import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +43,8 @@ import java.util.Optional;
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
+    private final BrandItemsService brandItemsService;
+    private final CartServiceImpl cartService;
 
 
     /**
@@ -112,9 +121,34 @@ public class PrescriptionController {
 
         if(user.isPresent()) {
             if (null != prescription) {
-                prescriptionService.addToCart(prescription.getPrescriptionItems(), user.get());
+                addToCart(prescription.getPrescriptionItems(), user.get());
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
             } else throw new PrescriptionNotFoundException("Prescription Not Found");
         } else throw new UserException("User not found");
+    }
+
+    /**
+     * Add the prescribed medicines to the cart
+     * @param prescriptionItems To map the prescribed medicines
+     * @param user To add the medicines to required user's cart
+     */
+    private void addToCart(List<PrescriptionItems> prescriptionItems, User user) {
+        Cart cart = new Cart();
+        List<CartItem> cartItems = new ArrayList<>();
+        if(prescriptionItems != null){
+            List<BrandItems> brandItemsList = brandItemsService.getAllBrandItems();
+            for(PrescriptionItems prescriptionItem : prescriptionItems) {
+                for (BrandItems brandItem : brandItemsList) {
+                    if (brandItem.getBrandItemName().equals(prescriptionItem.getMedicineName())) {
+                        CartItem cartItem = new CartItem();
+                        cartItem.setBrandItems(brandItem);
+                        cartItem.setQuantity(prescriptionItem.getQuantity());
+                        cartItems.add(cartItem);
+                        cart.setCartItemList(cartItems);
+                    }
+                }
+            }
+        }
+        cartService.addCart(user.getUserId(), cart);
     }
 }
