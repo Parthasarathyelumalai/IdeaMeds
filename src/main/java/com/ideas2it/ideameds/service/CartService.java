@@ -28,11 +28,13 @@ public interface CartService {
      * @param userId - To get one cart.
      * @return One cart.
      */
-    Optional<Cart> getById(Long userId);
+    Optional<Cart> getCartByUserId(Long userId);
 
     /**
      * Retrieve all data from cart repository.
      * @return All cart.
      */
     List<Cart> getAllCart();
+
+    boolean deleteCartByUserId(Long userId);
 }

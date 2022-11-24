@@ -5,11 +5,7 @@ import com.ideas2it.ideameds.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +59,8 @@ public class CartController {
      * @return One cart.
      */
     @GetMapping("/cart/{id}")
-    public ResponseEntity<Cart> getById(@PathVariable("id") Long userId) {
-        Optional<Cart> cart = cartService.getById(userId);
+    public ResponseEntity<Cart> getCartByUserId(@PathVariable("id") Long userId) {
+        Optional<Cart> cart = cartService.getCartByUserId(userId);
         if (cart.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -72,5 +68,18 @@ public class CartController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @DeleteMapping("/cart/{id}")
+    public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) {
+        boolean deletedMessage = cartService.deleteCartByUserId(userId);
+        if (deletedMessage) {
+            return ResponseEntity
+                    .status(HttpStatus.GONE)
+                    .body("Deleted successfully");
+        }
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("No cart available");
     }
 }
