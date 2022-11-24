@@ -59,11 +59,4 @@ public interface PrescriptionService {
      * @throws PrescriptionNotFoundException occurs when prescription was not found
      */
     Long deletePrescriptionById(Long prescriptionId, Long userId) throws UserException, PrescriptionNotFoundException;
-
-    /**
-     * Add the prescribed medicines to the cart
-     * @param prescriptionItems To map the prescribed medicines
-     * @param user To add the medicines to required user's cart
-     */
-    void addToCart(List<PrescriptionItems> prescriptionItems, User user);
 }
