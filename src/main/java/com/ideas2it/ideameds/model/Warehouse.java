@@ -3,7 +3,6 @@ package com.ideas2it.ideameds.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "deletedStatus = 0")
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +29,5 @@ public class Warehouse {
     private int deletedStatus;
 
     @ManyToMany(mappedBy = "warehouses")
-    private List<Medicine> medicines;
+    private List<BrandItems> brandItemsList;
 }

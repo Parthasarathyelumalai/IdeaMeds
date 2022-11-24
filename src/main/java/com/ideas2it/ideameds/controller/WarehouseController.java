@@ -2,11 +2,19 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.model.Warehouse;
 import com.ideas2it.ideameds.service.WarehouseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * <p>
+ * Controller for Warehouse details
+ * </p>
+ *
+ * @author Dinesh Kumar R
+ * @since 18/11/2022
+ * @version 1.0
+ */
 @RestController
 public class WarehouseController {
     private final WarehouseService warehouseService;
