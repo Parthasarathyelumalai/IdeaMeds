@@ -8,13 +8,8 @@ import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
 import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
 import com.ideas2it.ideameds.exception.UserException;
-import com.ideas2it.ideameds.model.Cart;
-import com.ideas2it.ideameds.model.CartItem;
-import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.Prescription;
-import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.repository.MedicineRepository;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.DateTimeValidation;
@@ -22,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +31,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PrescriptionServiceImpl implements PrescriptionService{
     private final PrescriptionRepository prescriptionRepository;
-    private final MedicineRepository medicineRepository;
-    private final CartServiceImpl cartService;
     private final UserRepository userRepository;
     private final DateTimeValidation dateTimeValidation;
     private final ModelMapper modelMapper = new ModelMapper();
@@ -102,29 +94,5 @@ public class PrescriptionServiceImpl implements PrescriptionService{
             }
         } else throw new UserException("User Not Found");
         return null;
-    }
-
-    /**
-     *{@inheritDoc}
-     */
-    @Override
-    public void addToCart(List<PrescriptionItems> prescriptionItems, User user) {
-        Cart cart = new Cart();
-        List<CartItem> cartItems = new ArrayList<>();
-        if(prescriptionItems != null){
-            List<Medicine> medicines = medicineRepository.findAll();
-            for(PrescriptionItems prescriptionItem : prescriptionItems) {
-                for (Medicine medicine : medicines) {
-                    if (medicine.getMedicineName().equals(prescriptionItem.getMedicineName())) {
-                        CartItem cartItem = new CartItem();
-                        cartItem.setMedicine(medicine);
-                        cartItem.setQuantity(prescriptionItem.getQuantity());
-                        cartItems.add(cartItem);
-                        cart.setCartItemList(cartItems);
-                    }
-                }
-            }
-        }
-        cartService.addCart(user.getUserId(), cart);
     }
 }
