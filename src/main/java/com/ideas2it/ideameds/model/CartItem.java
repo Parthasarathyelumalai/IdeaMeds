@@ -18,7 +18,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CartItem {
+public class CartItem extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;

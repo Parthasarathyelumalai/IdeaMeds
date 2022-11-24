@@ -27,7 +27,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Cart {
+public class Cart extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;

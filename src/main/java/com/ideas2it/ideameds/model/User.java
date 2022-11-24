@@ -1,10 +1,9 @@
 package com.ideas2it.ideameds.model;
 
 import com.ideas2it.ideameds.util.Role;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -20,9 +19,10 @@ import java.util.List;
  * @since - 2022-11-17
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-public class User {
+public class User extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

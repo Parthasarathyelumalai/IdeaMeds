@@ -4,6 +4,13 @@
  */
 package com.ideas2it.ideameds.util;
 
+/**
+ * Enum Role Type
+ *
+ * @author - Parthasarathy Elumalai
+ * @since - 2022-11-18
+ * @version - 1.0
+ */
 public enum Role {
     ADMIN(0),
     CUSTOMER(1);

@@ -1,10 +1,15 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import java.util.List;
 
 /**
@@ -15,10 +20,10 @@ import java.util.List;
  * @since - 2022-11-17
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class Warehouse {
+public class Warehouse extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long warehouseId;

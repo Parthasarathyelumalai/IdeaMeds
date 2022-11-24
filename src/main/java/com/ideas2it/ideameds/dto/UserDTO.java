@@ -4,11 +4,10 @@ import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.UserMedicine;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import lombok.Setter;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -20,7 +19,8 @@ import java.util.List;
  * @version 1.0
  * @since - 2022-11-19
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class UserDTO {
     private Long userId;
@@ -35,5 +35,5 @@ public class UserDTO {
     private String emailId;
     private List<Address> addresses;
     private List<Prescription> prescription;
-    private  List<UserMedicine> userMedicines;
+    private List<UserMedicine> userMedicines;
 }

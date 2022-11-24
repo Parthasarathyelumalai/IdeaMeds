@@ -4,6 +4,9 @@ import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.Discount;
 import com.ideas2it.ideameds.model.OrderItem;
 import com.ideas2it.ideameds.model.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -13,6 +16,9 @@ import java.util.List;
  * @version 1.0
  * @since - 2022-11-19
  */
+@Getter
+@Setter
+@NoArgsConstructor
 public class OrderSystemDTO {
     private Long orderId;
     private String orderDate;

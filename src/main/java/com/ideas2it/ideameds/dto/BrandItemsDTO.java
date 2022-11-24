@@ -1,7 +1,9 @@
 package com.ideas2it.ideameds.dto;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * <p>
@@ -12,7 +14,8 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  * @since - 2022-11-21
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class BrandItemsDTO {
     private Long brandItemsId;

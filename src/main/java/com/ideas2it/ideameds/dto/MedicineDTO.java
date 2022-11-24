@@ -3,7 +3,9 @@ package com.ideas2it.ideameds.dto;
 import com.ideas2it.ideameds.util.IllnessCategories;
 import com.ideas2it.ideameds.util.MedicineType;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
@@ -17,7 +19,8 @@ import javax.validation.constraints.NotBlank;
  * @version 1.0
  * @since - 2022-11-19
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class MedicineDTO {
     private Long medicineId;

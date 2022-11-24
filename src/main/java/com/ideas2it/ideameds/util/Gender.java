@@ -4,6 +4,13 @@
  */
 package com.ideas2it.ideameds.util;
 
+/**
+ * Enum Gender
+ *
+ * @author - Parthasarathy Elumalai
+ * @since - 2022-11-18
+ * @version - 1.0
+ */
 public enum Gender {
     MALE(0),
     FEMALE(1),

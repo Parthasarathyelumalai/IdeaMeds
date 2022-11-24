@@ -34,14 +34,7 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
-    @ExceptionHandler(MedicineNotFoundException.class)
-    public ResponseEntity<ErrorMessageDTO> medicineNotFoundException(MedicineNotFoundException medicineNotFoundException) {
-        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, medicineNotFoundException.getMessage());
-        log.error(medicineNotFoundException.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+/*    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException) {
         Map<String, String> errors = new HashMap<>();
@@ -52,19 +45,5 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
             errors.put(fieldName, errorMessage);
         });
         return errors;
-    }
-
-    @ExceptionHandler(PrescriptionNotFoundException.class)
-    public ResponseEntity<ErrorMessageDTO> prescriptionNotFoundException(PrescriptionNotFoundException prescriptionNotFoundException) {
-        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, prescriptionNotFoundException.getMessage());
-        log.error(prescriptionNotFoundException.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
-    }
-
-    @ExceptionHandler(PrescriptionExpiredException.class)
-    public ResponseEntity<ErrorMessageDTO> prescriptionExpiredException(PrescriptionExpiredException prescriptionExpiredException) {
-        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_ACCEPTABLE, prescriptionExpiredException.getMessage());
-        log.error(prescriptionExpiredException.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
-    }
+    }*/
 }

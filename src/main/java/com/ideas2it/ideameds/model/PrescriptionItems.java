@@ -20,11 +20,11 @@ import javax.validation.constraints.NotNull;
  * @version - 1.0
  * @since - 2022-11-17
  */
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-public class PrescriptionItems {
+public class PrescriptionItems extends Base{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

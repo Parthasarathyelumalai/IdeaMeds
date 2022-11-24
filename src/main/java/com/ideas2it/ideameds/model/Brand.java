@@ -1,8 +1,6 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,10 +13,10 @@ import java.util.List;
  * @since - 2022-11-17
  */
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class Brand {
+public class Brand extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandId;
