@@ -4,7 +4,7 @@
  */
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.exception.UserException;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.model.UserMedicine;
@@ -16,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Controller for User
@@ -31,33 +29,38 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 public class UserController {
-    private UserService userService;
-    private UserMedicineService userMedicineService;
-    private OrderSystemService orderSystemService;
+    private final UserService userService;
+    private final UserMedicineService userMedicineService;
+    private final OrderSystemService orderSystemService;
 
-    public UserController(UserService userService, UserMedicineService userMedicineService) {
+    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
+        this.orderSystemService = orderSystemService;
     }
 
     /**
      * Add User in database
      * @param user - send the user to store
      * @return user - gives a response as user details
-     * @throws UserException - throw an error message
+     * @throws CustomException - throw an error message
      */
     @PostMapping("/user")
-    public ResponseEntity<User> addUser(@RequestBody User user) throws UserException {
+    public ResponseEntity<User> addUser(@RequestBody User user) throws CustomException {
         Optional<User> savedUser;
-        if (!validUserByPhoneNumber(user.getPhoneNumber()) && !validUserByEmailId(user.getEmailId())) {
+        if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())  ) {
+            throw new CustomException("This Phone number and EmailId are already registered");
+        } else if ( validUserByEmailId(user.getEmailId()) ) {
+            throw new CustomException("This EmailId is already registered");
+        } else if ( validUserByPhoneNumber(user.getPhoneNumber()) ) {
+            throw new CustomException("This Phone number is already registered");
+        } else {
             savedUser = userService.addUser(user);
             if ( savedUser.isPresent() ) {
                 return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
             }
-        } else {
-            throw new UserException("This number or EmailId are already registered");
         }
     }
 
@@ -65,10 +68,10 @@ public class UserController {
      * Get a user details by id
      * @param userId - send the user id
      * @return user - give response as user details
-     * @throws UserException - throw an error message
+     * @throws CustomException - throw an error message
      */
     @GetMapping("/user/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws UserException {
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws CustomException {
         User fetchedUser = userService.getUserById(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(fetchedUser);
@@ -87,10 +90,10 @@ public class UserController {
      * Updated a user details
      * @param user - to store an updated user details
      * @return String - give a response statement as a response
-     * @throws UserException - throw a error message
+     * @throws CustomException - throw a error message
      */
     @PutMapping("/user")
-    public ResponseEntity<String> updateUser(@RequestBody User user) throws UserException {
+    public ResponseEntity<String> updateUser(@RequestBody User user) throws CustomException {
         String updateUser = userService.updateUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(updateUser);
     }
@@ -99,10 +102,10 @@ public class UserController {
      * Delete the user in databases(Soft -delete)
      * @param user - send a user to delete
      * @return String - give a response as
-     * @throws UserException - throw an error message
+     * @throws CustomException - throw an error message
      */
     @DeleteMapping("/user")
-    public ResponseEntity<String> deleteUser(@RequestBody User user) throws UserException {
+    public ResponseEntity<String> deleteUser(@RequestBody User user) throws CustomException {
         String deletedStatus = userService.deleteUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(deletedStatus);
     }
@@ -112,16 +115,16 @@ public class UserController {
      * @param userId - send user id to set medicines
      * @param userMedicines - send user medicines
      * @return list of medicine - gives a response as list of user medicines
-     * @throws UserException - throw an error message
+     * @throws CustomException - throw an error message
      */
     @PostMapping("/user/user-medicine/{id}")
-    public ResponseEntity<List<UserMedicine>> addUserMedicine(@PathVariable("id") Long userId, @RequestBody List<UserMedicine> userMedicines) throws UserException {
+    public ResponseEntity<List<UserMedicine>> addUserMedicine(@PathVariable("id") Long userId, @RequestBody List<UserMedicine> userMedicines) throws CustomException {
         boolean isUserExist = userService.isUserExist(userId);
-        Optional<List<UserMedicine>> savedUserMedicines = null;
+        Optional<List<UserMedicine>> savedUserMedicines;
         if ( isUserExist ) {
             savedUserMedicines = userMedicineService.addUserMedicine(userMedicines);
         } else {
-            throw new UserException("there is no user under this id");
+            throw new CustomException("there is no user under this id");
         }
         return ResponseEntity.status(HttpStatus.OK).body(savedUserMedicines.get());
     }

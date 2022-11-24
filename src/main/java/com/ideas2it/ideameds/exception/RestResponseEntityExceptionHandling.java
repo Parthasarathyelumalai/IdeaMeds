@@ -27,10 +27,10 @@ import java.util.Map;
 @Slf4j
 public class RestResponseEntityExceptionHandling extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<ErrorMessageDTO> commonException(UserException userException) {
-        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, userException.getMessage());
-        log.error(userException.getMessage());
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorMessageDTO> commonException(CustomException customException) {
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, customException.getMessage());
+        log.error(customException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
