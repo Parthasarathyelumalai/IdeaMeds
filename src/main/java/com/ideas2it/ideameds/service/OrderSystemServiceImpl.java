@@ -40,14 +40,14 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     @Override
     public OrderSystem addOrder(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-        List<CartItem> cartItemList = new ArrayList<>();
-        OrderSystem orderSystem =  new OrderSystem();
+        List<CartItem> cartItemList;
+        OrderSystem orderSystem = null;
         List<Cart> cartList = cartRepository.findAll();
         if (user.isPresent()) {
             for (Cart cart : cartList) {
                 if(Objects.equals(user.get().getUserId(), cart.getUser().getUserId())) {
+                    orderSystem =  new OrderSystem();
                     cartItemList = cart.getCartItemList();
-                    orderSystem = new OrderSystem();
                     orderSystem.setUser(user.get());
                     orderSystem.setCart(cart);
                     orderSystem.setTotalPrice(cart.getTotalPrice());
@@ -93,7 +93,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      *{@inheritDoc}
      */
     @Override
-    public OrderSystem getById(Long userId) {
+    public OrderSystem getOrderByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
         if (user.isPresent()) {

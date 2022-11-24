@@ -27,8 +27,6 @@ public class CartServiceImpl implements CartService {
 
     private final UserRepository userRepository;
 
-    private final MedicineRepository medicineRepository;
-
     private final DiscountRepository discountRepository;
 
     private final BrandItemsRepository brandItemsRepository;
@@ -38,17 +36,16 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Optional<Cart> addCart(Long userId, Cart cart) {
- /*       Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userRepository.findById(userId);
         float price = 0;
-
         if (user.isPresent()) {
             cart.setUser(user.get());
             List<CartItem> cartItems = new ArrayList<>();
-            CartItem cartItem = new CartItem();
-            List<CartItem> clientCartItems = cart.getCartItemList();
-            for(CartItem cartItemTemp : clientCartItems) {
+            List<CartItem> userCartItems = cart.getCartItemList();
+            for(CartItem cartItemTemp : userCartItems) {
                 Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemTemp.getBrandItems().getBrandItemsId());
                 if (brandItems.isPresent()) {
+                    CartItem cartItem = new CartItem();
                     cartItem.setQuantity(cartItemTemp.getQuantity());
                     cartItem.setBrandItems(brandItems.get());
                     cartItem.setMedicine(brandItems.get().getMedicine());
@@ -61,8 +58,8 @@ public class CartServiceImpl implements CartService {
             price = calculateDiscount(price, cart);
             cart.setDiscountPrice(price);
             cartRepository.save(cart);
-        }*/
-        return null/*Optional.ofNullable(cart)*/;
+        }
+        return Optional.of(cart);
     }
 
     /**
@@ -99,12 +96,12 @@ public class CartServiceImpl implements CartService {
      *{@inheritDoc}
      */
     @Override
-    public Optional<Cart> getById(Long userId) {
+    public Optional<Cart> getCartByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         List<Cart> cartList = cartRepository.findAll();
         if (user.isPresent()) {
             for (Cart cart : cartList) {
-                if (Objects.equals(user.get().getUserId(), cart.getUser().getUserId())) {
+                if (Objects.equals(user.get().getUserId(), cart.getUser().getUserId()) && !cart.isDelete()) {
                     return Optional.of(cart);
                 }
             }
@@ -118,5 +115,27 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<Cart> getAllCart() {
         return cartRepository.findAll();
+    }
+
+    /**
+     * Delete user cart by user id.
+     *
+     * @param userId - To get user and cart.
+     * @return boolean.
+     */
+    @Override
+    public boolean deleteCartByUserId(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        List<Cart> cartList = cartRepository.findAll();
+        if (user.isPresent()) {
+            for (Cart cart : cartList) {
+                if (Objects.equals(user.get().getUserId(), cart.getUser().getUserId()) && !cart.isDelete()) {
+                    Optional<Cart> cart1 = cartRepository.findById(cart.getCartId());
+                    cart1.get().setDelete(true);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
