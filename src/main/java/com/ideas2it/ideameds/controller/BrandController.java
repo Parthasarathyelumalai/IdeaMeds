@@ -1,7 +1,7 @@
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.BrandDTO;
 import com.ideas2it.ideameds.model.Brand;
-import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.service.BrandService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,13 +27,13 @@ public class BrandController {
      * <p>
      *     Adds a brand
      * </p>
-     * @param brand
-     *        new brand to add
+     * @param brandDTO
+     *        new brandDTO to add
      * @return brand after added
      */
     @PostMapping("/brand")
-    public Brand addBrand(@RequestBody Brand brand) {
-        return brandService.addBrand(brand);
+    public BrandDTO addBrand(@RequestBody BrandDTO brandDTO) {
+        return brandService.addBrand(brandDTO);
     }
 
     /**
@@ -43,8 +43,21 @@ public class BrandController {
      * @return list of all brands
      */
     @GetMapping("/brand")
-    public List<Brand> getAllBrands() {
+    public List<BrandDTO> getAllBrands() {
         return brandService.getAllBrands();
+    }
+
+    /**
+     * <p>
+     *     gets brand by brand name
+     * </p>
+     * @param brandName
+     *        contains a name to get the brand
+     * @return brand by using the brand name
+     */
+    @GetMapping("/getBrandByName/{brandName}")
+    public BrandDTO getBrandByBrandName(@PathVariable String brandName) {
+        return brandService.getBrandByBrandName(brandName);
     }
 
     /**
@@ -56,10 +69,18 @@ public class BrandController {
      * @return brand using the id
      */
     @GetMapping("/brand/{brandId}")
-    public Brand getBrandById(@PathVariable("brandId") Long brandId) {
+    public BrandDTO getBrandById(@PathVariable("brandId") Long brandId) {
         return brandService.getBrandById(brandId);
     }
 
+    /**
+     * <p>
+     *     updates the brand
+     * </p>
+     * @param brand
+     *        brandDto to be updated
+     * @return updated brandDto
+     */
     @PutMapping("/brand")
     public Brand updateBrand(@RequestBody Brand brand) {
         return brandService.updateBrand(brand);

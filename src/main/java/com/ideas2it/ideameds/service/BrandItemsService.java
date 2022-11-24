@@ -1,6 +1,7 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.Warehouse;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface BrandItemsService {
     public BrandItems updateBrandItem(BrandItems brandItems);
 
     public BrandItems deleteBrandItem(BrandItems brandItems);
+
+    public BrandItems assignToWarehouse(Warehouse warehouse, Long brandItemId);
 }

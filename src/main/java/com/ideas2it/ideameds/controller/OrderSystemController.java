@@ -61,8 +61,8 @@ public class OrderSystemController {
      * @return - One user order details
      */
     @GetMapping("/order/{id}")
-    public ResponseEntity<OrderSystem> getById(@PathVariable("id") Long userId) {
-        OrderSystem orderSystem = orderSystemService.getById(userId);
+    public ResponseEntity<OrderSystem> getOrderByUserId(@PathVariable("id") Long userId) {
+        OrderSystem orderSystem = orderSystemService.getOrderByUserId(userId);
         if (orderSystem != null) {
             return ResponseEntity
                     .status(HttpStatus.OK)

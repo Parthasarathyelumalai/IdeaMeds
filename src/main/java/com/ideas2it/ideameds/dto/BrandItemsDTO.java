@@ -3,6 +3,15 @@ package com.ideas2it.ideameds.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * <p>
+ * Represents the BrandItems DTO
+ * </p>
+ *
+ * @author Dinesh Kumar R
+ * @version 1.0
+ * @since - 2022-11-21
+ */
 @Data
 @NoArgsConstructor
 public class BrandItemsDTO {

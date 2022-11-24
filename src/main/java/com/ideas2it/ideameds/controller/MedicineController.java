@@ -1,7 +1,6 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.MedicineDTO;
-import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.service.BrandItemsService;
 import com.ideas2it.ideameds.service.MedicineService;
@@ -21,11 +20,9 @@ import java.util.List;
 @RestController
 public class MedicineController {
     private final MedicineService medicineService;
-    private final BrandItemsService brandItemsService;
 
-    public MedicineController(MedicineService medicineService, BrandItemsService brandItemsService) {
+    public MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
-        this.brandItemsService = brandItemsService;
     }
 
 
@@ -103,7 +100,6 @@ public class MedicineController {
      */
     @PutMapping("/medicine/delete/{medicineId}")
     public Medicine deleteMedicine(@PathVariable("medicineId") Long medicineId) {
-
-        return null;
+        return medicineService.deleteMedicine(medicineId);
     }
 }

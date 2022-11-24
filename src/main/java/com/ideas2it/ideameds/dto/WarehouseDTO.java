@@ -23,6 +23,6 @@ public class WarehouseDTO {
     @NotBlank(message = "warehouse name should be mentioned")
     private String warehouseName;
 
-    @NotBlank(message = "brand location should be mentioned")
+    @NotBlank(message = "brand location should be mentioned                     ")
     private String location;
 }

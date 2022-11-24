@@ -34,6 +34,7 @@ public class Cart {
     private float totalPrice;
     private float discountPrice;
     private float discountPercentage;
+    private boolean isDelete;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "discount_id")
     private Discount discount;

@@ -26,7 +26,7 @@ public class CartItem {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "brand_items_id")
     private BrandItems brandItems;
 }
