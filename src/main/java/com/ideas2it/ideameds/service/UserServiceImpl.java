@@ -4,7 +4,7 @@
  */
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.exception.UserException;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +49,13 @@ public class UserServiceImpl implements UserService {
      *{@inheritDoc}
      */
     @Override
-    public User getUserById(Long userId) throws UserException {
+    public User getUserById(Long userId) throws CustomException {
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent() && (userOptional.get().getDeletedStatus() != 1)) {
             return userOptional.get();
         } else {
-            throw new UserException("There is no user under this id");
+            throw new CustomException("There is no user under this id");
         }
     }
 
@@ -71,13 +71,13 @@ public class UserServiceImpl implements UserService {
      *{@inheritDoc}
      */
     @Override
-    public String updateUser(User user) throws UserException {
+    public String updateUser(User user) throws CustomException {
         User updatedUser = userRepository.save(user);
 
         if (null != updatedUser) {
             return updatedUser.getName() + " ." + "Updated Successfully";
         }  else {
-            throw new UserException("There is no user under this id to update");
+            throw new CustomException("There is no user under this id to update");
         }
     }
 
@@ -85,16 +85,16 @@ public class UserServiceImpl implements UserService {
      *{@inheritDoc}
      */
     @Override
-    public String deleteUser(User user) throws UserException {
+    public String deleteUser(User user) throws CustomException {
         Optional<User> userOptional = userRepository.findById(user.getUserId());
-        if (userOptional.isPresent()) {
+        if (userOptional.isPresent() && userOptional.get().getDeletedStatus() != 1) {
             user.setDeletedStatus(1);
             Optional<User> deleteUser = Optional.of(userRepository.save(user));
             if (deleteUser.isPresent()) {
                 return deleteUser.get().getName() + "." +"Deleted Successfully";
             }
         }
-        throw new UserException("There is no user under this id to update");
+        throw new CustomException("There is no user under this id to update");
     }
 
     /**

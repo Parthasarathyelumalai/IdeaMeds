@@ -7,7 +7,7 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.exception.PrescriptionExpiredException;
 import com.ideas2it.ideameds.exception.PrescriptionNotFoundException;
-import com.ideas2it.ideameds.exception.UserException;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.Medicine;
@@ -47,14 +47,14 @@ public class PrescriptionServiceImpl implements PrescriptionService{
      *{@inheritDoc}
      */
     @Override
-    public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws PrescriptionExpiredException, UserException {
+    public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws PrescriptionExpiredException, CustomException {
         Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
             prescription.setUser(user.get());
             dateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
             return modelMapper.map(prescriptionRepository.save(prescription), PrescriptionDTO.class);
-        } else throw new UserException("User Not Found");
+        } else throw new CustomException("User Not Found");
     }
 
     /**
@@ -71,21 +71,21 @@ public class PrescriptionServiceImpl implements PrescriptionService{
      *{@inheritDoc}
      */
     @Override
-    public List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws UserException {
+    public List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent())
             return prescriptionRepository.getPrescriptionByUser(user.get()).stream()
                         .map(prescription -> modelMapper
                         .map(prescription, PrescriptionDTO.class))
                         .toList();
-        else throw new UserException("User Not Found");
+        else throw new CustomException("User Not Found");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Long deletePrescriptionById(Long prescriptionId, Long userId) throws PrescriptionNotFoundException, UserException {
+    public Long deletePrescriptionById(Long prescriptionId, Long userId) throws PrescriptionNotFoundException, CustomException {
         Optional<User> user = userRepository.findById(userId);
 
         if(user.isPresent()) {
@@ -100,7 +100,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
                     }
                 }
             }
-        } else throw new UserException("User Not Found");
+        } else throw new CustomException("User Not Found");
         return null;
     }
 
