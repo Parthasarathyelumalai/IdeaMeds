@@ -5,7 +5,8 @@ import com.ideas2it.ideameds.util.MedicineType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotBlank;
+
 
 /**
  * <p>
@@ -20,9 +21,14 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class MedicineDTO {
     private Long medicineId;
+    @NotBlank(message = "name should be mentioned")
     private String medicineName;
+    @NotBlank(message = "description should be mentioned")
     private String description;
+    @NotBlank(message = "Illness category should be mentioned")
     private IllnessCategories illnessCategories;
+    @NotBlank(message = "medicine type should be mentioned")
     private MedicineType medicineType;
+    @NotBlank(message = "prescription required should be mentioned")
     private boolean prescriptionRequired;
 }

@@ -1,9 +1,8 @@
 package com.ideas2it.ideameds.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ideas2it.ideameds.util.IllnessCategories;
 import com.ideas2it.ideameds.util.MedicineType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,12 +40,4 @@ public class Medicine {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
     private List<BrandItems> brandItems;
-
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "medicine_warehouse",
-            joinColumns = { @JoinColumn(name = "medicine_id") },
-            inverseJoinColumns = { @JoinColumn(name = "warehouse_id") }
-    )
-    private List<Warehouse> warehouses;
 }
