@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * Represents the Prescription Items DTO
  * @author Nithish K
@@ -19,7 +22,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PrescriptionItemsDTO {
     private Long prescriptionItemsId;
+
+    @NotNull(message = "Quantity cannot be empty")
     private int quantity;
+
+    @NotNull(message = "Dosage cannot be empty")
     private int dosage;
+
+    @NotBlank(message = "Medicine Type cannot be empty")
     private String medicineType;
+
+    @NotBlank(message = "Medicine Type cannot be empty")
+    private String brandItemName;
 }

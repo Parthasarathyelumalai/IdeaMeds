@@ -35,6 +35,4 @@ public class Brand {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     private List<BrandItems> brandItems;
-    private Date createdAt;
-    private Date modifiedAt;
 }

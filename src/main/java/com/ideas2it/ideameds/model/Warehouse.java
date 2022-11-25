@@ -42,6 +42,4 @@ public class Warehouse {
 
     @ManyToMany(mappedBy = "warehouses")
     private List<BrandItems> brandItemsList;
-    private Date createdAt;
-    private Date modifiedAt;
 }

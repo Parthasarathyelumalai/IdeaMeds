@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -55,7 +55,7 @@ public class Prescription {
     private Gender patientGender;
 
     @NotNull
-    private int patientAge;
+    private String patientAge;
 
     @NotNull
     private LocalDate dateOfIssue;
@@ -72,6 +72,6 @@ public class Prescription {
     @JoinColumn(name = "prescription_id")
     @NotNull
     private List<PrescriptionItems> prescriptionItems;
-    private Date createdAt;
-    private Date modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }

@@ -2,7 +2,6 @@ package com.ideas2it.ideameds.exception;
 
 import com.ideas2it.ideameds.dto.ErrorMessageDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.spi.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +22,8 @@ import java.util.Map;
  * @since 2022-11-21
  */
 @ControllerAdvice
-@ResponseStatus
 @Slf4j
-public class RestResponseEntityExceptionHandling extends ResponseEntityExceptionHandler {
+public class RestResponseEntityExceptionHandling {
 
     /**
      * method used to handle Custom exception
@@ -45,16 +42,16 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
      * @param methodArgumentNotValidException - send exception
      * @return errorMessage - gives a response as error msg and http status code
      */
-/*    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException) {
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException) {
         Map<String, String> errors = new HashMap<>();
 
-        methodArgumentNotValidException.getBindingResult().getAllErrors().forEach((error) -> {
+        methodArgumentNotValidException.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return errors;
-    }*/
+        return new ResponseEntity<>(errors,HttpStatus.NOT_ACCEPTABLE);
+    }
 }
