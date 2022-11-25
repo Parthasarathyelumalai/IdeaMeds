@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.model.OrderSystem;
 
 import java.util.List;
@@ -21,10 +22,11 @@ public interface OrderSystemService {
 
     /**
      * add and save order items in repository.
+     *
      * @param userId - To get user and cart details to map with order.
      * @return - Total price of order.
      */
-    Optional<OrderSystem> addOrder(Long userId);
+    Optional<OrderSystemDTO> addOrder(Long userId);
 
     /**
      * All users order details.

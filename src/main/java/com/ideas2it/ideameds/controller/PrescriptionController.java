@@ -135,22 +135,22 @@ public class PrescriptionController {
      * @param user To add the medicines to required user's cart
      */
     private void addToCart(List<PrescriptionItems> prescriptionItems, User user) {
-        Cart cart = new Cart();
-        List<CartItem> cartItems = new ArrayList<>();
-        if(prescriptionItems != null){
-            List<BrandItems> brandItemsList = brandItemsService.getAllBrandItems();
-            for(PrescriptionItems prescriptionItem : prescriptionItems) {
-                for (BrandItems brandItem : brandItemsList) {
-                    if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
-                        CartItem cartItem = new CartItem();
-                        cartItem.setBrandItems(brandItem);
-                        cartItem.setQuantity(prescriptionItem.getQuantity());
-                        cartItems.add(cartItem);
-                        cart.setCartItemList(cartItems);
-                    }
-                }
-            }
-        }
-        cartService.addCart(user.getUserId(), cart);
+//        Cart cart = new Cart();
+//        List<CartItem> cartItems = new ArrayList<>();
+//        if(prescriptionItems != null){
+//            List<BrandItems> brandItemsList = brandItemsService.getAllBrandItems();
+//            for(PrescriptionItems prescriptionItem : prescriptionItems) {
+//                for (BrandItems brandItem : brandItemsList) {
+//                    if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
+//                        CartItem cartItem = new CartItem();
+//                        cartItem.setBrandItems(brandItem);
+//                        cartItem.setQuantity(prescriptionItem.getQuantity());
+//                        cartItems.add(cartItem);
+//                        cart.setCartItemList(cartItems);
+//                    }
+//                }
+//            }
+//        }
+//        cartService.addCart(user.getUserId(), cart);
     }
 }

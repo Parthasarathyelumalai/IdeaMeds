@@ -40,8 +40,8 @@ public class MedicineServiceImpl implements MedicineService {
      */
     public MedicineDTO addMedicine(MedicineDTO medicineDTO) {
         Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
-        medicine.setCreatedAt(dateTimeValidation.getDate());
-        medicine.setModifiedAt(dateTimeValidation.getDate());
+//        medicine.setCreatedAt(dateTimeValidation.getDate());
+//        medicine.setModifiedAt(dateTimeValidation.getDate());
         return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
     }
 
@@ -84,7 +84,7 @@ public class MedicineServiceImpl implements MedicineService {
             throw new CustomException(Constants.MEDICINE_NOT_FOUND);
         }
         medicine.setCreatedAt(existMedicine.get().getCreatedAt());
-        medicine.setModifiedAt(dateTimeValidation.getDate());
+//        medicine.setModifiedAt(dateTimeValidation.getDate());
         return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
     }
 
@@ -95,7 +95,7 @@ public class MedicineServiceImpl implements MedicineService {
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
         if (medicine.isPresent()) {
             medicine.get().setDeletedStatus(1);
-            medicine.get().setModifiedAt(dateTimeValidation.getDate());
+//            medicine.get().setModifiedAt(dateTimeValidation.getDate());
         return medicineRepository.save(medicine.get()).getMedicineId();
         } else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
     }

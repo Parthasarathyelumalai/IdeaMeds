@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.model;
 
 import lombok.Getter;
@@ -7,6 +11,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +31,8 @@ public class OrderSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    private String orderDate;
-    private String deliveryDate;
+    private LocalDateTime orderDate;
+    private LocalDateTime deliveryDate;
     private String orderStatus;
     private float totalPrice;
     private float discountPrice;
@@ -47,6 +52,6 @@ public class OrderSystem {
     private List<OrderItem> orderItemList;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-    private Date createdAt;
-    private Date modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }
