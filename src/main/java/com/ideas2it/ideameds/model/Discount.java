@@ -4,10 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Simple JavaBean domain object representing a cart item.
@@ -21,11 +19,15 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Discount extends Base{
+public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long discountId;
     private String name;
     private String couponCode;
     private float discount;
+    @Column(columnDefinition = "BIT default 0" )
+    private int deletedStatus;
+    private Date createdAt;
+    private Date modifiedAt;
 }

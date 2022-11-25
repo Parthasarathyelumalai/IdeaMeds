@@ -11,6 +11,7 @@ import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
+import com.ideas2it.ideameds.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,17 +44,17 @@ public class UserController {
      * Add User in database
      * @param user - send the user to store
      * @return user - gives a response as user details
-     * @throws CustomException - throw an error message
+     * @throws CustomException - occur when user's email and phone number are already registered
      */
     @PostMapping("/user")
     public ResponseEntity<User> addUser(@RequestBody User user) throws CustomException {
         Optional<User> savedUser;
         if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())  ) {
-            throw new CustomException("This Phone number and EmailId are already registered");
+            throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
         } else if ( validUserByEmailId(user.getEmailId()) ) {
-            throw new CustomException("This EmailId is already registered");
+            throw new CustomException(Constants.EMAIL_ID_EXISTS);
         } else if ( validUserByPhoneNumber(user.getPhoneNumber()) ) {
-            throw new CustomException("This Phone number is already registered");
+            throw new CustomException(Constants.PHONE_NUMBER_EXISTS);
         } else {
             savedUser = userService.addUser(user);
             if ( savedUser.isPresent() ) {
@@ -68,12 +69,11 @@ public class UserController {
      * Get a user details by id
      * @param userId - send the user id
      * @return user - give response as user details
-     * @throws CustomException - throw an error message
+     * @throws CustomException - occur when User is not Found
      */
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws CustomException {
         User fetchedUser = userService.getUserById(userId);
-
         return ResponseEntity.status(HttpStatus.OK).body(fetchedUser);
     }
 
@@ -90,7 +90,7 @@ public class UserController {
      * Updated a user details
      * @param user - to store an updated user details
      * @return String - give a response statement as a response
-     * @throws CustomException - throw a error message
+     * @throws CustomException - occur when User is not Found
      */
     @PutMapping("/user")
     public ResponseEntity<String> updateUser(@RequestBody User user) throws CustomException {
@@ -115,7 +115,7 @@ public class UserController {
      * @param userId - send user id to set medicines
      * @param userMedicines - send user medicines
      * @return list of medicine - gives a response as list of user medicines
-     * @throws CustomException - throw an error message
+     * @throws CustomException - occur when User is not Found
      */
     @PostMapping("/user/user-medicine/{id}")
     public ResponseEntity<List<UserMedicine>> addUserMedicine(@PathVariable("id") Long userId, @RequestBody List<UserMedicine> userMedicines) throws CustomException {
@@ -124,7 +124,7 @@ public class UserController {
         if ( isUserExist ) {
             savedUserMedicines = userMedicineService.addUserMedicine(userMedicines);
         } else {
-            throw new CustomException("there is no user under this id");
+            throw new CustomException(Constants.USER_NOT_FOUND);
         }
         return ResponseEntity.status(HttpStatus.OK).body(savedUserMedicines.get());
     }

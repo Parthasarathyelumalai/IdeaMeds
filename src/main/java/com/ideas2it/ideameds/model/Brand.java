@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Brand extends Base{
+public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandId;
@@ -27,4 +28,6 @@ public class Brand extends Base{
     private int deletedStatus;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     private List<BrandItems> brandItems;
+    private Date createdAt;
+    private Date modifiedAt;
 }

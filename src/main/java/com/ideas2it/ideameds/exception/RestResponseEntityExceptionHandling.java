@@ -2,6 +2,7 @@ package com.ideas2it.ideameds.exception;
 
 import com.ideas2it.ideameds.dto.ErrorMessageDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.spi.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,6 +28,11 @@ import java.util.Map;
 @Slf4j
 public class RestResponseEntityExceptionHandling extends ResponseEntityExceptionHandler {
 
+    /**
+     * method used to handle Custom exception
+     * @param customException - send exception
+     * @return errorMessage - gives a response as error msg and http status code
+     */
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorMessageDTO> commonException(CustomException customException) {
         ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, customException.getMessage());
@@ -34,6 +40,11 @@ public class RestResponseEntityExceptionHandling extends ResponseEntityException
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
+    /**
+     * method used to handle MethodArgumentNotValid exception
+     * @param methodArgumentNotValidException - send exception
+     * @return errorMessage - gives a response as error msg and http status code
+     */
 /*    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException) {

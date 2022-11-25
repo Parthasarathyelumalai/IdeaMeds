@@ -2,11 +2,9 @@ package com.ideas2it.ideameds.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * Simple JavaBean domain object representing an Address.
@@ -19,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Address extends Base {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
@@ -35,4 +33,6 @@ public class Address extends Base {
     private String stateName;
     @NotNull
     private String pinCode;
+    private Date createdAt;
+    private Date modifiedAt;
 }
