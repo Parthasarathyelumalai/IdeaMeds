@@ -4,8 +4,11 @@
  */
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.CartDTO;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.service.CartService;
+import com.ideas2it.ideameds.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +34,12 @@ public class CartController {
     /**
      * Medicines add in cart and save in cart repository.
      * @param userId - To map user with cart.
-     * @param cart - To store the data in cart repository.
+     * @param cartDto - To store the data in cart repository.
      * @return Total price, discount price and discount.
      */
     @PutMapping("/cart/{id}")
-    public ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody Cart cart) {
-        Optional<Cart> addedCart = cartService.addCart(userId, cart);
+    public ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody CartDTO cartDto) throws CustomException {
+        Optional<CartDTO> addedCart = cartService.addCart(userId, cartDto);
         if (addedCart.get().getTotalPrice() != 0) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -44,7 +47,7 @@ public class CartController {
                             + "\nDiscount : " + addedCart.get().getDiscountPercentage() + "%"
                             + "\nDiscount price : " + addedCart.get().getDiscountPrice());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No items to list price");
+           throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
         }
     }
 
@@ -53,7 +56,7 @@ public class CartController {
      * @return All cart.
      */
     @GetMapping("/allcart")
-    public ResponseEntity<List<Cart>> getAllCart() {
+    public ResponseEntity<List<CartDTO>> getAllCart() {
         return (ResponseEntity.status(HttpStatus.ACCEPTED).body(cartService.getAllCart()));
     }
 
@@ -63,14 +66,14 @@ public class CartController {
      * @return One cart.
      */
     @GetMapping("/cart/{id}")
-    public ResponseEntity<Cart> getCartByUserId(@PathVariable("id") Long userId) {
-        Optional<Cart> cart = cartService.getCartByUserId(userId);
+    public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
+        Optional<CartDTO> cart = cartService.getCartByUserId(userId);
         if (cart.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(cart.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw new CustomException(Constants.USER_NOT_FOUND);
         }
     }
 
