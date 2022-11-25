@@ -4,14 +4,20 @@
  */
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.model.*;
-import com.ideas2it.ideameds.repository.*;
+import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.Discount;
+import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.BrandItemsRepository;
+import com.ideas2it.ideameds.repository.CartRepository;
+import com.ideas2it.ideameds.repository.DiscountRepository;
+import com.ideas2it.ideameds.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -41,29 +47,48 @@ public class CartServiceImpl implements CartService {
     @Override
     public Optional<Cart> addCart(Long userId, Cart cart) {
         Optional<User> user = userRepository.findById(userId);
-        float price = 0;
         if (user.isPresent()) {
-            cart.setUser(user.get());
-            List<CartItem> cartItems = new ArrayList<>();
-            List<CartItem> userCartItems = cart.getCartItemList();
-            for(CartItem cartItemTemp : userCartItems) {
-                Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemTemp.getBrandItems().getBrandItemsId());
-                if (brandItems.isPresent()) {
-                    CartItem cartItem = new CartItem();
-                    cartItem.setQuantity(cartItemTemp.getQuantity());
-                    cartItem.setBrandItems(brandItems.get());
-                    cartItem.setMedicine(brandItems.get().getMedicine());
-                    cartItems.add(cartItem);
-                    price = price + (brandItems.get().getPrice() * cartItem.getQuantity());
-                }
+            Optional<Cart> existedCart = cartRepository.findByUser(user.get());
+            if(existedCart.isPresent()) {
+                cart.setCartId(existedCart.get().getCartId());
+                cart.setUser(user.get());
+                existedCart = Optional.of(cart);
+                return Optional.ofNullable(checkAndAddCart(existedCart.get()));
+            } else {
+                cart.setUser(user.get());
+                return Optional.ofNullable(checkAndAddCart(cart));
             }
-            cart.setCartItemList(cartItems);
-            cart.setTotalPrice(price);
-            price = calculateDiscount(price, cart);
-            cart.setDiscountPrice(price);
-            cartRepository.save(cart);
         }
-        return Optional.of(cart);
+        return Optional.empty();
+    }
+
+    /**
+     * This method is used to avoid cart id duplicate.
+     * Set details of new cart and existed cart.
+     *
+     * @param cart - Set all the cart details in the cart.
+     * @return cart.
+     */
+    public Cart checkAndAddCart(Cart cart) {
+        float price = 0;
+        List<CartItem> cartItems = new ArrayList<>();
+        List<CartItem> userCartItems = cart.getCartItemList();
+        for(CartItem cartItemTemp : userCartItems) {
+            Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemTemp.getBrandItems().getBrandItemsId());
+            if (brandItems.isPresent()) {
+                CartItem cartItem = new CartItem();
+                cartItem.setQuantity(cartItemTemp.getQuantity());
+                cartItem.setBrandItems(brandItems.get());
+                cartItem.setMedicine(brandItems.get().getMedicine());
+                cartItems.add(cartItem);
+                price = price + (brandItems.get().getPrice() * cartItem.getQuantity());
+            }
+        }
+        cart.setCartItemList(cartItems);
+        cart.setTotalPrice(price);
+        price = calculateDiscount(price, cart);
+        cart.setDiscountPrice(price);
+        return cartRepository.save(cart);
     }
 
     /**
@@ -78,12 +103,7 @@ public class CartServiceImpl implements CartService {
         List<Discount> discountList = discountRepository.findAll();
         float afterDiscount = 0;
         for (Discount discount : discountList) {
-            if (price > 100 && price < 1000 && discount.getDiscount() == 5) {
-                cart.setDiscount(discount);
-                cart.setDiscountPercentage(discount.getDiscount());
-                float discountPrice = (price * discount.getDiscount()) / 100;
-                afterDiscount = price - discountPrice;
-            } else if (price > 1000 && price < 2000 && discount.getDiscount() == 10) {
+            if ((price > 100 && price < 1000 && discount.getDiscount() == 5) || (price > 1000 && price < 2000 && discount.getDiscount() == 10)){
                 cart.setDiscount(discount);
                 cart.setDiscountPercentage(discount.getDiscount());
                 float discountPrice = (price * discount.getDiscount()) / 100;
@@ -95,20 +115,14 @@ public class CartServiceImpl implements CartService {
         return afterDiscount;
     }
 
-
     /**
      *{@inheritDoc}
      */
     @Override
     public Optional<Cart> getCartByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-        List<Cart> cartList = cartRepository.findAll();
         if (user.isPresent()) {
-            for (Cart cart : cartList) {
-                if (Objects.equals(user.get().getUserId(), cart.getUser().getUserId()) && !cart.isDelete()) {
-                    return Optional.of(cart);
-                }
-            }
+            return cartRepository.findByUser(user.get());
         }
         return Optional.empty();
     }
@@ -130,15 +144,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public boolean deleteCartByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-        List<Cart> cartList = cartRepository.findAll();
         if (user.isPresent()) {
-            for (Cart cart : cartList) {
-                if (Objects.equals(user.get().getUserId(), cart.getUser().getUserId()) && !cart.isDelete()) {
-                    Optional<Cart> cart1 = cartRepository.findById(cart.getCartId());
-                    cart1.get().setDelete(true);
-                    return true;
-                }
-            }
+            Optional<Cart> cart = cartRepository.findByUser(user.get());
+            cart.ifPresent(value -> cartRepository.deleteById(value.getCartId()));
+            return true;
         }
         return false;
     }

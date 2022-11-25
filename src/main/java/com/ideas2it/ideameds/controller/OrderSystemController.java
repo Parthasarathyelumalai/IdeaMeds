@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.model.OrderSystem;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for place an order.
@@ -33,17 +38,16 @@ public class OrderSystemController {
      */
     @PutMapping("/order/{id}")
     public ResponseEntity<String> addOrder(@PathVariable("id") Long userId) {
-        OrderSystem orderSystem = orderSystemService.addOrder(userId);
-        if (orderSystem != null) {
+        Optional<OrderSystem> orderSystem = orderSystemService.addOrder(userId);
+        if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body("Order successful."
-                            + "\nTotal price : " + orderSystem.getTotalPrice()
-                            + "\nDiscount : " + orderSystem.getDiscountPercentage() + "%"
-                            + "\nDiscount price : " + orderSystem.getDiscountPrice());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("order unsuccessful");
+                            + "\nTotal price : " + orderSystem.get().getTotalPrice()
+                            + "\nDiscount : " + orderSystem.get().getDiscountPercentage() + "%"
+                            + "\nDiscount price : " + orderSystem.get().getDiscountPrice());
         }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("order unsuccessful");
     }
 
     /**
@@ -51,7 +55,7 @@ public class OrderSystemController {
      * @return - All users order details.
      */
     @GetMapping("/allorder")
-    public ResponseEntity<List<OrderSystem>> getAllCart() {
+    public ResponseEntity<List<OrderSystem>> getAllOrder() {
         return (ResponseEntity.status(HttpStatus.ACCEPTED).body(orderSystemService.getAllOrder()));
     }
 
@@ -62,11 +66,11 @@ public class OrderSystemController {
      */
     @GetMapping("/order/{id}")
     public ResponseEntity<OrderSystem> getOrderByUserId(@PathVariable("id") Long userId) {
-        OrderSystem orderSystem = orderSystemService.getOrderByUserId(userId);
-        if (orderSystem != null) {
+        Optional<OrderSystem> orderSystem = orderSystemService.getOrderByUserId(userId);
+        if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(orderSystem);
+                    .body(orderSystem.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
