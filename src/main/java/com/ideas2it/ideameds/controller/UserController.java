@@ -4,9 +4,9 @@
  */
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.OrderSystem;
-import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import com.ideas2it.ideameds.service.UserMedicineService;
@@ -47,8 +47,8 @@ public class UserController {
      * @throws CustomException - occur when user's email and phone number are already registered
      */
     @PostMapping("/user")
-    public ResponseEntity<User> addUser(@RequestBody User user) throws CustomException {
-        Optional<User> savedUser;
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO user) throws CustomException {
+        Optional<UserDTO> savedUser;
         if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())  ) {
             throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
         } else if ( validUserByEmailId(user.getEmailId()) ) {
@@ -57,11 +57,7 @@ public class UserController {
             throw new CustomException(Constants.PHONE_NUMBER_EXISTS);
         } else {
             savedUser = userService.addUser(user);
-            if ( savedUser.isPresent() ) {
-                return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new User());
-            }
+            return savedUser.map(userDTO -> ResponseEntity.status(HttpStatus.OK).body(userDTO)).orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserDTO()));
         }
     }
 
@@ -72,8 +68,8 @@ public class UserController {
      * @throws CustomException - occur when User is not Found
      */
     @GetMapping("/user/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) throws CustomException {
-        User fetchedUser = userService.getUserById(userId);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId) throws CustomException {
+        UserDTO fetchedUser = userService.getUserById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(fetchedUser);
     }
 
@@ -82,7 +78,7 @@ public class UserController {
      * @return list of user - gives a response as list of user details
      */
     @GetMapping("/user")
-    public List<User> getAllUser() {
+    public List<UserDTO> getAllUser() {
         return userService.getAllUser();
     }
 
@@ -93,7 +89,7 @@ public class UserController {
      * @throws CustomException - occur when User is not Found
      */
     @PutMapping("/user")
-    public ResponseEntity<String> updateUser(@RequestBody User user) throws CustomException {
+    public ResponseEntity<String> updateUser(@RequestBody UserDTO user) throws CustomException {
         String updateUser = userService.updateUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(updateUser);
     }
@@ -105,7 +101,7 @@ public class UserController {
      * @throws CustomException - throw an error message
      */
     @DeleteMapping("/user")
-    public ResponseEntity<String> deleteUser(@RequestBody User user) throws CustomException {
+    public ResponseEntity<String> deleteUser(@RequestBody UserDTO user) throws CustomException {
         String deletedStatus = userService.deleteUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(deletedStatus);
     }
@@ -126,7 +122,7 @@ public class UserController {
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(savedUserMedicines.get());
+        return ResponseEntity.status(HttpStatus.OK).body(savedUserMedicines.orElse(null));
     }
 
     /**
@@ -146,7 +142,6 @@ public class UserController {
      */
     private boolean validUserByPhoneNumber(String userPhoneNumber) {
         List<String> userPhoneNumbers = userService.getUserPhoneNumber();
-        List<String> userEmailIds = userService.getUserEmail();
         for (String number : userPhoneNumbers) {
             if ( number.equals(userPhoneNumber)) {
                 return true;

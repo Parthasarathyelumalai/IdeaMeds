@@ -51,9 +51,7 @@ public class BrandItems {
 
     private int packageQuantity;
 
-    @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
-    @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
     @ManyToOne
@@ -74,6 +72,4 @@ public class BrandItems {
 
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-    private Date createdAt;
-    private Date modifiedAt;
 }

@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.User;
 
@@ -24,7 +25,7 @@ public interface UserService {
      * @param user - To store the user in databases
      * @return user - To give a response as user details
      */
-    Optional<User> addUser(User user);
+    Optional<UserDTO> addUser(UserDTO userDTO);
 
     /**
      * Get User by id from the database
@@ -32,13 +33,13 @@ public interface UserService {
      * @return user - give a response as a user details
      * @throws CustomException - throws error message
      */
-    User getUserById(Long userId) throws CustomException;
+    UserDTO getUserById(Long userId) throws CustomException;
 
     /**
      * Get Users details from the database
      * @return user - give a response as a users details
      */
-    List<User> getAllUser();
+    List<UserDTO> getAllUser();
 
     /**
      * Updated user details in databases
@@ -46,7 +47,7 @@ public interface UserService {
      * @return String - give a response statement as response
      * @throws CustomException - throws error message
      */
-    String updateUser(User user) throws CustomException;
+    String updateUser(UserDTO user) throws CustomException;
 
     /**
      * deleted user details in databases
@@ -54,7 +55,7 @@ public interface UserService {
      * @return String - give a response statement as response
      * @throws CustomException - throws error message
      */
-    String deleteUser(User user) throws CustomException;
+    String deleteUser(UserDTO user) throws CustomException;
 
     /**
      * Check the user is exists or not

@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.dto;
 import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.UserMedicine;
+import com.ideas2it.ideameds.util.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,9 @@ public class UserDTO {
     @NotBlank(message = "Email should be mentioned")
     @Email(regexp = "^[a-z]{1}[a-z0-9._]+@[a-z0-9]+[.][a-z]*$",message = "Invalid format e.g. john@xyz.com")
     private String emailId;
-    private List<Address> addresses;
+    private List<AddressDTO> addresses;
     private List<Prescription> prescription;
     private List<UserMedicine> userMedicines;
+    private Role roleType;
+    private int deletedStatus;
 }
