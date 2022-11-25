@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Prescription extends Base{
+public class Prescription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,4 +73,6 @@ public class Prescription extends Base{
     @JoinColumn(name = "prescription_id")
     @NotNull
     private List<PrescriptionItems> prescriptionItems;
+    private Date createdAt;
+    private Date modifiedAt;
 }

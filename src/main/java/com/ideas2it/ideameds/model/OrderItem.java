@@ -4,14 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Simple JavaBean domain object representing a order item.
@@ -25,7 +19,7 @@ import javax.persistence.OneToOne;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderItem extends Base{
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
@@ -36,4 +30,6 @@ public class OrderItem extends Base{
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "brand_items_id")
     private BrandItems brandItems;
+    private Date createdAt;
+    private Date modifiedAt;
 }

@@ -7,6 +7,7 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent() && (userOptional.get().getDeletedStatus() != 1)) {
             return userOptional.get();
         } else {
-            throw new CustomException("There is no user under this id");
+            throw new CustomException(Constants.USER_NOT_FOUND);
         }
     }
 
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
         if (null != updatedUser) {
             return updatedUser.getName() + " ." + "Updated Successfully";
         }  else {
-            throw new CustomException("There is no user under this id to update");
+            throw new CustomException(Constants.USER_NOT_FOUND);
         }
     }
 
@@ -91,10 +92,10 @@ public class UserServiceImpl implements UserService {
             user.setDeletedStatus(1);
             Optional<User> deleteUser = Optional.of(userRepository.save(user));
             if (deleteUser.isPresent()) {
-                return deleteUser.get().getName() + "." +"Deleted Successfully";
+                return deleteUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
             }
         }
-        throw new CustomException("There is no user under this id to update");
+        throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
