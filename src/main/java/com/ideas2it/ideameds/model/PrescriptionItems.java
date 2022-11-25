@@ -38,7 +38,5 @@ public class PrescriptionItems {
     private String medicineType;
 
     @NotNull
-    private String medicineName;
-    private Date createdAt;
-    private Date modifiedAt;
+    private String brandItemName;
 }

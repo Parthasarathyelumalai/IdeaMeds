@@ -31,7 +31,7 @@ public class DateTimeValidation {
         final int MAXIMUM_MONTH = 6;
         LocalDate currentDate = LocalDate.now();
         Period monthDifference = Period.between(currentDate,issuedDate);
-        if(monthDifference.getMonths() >= MAXIMUM_MONTH) throw new CustomException("Prescription has Expired");
+        if(monthDifference.getMonths() >= MAXIMUM_MONTH) throw new CustomException(Constants.PRESCRIPTION_EXPIRED);
     }
 
     /**
