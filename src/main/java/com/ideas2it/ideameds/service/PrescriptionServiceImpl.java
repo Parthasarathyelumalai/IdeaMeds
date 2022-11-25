@@ -7,6 +7,7 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Prescription;
+import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
@@ -39,11 +40,14 @@ public class PrescriptionServiceImpl implements PrescriptionService{
      */
     @Override
     public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws CustomException {
-        Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
+            Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
+//            prescription.setPrescriptionItems(prescriptionDTO.getPrescriptionItems().stream().map(prescriptionItemsDTO -> modelMapper.map(prescriptionItemsDTO, PrescriptionItems.class)).toList());
             prescription.setUser(user.get());
             dateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
+            prescription.setCreatedAt(dateTimeValidation.getDate());
+            prescription.setModifiedAt(dateTimeValidation.getDate());
             return modelMapper.map(prescriptionRepository.save(prescription), PrescriptionDTO.class);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
     }

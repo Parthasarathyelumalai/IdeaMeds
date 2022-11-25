@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.BrandItems;
@@ -20,13 +21,9 @@ import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,8 +53,8 @@ public class PrescriptionController {
      * @throws CustomException occurs when user not found
      * amd occurs when prescription was exceeded by 6 months
      */
-    @PostMapping("/prescription/{userId}")
-    public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody PrescriptionDTO prescriptionDTO) throws CustomException {
+    @PostMapping( "/prescription/{userId}")
+    public ResponseEntity<String> addPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO, @PathVariable Long userId) throws CustomException {
         PrescriptionDTO prescriptionSaved = prescriptionService.addPrescription(prescriptionDTO, userId);
 
         if (null != prescriptionSaved) return ResponseEntity.status(HttpStatus.OK).body("Prescription Added Successfully");
@@ -135,22 +132,22 @@ public class PrescriptionController {
      * @param user To add the medicines to required user's cart
      */
     private void addToCart(List<PrescriptionItems> prescriptionItems, User user) {
-//        Cart cart = new Cart();
-//        List<CartItem> cartItems = new ArrayList<>();
-//        if(prescriptionItems != null){
-//            List<BrandItems> brandItemsList = brandItemsService.getAllBrandItems();
-//            for(PrescriptionItems prescriptionItem : prescriptionItems) {
-//                for (BrandItems brandItem : brandItemsList) {
-//                    if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
-//                        CartItem cartItem = new CartItem();
-//                        cartItem.setBrandItems(brandItem);
-//                        cartItem.setQuantity(prescriptionItem.getQuantity());
-//                        cartItems.add(cartItem);
-//                        cart.setCartItemList(cartItems);
-//                    }
-//                }
-//            }
-//        }
-//        cartService.addCart(user.getUserId(), cart);
+        Cart cart = new Cart();
+        List<CartItem> cartItems = new ArrayList<>();
+        if(prescriptionItems != null){
+            List<BrandItemsDTO> brandItemsList = brandItemsService.getAllBrandItems();
+            for(PrescriptionItems prescriptionItem : prescriptionItems) {
+                for (BrandItemsDTO brandItem : brandItemsList) {
+                    if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
+                        CartItemDTO cartItem = new CartItem();
+                        cartItem.setBrandItems(brandItem);
+                        cartItem.setQuantity(prescriptionItem.getQuantity());
+                        cartItems.add(cartItem);
+                        cart.setCartItemList(cartItems);
+                    }
+                }
+            }
+        }
+        cartService.addCart(user.getUserId(), cart);
     }
 }

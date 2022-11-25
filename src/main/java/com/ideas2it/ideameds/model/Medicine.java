@@ -45,8 +45,8 @@ public class Medicine {
     private boolean prescriptionRequired;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-    private Date createdAt;
-    private Date modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
     private List<BrandItems> brandItems;
 }

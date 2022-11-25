@@ -41,11 +41,8 @@ public class DateTimeValidation {
      */
     public LocalDateTime getDate() {
         String currentDateAndTime;
-
         String dateTimeFormatter = "yyyy-MM-dd HH:mm:ss";
-
         LocalDateTime currentDate = LocalDateTime.now();
-
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         currentDateAndTime = currentDate.format(dateFormatter);
         return LocalDateTime.parse(currentDateAndTime, dateFormatter);
