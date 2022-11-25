@@ -10,6 +10,7 @@ import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
+import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -44,7 +45,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
             prescription.setUser(user.get());
             dateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
             return modelMapper.map(prescriptionRepository.save(prescription), PrescriptionDTO.class);
-        } else throw new CustomException("User Not Found");
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -54,7 +55,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
     public PrescriptionDTO getPrescription(Long prescriptionId) throws CustomException {
         Optional<Prescription> prescription = prescriptionRepository.findById(prescriptionId);
         if (prescription.isPresent()) return modelMapper.map(prescription,PrescriptionDTO.class);
-        else throw new CustomException("Prescription Not Found");
+        else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
     }
 
     /**
@@ -68,7 +69,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
                         .map(prescription -> modelMapper
                         .map(prescription, PrescriptionDTO.class))
                         .toList();
-        else throw new CustomException("User Not Found");
+        else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -81,7 +82,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
         if(user.isPresent()) {
             List<Prescription> prescriptions = user.get().getPrescription();
 
-            if (prescriptions.isEmpty()) throw new CustomException("Prescription Not Found");
+            if (prescriptions.isEmpty()) throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
             else {
                 for (Prescription prescription : prescriptions) {
                     if (prescription.getPrescriptionId().equals(prescriptionId)) {
@@ -90,7 +91,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
                     }
                 }
             }
-        } else throw new CustomException("User Not Found");
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
         return null;
     }
 }

@@ -42,7 +42,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      *{@inheritDoc}
      */
     @Override
-    public OrderSystem addOrder(Long userId) {
+    public Optional<OrderSystem> addOrder(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         List<CartItem> cartItemList;
         OrderSystem orderSystem = null;
@@ -63,7 +63,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
                 }
             }
         }
-        return orderSystem;
+        return Optional.ofNullable(orderSystem);
     }
 
     /**
@@ -74,8 +74,8 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     public List<OrderItem> cartItemToOrderItem(List<CartItem> cartItemList) {
         List<OrderItem> orderItemList = new ArrayList<>();
         if (cartItemList != null) {
-            OrderItem orderItem  = new OrderItem();
             for(CartItem cartItem : cartItemList) {
+                OrderItem orderItem  = new OrderItem();
                 orderItem.setMedicine(cartItem.getMedicine());
                 orderItem.setQuantity(cartItem.getQuantity());
                 orderItem.setBrandItems(cartItem.getBrandItems());
@@ -94,20 +94,18 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public OrderSystem getOrderByUserId(Long userId) {
+    public Optional<OrderSystem> getOrderByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-        List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
         if (user.isPresent()) {
-            for (OrderSystem orderSystem : orderSystemList) {
-                if (Objects.equals(user.get().getUserId(), orderSystem.getUser().getUserId())) {
-                    return orderSystem;
-                }
+            Optional<OrderSystem> orderSystem = orderSystemRepository.findByUser(user.get());
+            if (orderSystem.isPresent()) {
+                return orderSystem;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -118,7 +116,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
         List<OrderSystem> previousOrder = new ArrayList<>();
         for (OrderSystem orderSystem : orderSystemList) {
-            if (user.get().getUserId() == orderSystem.getUser().getUserId()) {
+            if (Objects.equals(user.get().getUserId(), orderSystem.getUser().getUserId())) {
                 previousOrder.add(orderSystem);
             }
         }

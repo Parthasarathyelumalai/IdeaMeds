@@ -7,6 +7,7 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.model.OrderSystem;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service for placing order(order system).
@@ -23,7 +24,7 @@ public interface OrderSystemService {
      * @param userId - To get user and cart details to map with order.
      * @return - Total price of order.
      */
-    OrderSystem addOrder(Long userId);
+    Optional<OrderSystem> addOrder(Long userId);
 
     /**
      * All users order details.
@@ -36,7 +37,7 @@ public interface OrderSystemService {
      * @param userId - To get one user order.
      * @return - One user order details
      */
-    OrderSystem getOrderByUserId(Long userId);
+    Optional<OrderSystem> getOrderByUserId(Long userId);
 
     /**
      * Get all previous order items for given user id.

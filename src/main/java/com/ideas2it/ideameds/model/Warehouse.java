@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Warehouse extends Base{
+public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long warehouseId;
@@ -41,4 +42,6 @@ public class Warehouse extends Base{
 
     @ManyToMany(mappedBy = "warehouses")
     private List<BrandItems> brandItemsList;
+    private Date createdAt;
+    private Date modifiedAt;
 }

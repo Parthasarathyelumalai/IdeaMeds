@@ -24,7 +24,7 @@ public interface PrescriptionService {
      * @param prescriptionDTO To pass prescriptionDTO object
      * @return returns the prescriptionDTO object
      * @throws CustomException occurs when user not found
-     * @throws CustomException occurs when prescription was exceeded by 6 months
+     * and occurs when prescription was exceeded by 6 months
      */
     PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws CustomException;
 
@@ -32,7 +32,7 @@ public interface PrescriptionService {
      * Get the Prescription from the repository
      *
      * @param prescriptionId To get the required prescription
-     * @return Prescription - returns the Prescription object
+     * @return returns the PrescriptionDTO object
      * @throws CustomException occurs when prescription was not found
      */
     PrescriptionDTO getPrescription(Long prescriptionId) throws CustomException;
@@ -40,9 +40,9 @@ public interface PrescriptionService {
     /**
      * Get all the Prescriptions from the repository of a user
      * @param userId To get all the prescriptions of the required user
-     * @return returns the list of prescription
+     * @return returns the list of prescriptionDTO
      * @throws CustomException occurs when user not found
-     * @throws CustomException occurs when prescription was not found
+     * and occurs when prescription was not found
      */
     List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws CustomException;
 
@@ -50,9 +50,9 @@ public interface PrescriptionService {
      * Delete the prescription of the user from the user
      * @param prescriptionId To map the prescription
      * @param userId TO get the required user
-     * @return Long - returns the deleted prescription's ID
+     * @return returns the deleted prescription's ID
      * @throws CustomException occurs when user not found
-     * @throws CustomException occurs when prescription was not found
+     * and occurs when prescription was not found
      */
     Long deletePrescriptionById(Long prescriptionId, Long userId) throws CustomException;
 }

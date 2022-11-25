@@ -15,4 +15,5 @@ public class Constants {
     public static final String NO_ITEMS = "No items";
     public static final String WAREHOUSE_NOT_FOUND = "Warehouse not found";
     public static final String NOT_DELETED_SUCCESSFULLY = "Delete Aborted";
+    public static final String UPDATED_SUCCESSFULLY = " Has Updated Successfully";
 }

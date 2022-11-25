@@ -15,6 +15,8 @@ import com.ideas2it.ideameds.service.BrandItemsService;
 import com.ideas2it.ideameds.service.CartServiceImpl;
 import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
+import com.ideas2it.ideameds.util.Constants;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,7 @@ import java.util.Optional;
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
+    private final DateTimeValidation dateTimeValidation;
     private final BrandItemsService brandItemsService;
     private final CartServiceImpl cartService;
 
@@ -51,7 +54,7 @@ public class PrescriptionController {
      * @param prescriptionDTO To store the prescriptionDTO object
      * @return returns the httpStatus and message
      * @throws CustomException occurs when user not found
-     * @throws CustomException occurs when prescription was exceeded by 6 months
+     * amd occurs when prescription was exceeded by 6 months
      */
     @PostMapping("/prescription/{userId}")
     public ResponseEntity<String> addPrescription(@PathVariable Long userId, @RequestBody PrescriptionDTO prescriptionDTO) throws CustomException {
@@ -83,7 +86,7 @@ public class PrescriptionController {
     public ResponseEntity<List<PrescriptionDTO>> getPrescriptionByUserId(@PathVariable Long userId) throws CustomException {
         List<PrescriptionDTO> prescriptions = prescriptionService.getPrescriptionByUser(userId);
         if (prescriptions.isEmpty())
-            throw new CustomException("Prescription not Found");
+            throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
         return ResponseEntity.status(HttpStatus.OK).body(prescriptions);
     }
 
@@ -93,7 +96,7 @@ public class PrescriptionController {
      * @param prescriptionId To get the required prescription of the user
      * @return returns the httpStatus and a message
      * @throws CustomException occurs when user not found
-     * @throws CustomException occurs when prescription was not found
+     * and occurs when prescription was not found
      */
     @DeleteMapping("/prescription/{userId}/{prescriptionId}")
     public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId, @PathVariable Long prescriptionId) throws CustomException {
@@ -110,7 +113,7 @@ public class PrescriptionController {
      * @param userId To get the required User
      * @return returns the http status and a message
      * @throws CustomException occurs when user not found
-     * @throws CustomException occurs when prescription was not found
+     * and occurs when prescription was not found
      */
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws CustomException {
@@ -119,10 +122,11 @@ public class PrescriptionController {
 
         if(user.isPresent()) {
             if (null != prescription) {
+                dateTimeValidation.validateDateOfIssue(prescription.getDateOfIssue());
                 addToCart(prescription.getPrescriptionItems(), user.get());
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
-            } else throw new CustomException("Prescription Not Found");
-        } else throw new CustomException("User not found");
+            } else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -137,7 +141,7 @@ public class PrescriptionController {
             List<BrandItems> brandItemsList = brandItemsService.getAllBrandItems();
             for(PrescriptionItems prescriptionItem : prescriptionItems) {
                 for (BrandItems brandItem : brandItemsList) {
-                    if (brandItem.getBrandItemName().equals(prescriptionItem.getMedicineName())) {
+                    if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
                         CartItem cartItem = new CartItem();
                         cartItem.setBrandItems(brandItem);
                         cartItem.setQuantity(prescriptionItem.getQuantity());

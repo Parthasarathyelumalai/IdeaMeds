@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BrandItems extends Base{
+public class BrandItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,4 +74,6 @@ public class BrandItems extends Base{
 
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
+    private Date createdAt;
+    private Date modifiedAt;
 }

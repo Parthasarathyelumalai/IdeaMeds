@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.model.Cart;
@@ -70,6 +74,11 @@ public class CartController {
         }
     }
 
+    /**
+     * Delete cart by user id.
+     * @param userId - To delete the cart by user id.
+     * @return Deleted message.
+     */
     @DeleteMapping("/cart/{id}")
     public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) {
         boolean deletedMessage = cartService.deleteCartByUserId(userId);
