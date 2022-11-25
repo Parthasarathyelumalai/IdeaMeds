@@ -13,4 +13,6 @@ public class Constants {
     public static final String EMAIL_ID_PHONE_NUMBER_EXISTS = "This Phone number and EmailId are already registered";
     public static final String CART_NOT_FOUND = "Cart not found";
     public static final String NO_ITEMS = "No items";
+    public static final String WAREHOUSE_NOT_FOUND = "Warehouse not found";
+    public static final String NOT_DELETED_SUCCESSFULLY = "Delete Aborted";
 }

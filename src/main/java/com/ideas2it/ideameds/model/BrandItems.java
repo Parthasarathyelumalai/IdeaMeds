@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -48,6 +49,11 @@ public class BrandItems extends Base{
     private String medicineImage;
 
     private int packageQuantity;
+
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+    @Column(name = "MODIFIED_AT")
+    private LocalDateTime modifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "medicine_id")

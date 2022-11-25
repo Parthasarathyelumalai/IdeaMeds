@@ -1,8 +1,11 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.BrandDTO;
-import com.ideas2it.ideameds.model.Brand;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.BrandService;
+import com.ideas2it.ideameds.util.Constants;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,8 +35,8 @@ public class BrandController {
      * @return brand after added
      */
     @PostMapping("/brand")
-    public BrandDTO addBrand(@RequestBody BrandDTO brandDTO) {
-        return brandService.addBrand(brandDTO);
+    public ResponseEntity<BrandDTO> addBrand(@RequestBody BrandDTO brandDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(brandService.addBrand(brandDTO));
     }
 
     /**
@@ -43,8 +46,8 @@ public class BrandController {
      * @return list of all brands
      */
     @GetMapping("/brand")
-    public List<BrandDTO> getAllBrands() {
-        return brandService.getAllBrands();
+    public ResponseEntity<List<BrandDTO>> getAllBrands() {
+        return ResponseEntity.status(HttpStatus.OK).body(brandService.getAllBrands());
     }
 
     /**
@@ -54,10 +57,12 @@ public class BrandController {
      * @param brandName
      *        contains a name to get the brand
      * @return brand by using the brand name
+     * @throws CustomException
+     *         throws when brand is not found
      */
     @GetMapping("/getBrandByName/{brandName}")
-    public BrandDTO getBrandByBrandName(@PathVariable String brandName) {
-        return brandService.getBrandByBrandName(brandName);
+    public ResponseEntity<BrandDTO> getBrandByBrandName(@PathVariable String brandName) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK).body(brandService.getBrandByBrandName(brandName));
     }
 
     /**
@@ -67,23 +72,27 @@ public class BrandController {
      * @param brandId
      *        brand id to get brand
      * @return brand using the id
+     * @throws CustomException
+     *         throws when the brand was not found
      */
     @GetMapping("/brand/{brandId}")
-    public BrandDTO getBrandById(@PathVariable("brandId") Long brandId) {
-        return brandService.getBrandById(brandId);
+    public ResponseEntity<BrandDTO> getBrandById(@PathVariable("brandId") Long brandId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK).body(brandService.getBrandById(brandId));
     }
 
     /**
      * <p>
      *     updates the brand
      * </p>
-     * @param brand
+     * @param brandDTO
      *        brandDto to be updated
      * @return updated brandDto
+     * @throws CustomException
+     *         throws when the brand was not found
      */
     @PutMapping("/brand")
-    public Brand updateBrand(@RequestBody Brand brand) {
-        return brandService.updateBrand(brand);
+    public ResponseEntity<BrandDTO> updateBrand(@RequestBody BrandDTO brandDTO) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK).body(brandService.updateBrand(brandDTO));
     }
 
     /**
@@ -93,10 +102,16 @@ public class BrandController {
      * @param brandId
      *        corresponding brand Id to delete
      * @return response for deletion
+     * @throws CustomException
+     *         throws when brand is not found
      */
     @PutMapping("/brand/delete/{brandId}")
-    public Brand deleteBrand(@PathVariable("brandId") Long brandId) {
-        return brandService.deleteBrand(brandId);
+    public ResponseEntity<String> deleteBrand(@PathVariable("brandId") Long brandId) throws CustomException {
+        Long brandById = brandService.deleteBrand(brandId);
+        if(brandById != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(brandById + Constants.DELETED_SUCCESSFULLY);
+        } else
+            return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
     }
 
 }

@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -32,6 +33,11 @@ public class Warehouse extends Base{
 
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
+
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+    @Column(name = "MODIFIED_AT")
+    private LocalDateTime modifiedAt;
 
     @ManyToMany(mappedBy = "warehouses")
     private List<BrandItems> brandItemsList;
