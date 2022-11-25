@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Medicine extends Base{
+public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long medicineId;
@@ -43,6 +44,8 @@ public class Medicine extends Base{
     private boolean prescriptionRequired;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
+    private Date createdAt;
+    private Date modifiedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
     private List<BrandItems> brandItems;
 }

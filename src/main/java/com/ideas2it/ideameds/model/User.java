@@ -9,6 +9,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User extends Base{
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -47,4 +48,6 @@ public class User extends Base{
     @Enumerated(EnumType.STRING)
     @NotNull
     private Role roleType;
+    private Date createdAt;
+    private Date modifiedAt;
 }

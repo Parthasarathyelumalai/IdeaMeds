@@ -6,14 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +22,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderSystem extends Base{
+public class OrderSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
@@ -51,4 +45,8 @@ public class OrderSystem extends Base{
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "order_id")
     private List<OrderItem> orderItemList;
+    @Column(columnDefinition = "BIT default 0" )
+    private int deletedStatus;
+    private Date createdAt;
+    private Date modifiedAt;
 }

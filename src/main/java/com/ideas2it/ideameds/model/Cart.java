@@ -6,14 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Cart extends Base {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
@@ -45,4 +39,6 @@ public class Cart extends Base {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "cart_id")
     private List<CartItem> cartItemList;
+    private Date createdAt;
+    private Date modifiedAt;
 }
