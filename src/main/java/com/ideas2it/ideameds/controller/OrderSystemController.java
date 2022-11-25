@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class OrderSystemController {
      */
     @PutMapping("/order/{id}")
     public ResponseEntity<String> addOrder(@PathVariable("id") Long userId) {
-        Optional<OrderSystem> orderSystem = orderSystemService.addOrder(userId);
+        Optional<OrderSystemDTO> orderSystem = orderSystemService.addOrder(userId);
         if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)

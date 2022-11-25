@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.model;
 
 import lombok.Getter;
@@ -27,8 +31,8 @@ public class OrderSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    private String orderDate;
-    private String deliveryDate;
+    private LocalDateTime orderDate;
+    private LocalDateTime deliveryDate;
     private String orderStatus;
     private float totalPrice;
     private float discountPrice;

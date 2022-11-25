@@ -4,19 +4,12 @@
  */
 package com.ideas2it.ideameds.dto;
 
-import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -33,30 +26,29 @@ public class PrescriptionDTO {
     private Long prescriptionId;
 
     @NotBlank(message = "Doctor name should be mentioned")
-    @Pattern(regexp = "^[a-zA-z]{1}[a-zA-Z\\s]*$", message = "Invalid format - e.g. Firstname LastName")
+    @Pattern(regexp = "^[a-zA-Z][a-zA-Z\\s]*$", message = "Invalid format - e.g. Firstname LastName")
     private String doctorName;
 
     @NotBlank(message = "Clinic Address should be mentioned")
-    @Pattern(regexp = "^[a-zA-z]{1}[a-zA-Z\\s]*$", message = "Invalid format")
+    @Pattern(regexp = "^[a-zA-Z][a-zA-Z\\s]*$", message = "Invalid format")
     private String clinicAddress;
 
     @NotBlank(message = "patient Name should be mentioned")
-    @Pattern(regexp = "^[a-zA-z]{1}[a-zA-Z\\s]*$", message = "Invalid format - e.g. Firstname LastName")
+    @Pattern(regexp = "^[a-zA-Z][a-zA-Z\\s]*$",message = "Invalid Format")
     private String patientName;
 
-    @NotBlank(message = "Gender should be mentioned")
-    @Enumerated(EnumType.STRING)
-    private Gender patientGender;
-
-    @NotBlank(message = "Age is required")
-    @Pattern(regexp = "^[0-9.]{1,3}", message = "Invalid format - Should contain only numbers")
+    @NotNull(message = "Age is required")
+    @Pattern(regexp = "[0-9.]{1,3}", message = "Age should not contain letters")
     @Min(value = 1, message = "Age should not be less than 1")
     @Max(value = 130, message = "Age should not be greater than 130")
-    private int patientAge;
+    private String patientAge;
 
-    @NotBlank(message = "Prescription issued date is required")
+    @NotNull(message = "Gender should be mentioned")
+    private Gender patientGender;
+
+    @NotNull(message = "Prescription issued date is required")
     @PastOrPresent(message = "Prescription date should not be in future")
     private LocalDate dateOfIssue;
 
-    private List<PrescriptionItems> prescriptionItems;
+    private List<PrescriptionItemsDTO> prescriptionItems;
 }

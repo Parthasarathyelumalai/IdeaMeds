@@ -1,3 +1,8 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
+
 package com.ideas2it.ideameds.model;
 
 import lombok.Getter;
@@ -7,6 +12,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +45,6 @@ public class Cart {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "cart_id")
     private List<CartItem> cartItemList;
-    private Date createdAt;
-    private Date modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }
