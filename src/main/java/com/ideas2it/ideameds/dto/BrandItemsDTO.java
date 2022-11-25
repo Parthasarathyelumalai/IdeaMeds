@@ -1,6 +1,5 @@
 package com.ideas2it.ideameds.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,8 +34,4 @@ public class BrandItemsDTO {
     private String medicineImage;
 
     private int packageQuantity;
-
-    private Long medicineId;
-
-    private Long brandId;
 }

@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,12 @@ public class Brand {
     private String description;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
+
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+    @Column(name = "MODIFIED_AT")
+    private LocalDateTime modifiedAt;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     private List<BrandItems> brandItems;
     private Date createdAt;

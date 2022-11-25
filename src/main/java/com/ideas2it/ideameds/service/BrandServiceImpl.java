@@ -5,51 +5,97 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.BrandDTO;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Brand;
-import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.repository.BrandRepository;
+import com.ideas2it.ideameds.util.Constants;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * Service Interface Implementation
+ * Performs Create, Read, Update and Delete operations for Brand
+ * @author Dinesh Kumar R
+ * @version 1.0
+ * @since 2022-11-18
+ */
 @Service
 public class BrandServiceImpl implements BrandService{
 
     private final BrandRepository brandRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
+    private final DateTimeValidation dateTimeValidation;
 
-    public BrandServiceImpl(BrandRepository brandRepository) {
+    public BrandServiceImpl(BrandRepository brandRepository, DateTimeValidation dateTimeValidation) {
         this.brandRepository = brandRepository;
+        this.dateTimeValidation = dateTimeValidation;
     }
 
+    /**
+     *{@inheritDoc}
+     */
     public BrandDTO addBrand(BrandDTO brandDTO) {
         Brand brand = modelMapper.map(brandDTO, Brand.class);
+        brand.setCreatedAt(dateTimeValidation.getDate());
+        brand.setModifiedAt(dateTimeValidation.getDate());
         return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
     }
+
+    /**
+     *{@inheritDoc}
+     */
     public List<BrandDTO> getAllBrands() {
-        List<BrandDTO> brandDTOs = new ArrayList<>();
-        List<Brand> brands = brandRepository.findAll();
-        for(Brand brand : brands) {
-            brandDTOs.add(modelMapper.map(brand, BrandDTO.class));
-        }
-        return brandDTOs;
+        return brandRepository.findAll().stream()
+                .map(brand -> modelMapper
+                        .map(brand, BrandDTO.class)).toList();
     }
-    public BrandDTO getBrandByBrandName(String brandName) {
-        return modelMapper.map(brandRepository.getBrandByBrandName(brandName), BrandDTO.class);
+
+    /**
+     *{@inheritDoc}
+     */
+    public BrandDTO getBrandByBrandName(String brandName) throws CustomException {
+        Brand brand = brandRepository.getBrandByBrandName(brandName);
+        if (brand != null) {
+            return modelMapper.map(brand, BrandDTO.class);
+        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
     }
-    public BrandDTO getBrandById(Long brandId) {
-        Brand brand = brandRepository.findById(brandId).get();
-        return modelMapper.map(brand, BrandDTO.class);
+
+    /**
+     *{@inheritDoc}
+     */
+    public BrandDTO getBrandById(Long brandId) throws CustomException {
+        Optional<Brand> brand = brandRepository.findById(brandId);
+        if (brand.isPresent()) {
+            return modelMapper.map(brand.get(), BrandDTO.class);
+        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
     }
-    public Brand updateBrand(Brand brand) {
-        return brandRepository.save(brand);
+
+    /**
+     *{@inheritDoc}
+     */
+    public BrandDTO updateBrand(BrandDTO brandDTO) throws CustomException {
+        Brand brand = modelMapper.map(brandDTO, Brand.class);
+        Optional<Brand> existBrand = brandRepository.findById(brandDTO.getBrandId());
+        if (existBrand.isPresent()) {
+            brand.setCreatedAt(existBrand.get().getCreatedAt());
+            brand.setModifiedAt(dateTimeValidation.getDate());
+            return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
+        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
     }
-    public Brand deleteBrand(Long brandId) {
-        Brand brand = brandRepository.findById(brandId).get();
-        brand.setDeletedStatus(1);
-        return brandRepository.save(brand);
+
+    /**
+     *{@inheritDoc}
+     */
+    public Long deleteBrand(Long brandId) throws CustomException {
+        Optional<Brand> brand = brandRepository.findById(brandId);
+        if(brand.isPresent()) {
+            brand.get().setDeletedStatus(1);
+            return brandRepository.save(brand.get()).getBrandId();
+        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
     }
 }

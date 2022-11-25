@@ -1,7 +1,11 @@
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.model.Warehouse;
+import com.ideas2it.ideameds.dto.WarehouseDTO;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.WarehouseService;
+import com.ideas2it.ideameds.util.Constants;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,13 +31,13 @@ public class WarehouseController {
      * <p>
      *     Adds the warehouse
      * </p>
-     * @param warehouse
+     * @param warehouseDTO
      *        new warehouse to add
      * @return warehouse which was added
      */
     @PostMapping("/warehouse")
-    public Warehouse addWarehouse(@RequestBody Warehouse warehouse) {
-        return warehouseService.addWarehouse(warehouse);
+    public ResponseEntity<WarehouseDTO> addWarehouse(@RequestBody WarehouseDTO warehouseDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(warehouseService.addWarehouse(warehouseDTO));
     }
 
     /**
@@ -43,8 +47,8 @@ public class WarehouseController {
      * @return list of all warehouses
      */
     @GetMapping("/warehouse")
-    public List<Warehouse> getAllWarehouses() {
-        return warehouseService.getAllWarehouses();
+    public ResponseEntity<List<WarehouseDTO>> getAllWarehouses() {
+        return ResponseEntity.status(HttpStatus.OK).body(warehouseService.getAllWarehouses());
     }
 
     /**
@@ -56,21 +60,23 @@ public class WarehouseController {
      * @return warehouse using id
      */
     @GetMapping("/warehouse/{warehouseId}")
-    public Warehouse getWarehouseById(@PathVariable("warehouseId") Long warehouseId) {
-        return warehouseService.getWarehouseById(warehouseId);
+    public ResponseEntity<WarehouseDTO> getWarehouseById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK).body(warehouseService.getWarehouseById(warehouseId));
     }
 
     /**
      * <p>
      *     updates the warehouse
      * </p>
-     * @param warehouse
+     * @param warehouseDTO
      *        warehouse to update
      * @return updated warehouse
+     * @throws CustomException
+     *         throws when the warehouse is not found
      */
     @PutMapping("/warehouse")
-    public Warehouse updateWarehouse(@RequestBody Warehouse warehouse) {
-        return warehouseService.updateWarehouse(warehouse);
+    public WarehouseDTO updateWarehouse(@RequestBody WarehouseDTO warehouseDTO) throws CustomException {
+        return warehouseService.updateWarehouse(warehouseDTO);
     }
 
     /**
@@ -80,9 +86,15 @@ public class WarehouseController {
      * @param warehouseId
      *        warehouse id to delete warehouse
      * @return response for deletion
+     * @throws CustomException
+     *         throws when the warehouse is not found
      */
     @PutMapping("/warehouse/delete/{warehouseId}")
-    public Warehouse deleteWarehouse(@PathVariable("warehouseId") Long warehouseId) {
-        return warehouseService.deleteWarehouse(warehouseId);
+    public ResponseEntity<String> deleteWarehouse(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
+        Long warehouseById = warehouseService.deleteWarehouse(warehouseId);
+        if(warehouseById != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(warehouseById + Constants.DELETED_SUCCESSFULLY);
+        } else
+            return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
     }
 }
