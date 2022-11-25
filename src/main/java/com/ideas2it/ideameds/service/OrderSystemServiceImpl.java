@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.OrderItem;
@@ -12,7 +13,9 @@ import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.OrderSystemRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,15 +40,18 @@ public class OrderSystemServiceImpl implements OrderSystemService {
 
     private final OrderSystemRepository orderSystemRepository;
 
+    private final DateTimeValidation dateTimeValidation;
+
+    private final ModelMapper modelMapper = new ModelMapper();
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public Optional<OrderSystem> addOrder(Long userId) {
+    public Optional<OrderSystemDTO> addOrder(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         List<CartItem> cartItemList;
-        OrderSystem orderSystem = null;
+        OrderSystem orderSystem;
         List<Cart> cartList = cartRepository.findAll();
         if (user.isPresent()) {
             for (Cart cart : cartList) {
@@ -58,12 +64,16 @@ public class OrderSystemServiceImpl implements OrderSystemService {
                     orderSystem.setDiscountPercentage(cart.getDiscountPercentage());
                     orderSystem.setDiscountPrice(cart.getDiscountPrice());
                     orderSystem.setDiscount(cart.getDiscount());
+                    orderSystem.setOrderDate(dateTimeValidation.getDate());
+                    orderSystem.setCreatedAt(dateTimeValidation.getDate());
+                    orderSystem.setModifiedAt(dateTimeValidation.getDate());
                     orderSystem.setOrderItemList(cartItemToOrderItem(cartItemList));
                     orderSystemRepository.save(orderSystem);
+                    return Optional.of(modelMapper.map(orderSystemRepository.save(orderSystem), OrderSystemDTO.class));
                 }
             }
         }
-        return Optional.ofNullable(orderSystem);
+        return Optional.empty();
     }
 
     /**

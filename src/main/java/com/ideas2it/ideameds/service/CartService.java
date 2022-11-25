@@ -4,7 +4,8 @@
  */
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.dto.CartDTO;
+import com.ideas2it.ideameds.exception.CustomException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,23 +23,25 @@ public interface CartService {
     /**
      * Medicines add in cart and save in cart repository.
      * @param userId - To map user with cart.
-     * @param cart - To store the data in cart repository.
+     * @param cartDto - To store the data in cart repository.
      * @return Total price, discount price and discount.
      */
-    Optional<Cart> addCart(Long userId, Cart cart);
+    Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException;
 
     /**
      * Get one cart by user id.
+     *
      * @param userId - To get one cart.
      * @return One cart.
      */
-    Optional<Cart> getCartByUserId(Long userId);
+    Optional<CartDTO> getCartByUserId(Long userId) throws CustomException;
 
     /**
      * Retrieve all data from cart repository.
+     *
      * @return All cart.
      */
-    List<Cart> getAllCart();
+    List<CartDTO> getAllCart();
 
     boolean deleteCartByUserId(Long userId);
 }

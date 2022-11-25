@@ -74,6 +74,4 @@ public class BrandItems {
 
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
-    private Date createdAt;
-    private Date modifiedAt;
 }

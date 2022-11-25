@@ -4,16 +4,21 @@
  */
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.model.BrandItems;
-import com.ideas2it.ideameds.model.Cart;
-import com.ideas2it.ideameds.model.CartItem;
-import com.ideas2it.ideameds.model.Discount;
-import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.controller.BrandController;
+import com.ideas2it.ideameds.controller.BrandItemsController;
+import com.ideas2it.ideameds.controller.UserController;
+import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.CartDTO;
+import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.*;
 import com.ideas2it.ideameds.repository.BrandItemsRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
+import com.ideas2it.ideameds.util.Constants;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,24 +44,35 @@ public class CartServiceImpl implements CartService {
 
     private final DiscountRepository discountRepository;
 
-    private final BrandItemsRepository brandItemsRepository;
+    private final DateTimeValidation dateTimeValidation;
+
+    private final UserController userController;
+
+    private final BrandItemsController brandItemsController;
+
+    private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public Optional<Cart> addCart(Long userId, Cart cart) {
+    public Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException {
+        Cart cart = modelMapper.map(cartDto, Cart.class);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Cart> existedCart = cartRepository.findByUser(user.get());
             if(existedCart.isPresent()) {
                 cart.setCartId(existedCart.get().getCartId());
                 cart.setUser(user.get());
+                cart.setCreatedAt(dateTimeValidation.getDate());
+                cart.setModifiedAt(dateTimeValidation.getDate());
                 existedCart = Optional.of(cart);
-                return Optional.ofNullable(checkAndAddCart(existedCart.get()));
+                Cart addedCart = checkAndAddCart(existedCart.get());
+                return Optional.of(modelMapper.map(cartRepository.save(addedCart), CartDTO.class));
             } else {
                 cart.setUser(user.get());
-                return Optional.ofNullable(checkAndAddCart(cart));
+                Cart addedCart = checkAndAddCart(cart);
+                return Optional.of(modelMapper.map(cartRepository.save(addedCart), CartDTO.class));
             }
         }
         return Optional.empty();
@@ -69,12 +85,14 @@ public class CartServiceImpl implements CartService {
      * @param cart - Set all the cart details in the cart.
      * @return cart.
      */
-    public Cart checkAndAddCart(Cart cart) {
+    public Cart checkAndAddCart(Cart cart) throws CustomException {
         float price = 0;
         List<CartItem> cartItems = new ArrayList<>();
         List<CartItem> userCartItems = cart.getCartItemList();
+
         for(CartItem cartItemTemp : userCartItems) {
-            Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemTemp.getBrandItems().getBrandItemsId());
+            BrandItemsDTO brandItemsDTO = brandItemsController.getBrandItemById(cartItemTemp.getBrandItems().getBrandItemsId()).getBody();
+            Optional<BrandItems> brandItems = Optional.ofNullable(modelMapper.map(brandItemsDTO, BrandItems.class));
             if (brandItems.isPresent()) {
                 CartItem cartItem = new CartItem();
                 cartItem.setQuantity(cartItemTemp.getQuantity());
@@ -82,13 +100,15 @@ public class CartServiceImpl implements CartService {
                 cartItem.setMedicine(brandItems.get().getMedicine());
                 cartItems.add(cartItem);
                 price = price + (brandItems.get().getPrice() * cartItem.getQuantity());
+            } else {
+                throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
             }
         }
         cart.setCartItemList(cartItems);
         cart.setTotalPrice(price);
         price = calculateDiscount(price, cart);
         cart.setDiscountPrice(price);
-        return cartRepository.save(cart);
+        return cart;
     }
 
     /**
@@ -116,23 +136,33 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public Optional<Cart> getCartByUserId(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+    public Optional<CartDTO> getCartByUserId(Long userId) throws CustomException {
+        Optional<User> user = Optional.ofNullable(userController.getUserById(userId).getBody());
         if (user.isPresent()) {
-            return cartRepository.findByUser(user.get());
+            Optional<Cart> cart = cartRepository.findByUser(user.get());
+            if (cart.isPresent()) {
+                return Optional.of(modelMapper.map(cart, CartDTO.class));
+            } else {
+                throw new CustomException(Constants.NO_ITEMS);
+            }
         }
-        return Optional.empty();
+        throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public List<Cart> getAllCart() {
-        return cartRepository.findAll();
+    public List<CartDTO> getAllCart() {
+        List<CartDTO> cartList = new ArrayList<>();
+        List<Cart> carts = cartRepository.findAll();
+        for (Cart cart : carts) {
+            cartList.add(modelMapper.map(cart, CartDTO.class));
+        }
+        return cartList;
     }
 
     /**
