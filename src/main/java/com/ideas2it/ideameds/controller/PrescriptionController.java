@@ -4,8 +4,7 @@
  */
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.dto.BrandItemsDTO;
-import com.ideas2it.ideameds.dto.PrescriptionDTO;
+import com.ideas2it.ideameds.dto.*;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Cart;
@@ -114,13 +113,13 @@ public class PrescriptionController {
      */
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws CustomException {
-        Optional<User> user = Optional.ofNullable(userService.getUserById(userId));
-        PrescriptionDTO prescription = prescriptionService.getPrescription(prescriptionId);
+        UserDTO userDTO = userService.getUserById(userId);
+        PrescriptionDTO prescriptionDTO = prescriptionService.getPrescription(prescriptionId);
 
-        if(user.isPresent()) {
-            if (null != prescription) {
-                dateTimeValidation.validateDateOfIssue(prescription.getDateOfIssue());
-                addToCart(prescription.getPrescriptionItems(), user.get());
+        if(null != userDTO) {
+            if (null != prescriptionDTO) {
+                dateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
+                addToCart(prescriptionDTO.getPrescriptionItems(), userDTO);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
             } else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
@@ -131,16 +130,16 @@ public class PrescriptionController {
      * @param prescriptionItems To map the prescribed medicines
      * @param user To add the medicines to required user's cart
      */
-    private void addToCart(List<PrescriptionItems> prescriptionItems, User user) {
-        Cart cart = new Cart();
-        List<CartItem> cartItems = new ArrayList<>();
+    private void addToCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO user) throws CustomException {
+        CartDTO cart = new CartDTO();
+        List<CartItemDto> cartItems = new ArrayList<>();
         if(prescriptionItems != null){
             List<BrandItemsDTO> brandItemsList = brandItemsService.getAllBrandItems();
-            for(PrescriptionItems prescriptionItem : prescriptionItems) {
+            for(PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
                 for (BrandItemsDTO brandItem : brandItemsList) {
                     if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
-                        CartItemDTO cartItem = new CartItem();
-                        cartItem.setBrandItems(brandItem);
+                        CartItemDto cartItem = new CartItemDto();
+                        cartItem.setBrandItemsDTO(brandItem);
                         cartItem.setQuantity(prescriptionItem.getQuantity());
                         cartItems.add(cartItem);
                         cart.setCartItemList(cartItems);

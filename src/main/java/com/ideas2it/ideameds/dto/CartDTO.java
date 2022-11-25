@@ -24,5 +24,5 @@ public class CartDTO {
     private float discountPercentage;
     private Discount discount;
     private String userName;
-    private List<CartItem> cartItemList;
+    private List<CartItemDto> cartItemList;
 }
