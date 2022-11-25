@@ -40,5 +40,5 @@ public class PrescriptionItems extends Base{
     private String medicineType;
 
     @NotNull
-    private String medicineName;
+    private String brandItemName;
 }
