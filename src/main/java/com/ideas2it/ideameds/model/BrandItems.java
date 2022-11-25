@@ -51,9 +51,7 @@ public class BrandItems {
 
     private int packageQuantity;
 
-    @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
-    @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
     @ManyToOne

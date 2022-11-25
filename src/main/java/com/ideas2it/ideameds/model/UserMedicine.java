@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -32,6 +33,6 @@ public class UserMedicine {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private Date createdAt;
-    private Date modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }

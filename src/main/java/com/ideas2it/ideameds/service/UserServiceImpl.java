@@ -4,16 +4,20 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.AddressDTO;
+import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.util.Constants;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service of User.
@@ -23,38 +27,37 @@ import java.util.stream.Collectors;
  * @since - 2022-11-18
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public Optional<User> addUser(User user) {
-        Optional<User> savedUser = Optional.of(userRepository.save(user));
-
-        if (savedUser.isPresent()) {
-            return savedUser;
-        } else {
-            return Optional.empty();
+    public Optional<UserDTO> addUser(UserDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);;
+        List<Address> addresses = user.getAddresses();
+        addresses.removeAll(user.getAddresses());
+        for(AddressDTO addressDTO : userDTO.getAddresses()) {
+            addresses.add(modelMapper.map(addressDTO,Address.class));
         }
+        return Optional.of(modelMapper.map(userRepository.save(user), UserDTO.class));
     }
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public User getUserById(Long userId) throws CustomException {
-        Optional<User> userOptional = userRepository.findById(userId);
+    public UserDTO getUserById(Long userId) throws CustomException {
+        Optional<User> user = userRepository.findById(userId);
+        UserDTO fetchedUser = modelMapper.map(user,UserDTO.class);
 
-        if (userOptional.isPresent() && (userOptional.get().getDeletedStatus() != 1)) {
-            return userOptional.get();
+        if (fetchedUser != null && (fetchedUser.getDeletedStatus() != 1)) {
+            return fetchedUser;
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
         }
@@ -64,16 +67,22 @@ public class UserServiceImpl implements UserService {
      *{@inheritDoc}
      */
     @Override
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUser() {
+        List<UserDTO> users = new ArrayList<>();
+        for (User user: userRepository.findAll()) {
+            UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+            users.add(userDTO);
+        }
+        return users;
     }
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public String updateUser(User user) throws CustomException {
-        User updatedUser = userRepository.save(user);
+    public String updateUser(UserDTO userDTO) throws CustomException {
+        User user = modelMapper.map(userDTO, User.class);
+        UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
 
         if (null != updatedUser) {
             return updatedUser.getName() + " ." + "Updated Successfully";
@@ -86,14 +95,13 @@ public class UserServiceImpl implements UserService {
      *{@inheritDoc}
      */
     @Override
-    public String deleteUser(User user) throws CustomException {
+    public String deleteUser(UserDTO userDTO) throws CustomException {
+        User user = modelMapper.map(userDTO, User.class);
         Optional<User> userOptional = userRepository.findById(user.getUserId());
         if (userOptional.isPresent() && userOptional.get().getDeletedStatus() != 1) {
             user.setDeletedStatus(1);
-            Optional<User> deleteUser = Optional.of(userRepository.save(user));
-            if (deleteUser.isPresent()) {
-                return deleteUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
-            }
+            Optional<UserDTO> deleteUser = Optional.of(modelMapper.map(userRepository.save(user),UserDTO.class));
+            return deleteUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
         }
         throw new CustomException(Constants.USER_NOT_FOUND);
     }
@@ -111,7 +119,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<String> getUserPhoneNumber() {
-        return userRepository.findAll().stream().map(User::getPhoneNumber).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(User::getPhoneNumber).toList();
     }
 
     /**
@@ -119,6 +127,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<String> getUserEmail() {
-        return userRepository.findAll().stream().map(User::getEmailId).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(User::getEmailId).toList();
     }
 }
