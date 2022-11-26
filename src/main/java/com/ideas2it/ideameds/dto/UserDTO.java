@@ -38,5 +38,5 @@ public class UserDTO {
     private List<Prescription> prescription;
     private List<UserMedicine> userMedicines;
     private Role roleType;
-    private int deletedStatus;
+    private boolean isDeletedStatus;
 }
