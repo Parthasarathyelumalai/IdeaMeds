@@ -34,7 +34,7 @@ public interface CartService {
      * @param userId - To get one cart.
      * @return One cart.
      */
-    Optional<CartDTO> getCartByUserId(Long userId) throws CustomException;
+    CartDTO getCartByUserId(Long userId) throws CustomException;
 
     /**
      * Retrieve all data from cart repository.

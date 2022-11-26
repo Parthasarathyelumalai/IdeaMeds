@@ -67,11 +67,11 @@ public class CartController {
      */
     @GetMapping("/cart/{id}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
-        Optional<CartDTO> cart = cartService.getCartByUserId(userId);
-        if (cart.isPresent()) {
+        CartDTO cart = cartService.getCartByUserId(userId);
+        if (null != cart) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(cart.get());
+                    .body(cart);
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
         }
