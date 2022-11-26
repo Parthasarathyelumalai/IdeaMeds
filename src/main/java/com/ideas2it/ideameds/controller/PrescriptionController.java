@@ -142,7 +142,7 @@ public class PrescriptionController {
                         cartItem.setBrandItemsDTO(brandItem);
                         cartItem.setQuantity(prescriptionItem.getQuantity());
                         cartItems.add(cartItem);
-                        cart.setCartItemList(cartItems);
+                        cart.setCartItemDtoList(cartItems);
                     }
                 }
             }

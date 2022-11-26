@@ -4,13 +4,12 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.MedicineDTO;
+import com.ideas2it.ideameds.dto.OrderItemDTO;
 import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.Cart;
-import com.ideas2it.ideameds.model.CartItem;
-import com.ideas2it.ideameds.model.OrderItem;
-import com.ideas2it.ideameds.model.OrderSystem;
-import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.model.*;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.OrderSystemRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
@@ -42,8 +41,6 @@ public class OrderSystemServiceImpl implements OrderSystemService {
 
     private final OrderSystemRepository orderSystemRepository;
 
-    private final DateTimeValidation dateTimeValidation;
-
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -52,29 +49,58 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     @Override
     public Optional<OrderSystemDTO> addOrder(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        List<CartItem> cartItemList;
-        OrderSystem orderSystem;
         if (user.isPresent()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
             if(cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId())) {
-                orderSystem =  new OrderSystem();
-                cartItemList = cart.get().getCartItemList();
+                OrderSystem orderSystem =  new OrderSystem();
+                List<CartItem> cartItemList = cart.get().getCartItemList();
                 orderSystem.setUser(user.get());
                 orderSystem.setCart(cart.get());
                 orderSystem.setTotalPrice(cart.get().getTotalPrice());
                 orderSystem.setDiscountPercentage(cart.get().getDiscountPercentage());
                 orderSystem.setDiscountPrice(cart.get().getDiscountPrice());
                 orderSystem.setDiscount(cart.get().getDiscount());
-                orderSystem.setOrderDate(dateTimeValidation.getDate());
-                orderSystem.setCreatedAt(dateTimeValidation.getDate());
-                orderSystem.setModifiedAt(dateTimeValidation.getDate());
+                orderSystem.setOrderDate(DateTimeValidation.getDate());
+                orderSystem.setCreatedAt(DateTimeValidation.getDate());
+                orderSystem.setModifiedAt(DateTimeValidation.getDate());
                 orderSystem.setOrderItemList(cartItemToOrderItem(cartItemList));
-                orderSystemRepository.save(orderSystem);
-                return Optional.of(modelMapper.map(orderSystemRepository.save(orderSystem), OrderSystemDTO.class));
+                OrderSystem savedOrder = orderSystemRepository.save(orderSystem);
+                OrderSystemDTO orderDto = convertToOrderDto(savedOrder);
+                return Optional.of(orderDto);
             } throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
         } throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
+    private OrderSystemDTO convertToOrderDto(OrderSystem savedOrder) throws CustomException {
+        OrderSystemDTO orderSystemDTO = modelMapper.map(savedOrder, OrderSystemDTO.class);
+        List<OrderItem> orderItemList = savedOrder.getOrderItemList();
+        orderSystemDTO.setOrderItemDTOList(convertToOrderItemDto(orderItemList));
+        return orderSystemDTO;
+    }
+
+    private List<OrderItemDTO> convertToOrderItemDto(List<OrderItem> orderItemList) throws CustomException {
+        List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
+        for (OrderItem orderItem : orderItemList) {
+            OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
+            Optional<BrandItemsDTO> brandItemsDTO = convertToBrandItemDto(orderItem.getBrandItems());
+            if (brandItemsDTO.isPresent()) {
+                orderItemDTO.setBrandItemsDTO(brandItemsDTO.get());
+                orderItemDTO.setMedicineDTO(convertToMedicineDto(orderItem.getMedicine()));
+                orderItemDTOList.add(orderItemDTO);
+            } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        }
+        return orderItemDTOList;
+    }
+
+    public Optional<BrandItemsDTO> convertToBrandItemDto(BrandItems brandItems) {
+        if (null != brandItems) return Optional.of(modelMapper.map(brandItems, BrandItemsDTO.class));
+        return  Optional.empty();
+    }
+
+    public MedicineDTO convertToMedicineDto(Medicine medicine) throws CustomException {
+        if (null != medicine) return modelMapper.map(medicine, MedicineDTO.class);
+        else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+    }
     /**
      * Copy cart item to order item.
      * @param cartItemList - To copy cart item list to order item list.
@@ -98,22 +124,30 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      *{@inheritDoc}
      */
     @Override
-    public List<OrderSystem> getAllOrder() {
-        return orderSystemRepository.findAll();
+    public List<OrderSystemDTO> getAllOrder() throws CustomException {
+        List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
+        List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
+        for (OrderSystem orderSystem : orderSystemList) {
+            OrderSystemDTO orderSystemDTO = modelMapper.map(orderSystem, OrderSystemDTO.class);
+            orderSystemDTO.setOrderItemDTOList(convertToOrderItemDto(orderSystem.getOrderItemList()));
+            orderSystemDTOList.add(orderSystemDTO);
+        }
+        return orderSystemDTOList;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<OrderSystem> getOrderByUserId(Long userId) {
+    public Optional<OrderSystemDTO> getOrderByUserId(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<OrderSystem> orderSystem = orderSystemRepository.findByUser(user.get());
             if (orderSystem.isPresent()) {
-                return orderSystem;
+                OrderSystemDTO orderSystemDTO = convertToOrderDto(orderSystem.get());
+                return Optional.of(orderSystemDTO);
             }
-        }
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
         return Optional.empty();
     }
 
@@ -125,10 +159,12 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
         List<OrderSystem> previousOrder = new ArrayList<>();
         for (OrderSystem orderSystem : orderSystemList) {
-            if (Objects.equals(user.get().getUserId(), orderSystem.getUser().getUserId())) {
+            if (user.isPresent() && Objects.equals(user.get().getUserId(), orderSystem.getUser().getUserId())) {
                 previousOrder.add(orderSystem);
             }
         }
         return previousOrder;
     }
+
+
 }

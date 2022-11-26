@@ -24,8 +24,7 @@ public class OrderSystemDTO {
     private float totalPrice;
     private float discountPrice;
     private float discountPercentage;
-    private int deletedStatus;
-    private User user;
-    private Cart cart;
-    private List<OrderItem> orderItemList;
+//    private int deletedStatus;
+//    private User user;
+    private List<OrderItemDTO> orderItemDTOList;
 }
