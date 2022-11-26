@@ -46,31 +46,6 @@ public class CartServiceImpl implements CartService {
 
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public Optional<BrandItemsDTO> convertToBrandItemDto(BrandItems brandItems) {
-        if (brandItems != null) return Optional.of(modelMapper.map(brandItems, BrandItemsDTO.class));
-        return  Optional.empty();
-    }
-
-    public MedicineDTO convertToMedicineDto(Medicine medicine) {
-        return modelMapper.map(medicine, MedicineDTO.class);
-    }
-
-    public List<CartItem> convertToCartItem(List<CartItemDto> cartItemDtoList) throws CustomException {
-        List<CartItem> cartItemList = new ArrayList<>();
-        for (CartItemDto cartItemDto : cartItemDtoList) {
-            Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemDto.getBrandItemsDTO().getBrandItemsId());
-            if (brandItems.isPresent()) {
-                Optional<BrandItemsDTO> brandItemsDTO = convertToBrandItemDto(brandItems.get());
-                if (brandItemsDTO.isPresent()) {
-                    cartItemDto.setBrandItemsDTO(brandItemsDTO.get());
-                    cartItemDto.setMedicineDTO(convertToMedicineDto(brandItems.get().getMedicine()));
-                    cartItemList.add(modelMapper.map(cartItemDto, CartItem.class));
-                }
-            } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
-        }
-        return cartItemList;
-    }
-
     /**
      *{@inheritDoc}
      */
@@ -101,6 +76,11 @@ public class CartServiceImpl implements CartService {
         return Optional.empty();
     }
 
+    /**
+     * This method is used to get total price of cart(Each and every brand items in the cart).
+     * @param cart - Get cartItems to calculate total price of the cart.
+     * @return - Cart with total price.
+     */
     public Cart getTotalPriceOfCart(Cart cart) {
         List<CartItem> cartItems = cart.getCartItemList();
         float price = 0;
@@ -138,6 +118,48 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
+     * Convert cart item dto to cart item entity.
+     * @param cartItemDtoList - Convert cart item dto list to cart item entity.
+     * @return - cart item list.
+     * @throws CustomException - Brand item not found exception.
+     */
+    public List<CartItem> convertToCartItem(List<CartItemDto> cartItemDtoList) throws CustomException {
+        List<CartItem> cartItemList = new ArrayList<>();
+        for (CartItemDto cartItemDto : cartItemDtoList) {
+            Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemDto.getBrandItemsDTO().getBrandItemsId());
+            if (brandItems.isPresent()) {
+                Optional<BrandItemsDTO> brandItemsDTO = convertToBrandItemDto(brandItems.get());
+                if (brandItemsDTO.isPresent()) {
+                    cartItemDto.setBrandItemsDTO(brandItemsDTO.get());
+                    cartItemDto.setMedicineDTO(convertToMedicineDto(brandItems.get().getMedicine()));
+                    cartItemList.add(modelMapper.map(cartItemDto, CartItem.class));
+                }
+            } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        }
+        return cartItemList;
+    }
+
+    /**
+     * Convert brand item to brand item dto.
+     * @param brandItems - To convert brand item to brand item dto.
+     * @return - Brand item dto.
+     */
+    public Optional<BrandItemsDTO> convertToBrandItemDto(BrandItems brandItems) {
+        if (null != brandItems) return Optional.of(modelMapper.map(brandItems, BrandItemsDTO.class));
+        return  Optional.empty();
+    }
+
+    /**
+     * Convert medicine to medicine dto.
+     * @param medicine - To convert medicine entity to medicine dto.
+     * @return - medicine dto.
+     */
+    public MedicineDTO convertToMedicineDto(Medicine medicine) throws CustomException {
+        if (null != medicine) return modelMapper.map(medicine, MedicineDTO.class);
+        else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -145,20 +167,47 @@ public class CartServiceImpl implements CartService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
-            if (cart.isPresent()) return modelMapper.map(cart, CartDTO.class);
+            if (cart.isPresent()) {
+                CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+                List<CartItemDto> cartItemDtoList = convertToCartItemDto(cart.get().getCartItemList());
+                cartDTO.setCartItemList(cartItemDtoList);
+                return cartDTO;
+            }
             else throw new CustomException(Constants.NO_ITEMS);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
+    }
+
+    /**
+     * Convert to cart item dto.
+     * @param cartItemList - To convert cart entity to cart item dto.
+     * @return cart item dto list.
+     * @throws CustomException - Medicine not found.
+     */
+    public List<CartItemDto> convertToCartItemDto(List<CartItem> cartItemList) throws CustomException {
+        List<CartItemDto> cartItemDtoList = new ArrayList<>();
+        for (CartItem cartItem : cartItemList) {
+            CartItemDto cartItemDto = modelMapper.map(cartItem, CartItemDto.class);
+            Optional<BrandItemsDTO> brandItemsDTO = convertToBrandItemDto(cartItem.getBrandItems());
+            brandItemsDTO.ifPresent(cartItemDto::setBrandItemsDTO);
+            MedicineDTO medicineDTO = convertToMedicineDto(cartItem.getBrandItems().getMedicine());
+            if (medicineDTO != null) cartItemDto.setMedicineDTO(medicineDTO);
+            cartItemDtoList.add(cartItemDto);
+        }
+        return cartItemDtoList;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<CartDTO> getAllCart() {
+    public List<CartDTO> getAllCart() throws CustomException {
         List<CartDTO> cartList = new ArrayList<>();
         List<Cart> carts = cartRepository.findAll();
         for (Cart cart : carts) {
-            cartList.add(modelMapper.map(cart, CartDTO.class));
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+            List<CartItemDto> cartItemDtoList = convertToCartItemDto(cart.getCartItemList());
+            cartDTO.setCartItemList(cartItemDtoList);
+            cartList.add(cartDTO);
         }
         return cartList;
     }

@@ -5,6 +5,7 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.OrderSystemDTO;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.OrderSystem;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface OrderSystemService {
      * @param userId - To get user and cart details to map with order.
      * @return - Total price of order.
      */
-    Optional<OrderSystemDTO> addOrder(Long userId);
+    Optional<OrderSystemDTO> addOrder(Long userId) throws CustomException;
 
     /**
      * All users order details.

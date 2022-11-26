@@ -5,6 +5,7 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.OrderSystemDTO;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.OrderItem;
@@ -13,6 +14,7 @@ import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.OrderSystemRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
+import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -48,32 +50,29 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<OrderSystemDTO> addOrder(Long userId) {
+    public Optional<OrderSystemDTO> addOrder(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         List<CartItem> cartItemList;
         OrderSystem orderSystem;
-        List<Cart> cartList = cartRepository.findAll();
         if (user.isPresent()) {
-            for (Cart cart : cartList) {
-                if(Objects.equals(user.get().getUserId(), cart.getUser().getUserId())) {
-                    orderSystem =  new OrderSystem();
-                    cartItemList = cart.getCartItemList();
-                    orderSystem.setUser(user.get());
-                    orderSystem.setCart(cart);
-                    orderSystem.setTotalPrice(cart.getTotalPrice());
-                    orderSystem.setDiscountPercentage(cart.getDiscountPercentage());
-                    orderSystem.setDiscountPrice(cart.getDiscountPrice());
-                    orderSystem.setDiscount(cart.getDiscount());
-                    orderSystem.setOrderDate(dateTimeValidation.getDate());
-                    orderSystem.setCreatedAt(dateTimeValidation.getDate());
-                    orderSystem.setModifiedAt(dateTimeValidation.getDate());
-                    orderSystem.setOrderItemList(cartItemToOrderItem(cartItemList));
-                    orderSystemRepository.save(orderSystem);
-                    return Optional.of(modelMapper.map(orderSystemRepository.save(orderSystem), OrderSystemDTO.class));
-                }
-            }
-        }
-        return Optional.empty();
+            Optional<Cart> cart = cartRepository.findByUser(user.get());
+            if(cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId())) {
+                orderSystem =  new OrderSystem();
+                cartItemList = cart.get().getCartItemList();
+                orderSystem.setUser(user.get());
+                orderSystem.setCart(cart.get());
+                orderSystem.setTotalPrice(cart.get().getTotalPrice());
+                orderSystem.setDiscountPercentage(cart.get().getDiscountPercentage());
+                orderSystem.setDiscountPrice(cart.get().getDiscountPrice());
+                orderSystem.setDiscount(cart.get().getDiscount());
+                orderSystem.setOrderDate(dateTimeValidation.getDate());
+                orderSystem.setCreatedAt(dateTimeValidation.getDate());
+                orderSystem.setModifiedAt(dateTimeValidation.getDate());
+                orderSystem.setOrderItemList(cartItemToOrderItem(cartItemList));
+                orderSystemRepository.save(orderSystem);
+                return Optional.of(modelMapper.map(orderSystemRepository.save(orderSystem), OrderSystemDTO.class));
+            } throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+        } throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**

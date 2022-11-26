@@ -6,7 +6,6 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.service.CartService;
 import com.ideas2it.ideameds.util.Constants;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +55,7 @@ public class CartController {
      * @return All cart.
      */
     @GetMapping("/allcart")
-    public ResponseEntity<List<CartDTO>> getAllCart() {
+    public ResponseEntity<List<CartDTO>> getAllCart() throws CustomException {
         return (ResponseEntity.status(HttpStatus.ACCEPTED).body(cartService.getAllCart()));
     }
 
