@@ -33,14 +33,15 @@ public interface OrderSystemService {
      * All users order details.
      * @return - All users order details.
      */
-    List<OrderSystem> getAllOrder();
+    List<OrderSystemDTO> getAllOrder() throws CustomException;
 
     /**
      * To get one order details by user id.
+     *
      * @param userId - To get one user order.
      * @return - One user order details
      */
-    Optional<OrderSystem> getOrderByUserId(Long userId);
+    Optional<OrderSystemDTO> getOrderByUserId(Long userId) throws CustomException;
 
     /**
      * Get all previous order items for given user id.

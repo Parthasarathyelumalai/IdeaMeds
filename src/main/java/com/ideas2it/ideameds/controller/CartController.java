@@ -37,14 +37,12 @@ public class CartController {
      * @return Total price, discount price and discount.
      */
     @PutMapping("/cart/{id}")
-    public ResponseEntity<String> addCart(@PathVariable("id") Long userId, @RequestBody CartDTO cartDto) throws CustomException {
-        Optional<CartDTO> addedCart = cartService.addCart(userId, cartDto);
-        if (addedCart.get().getTotalPrice() != 0) {
+    public ResponseEntity<CartDTO> addCart(@PathVariable("id") Long userId, @RequestBody CartDTO cartDto) throws CustomException {
+        Optional<CartDTO> cartDTO = cartService.addCart(userId, cartDto);
+        if (cartDTO.isPresent() && cartDTO.get().getTotalPrice() != 0) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Cart added successfully. \nTotal price : " + addedCart.get().getTotalPrice()
-                            + "\nDiscount : " + addedCart.get().getDiscountPercentage() + "%"
-                            + "\nDiscount price : " + addedCart.get().getDiscountPrice());
+                    .body(cartDTO.get());
         } else {
            throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
         }

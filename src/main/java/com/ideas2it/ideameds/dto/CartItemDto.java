@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CartItemDto {
-
     private Long cartItemId;
     private int quantity;
     private MedicineDTO medicineDTO;

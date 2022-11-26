@@ -16,6 +16,6 @@ import lombok.Setter;
 public class OrderItemDTO {
     private Long orderItemId;
     private int quantity;
-    private Medicine medicine;
-    private BrandItems brandItems;
+    private MedicineDTO medicineDTO;
+    private BrandItemsDTO brandItemsDTO;
 }

@@ -8,6 +8,7 @@ import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.service.OrderSystemService;
+import com.ideas2it.ideameds.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,17 +40,14 @@ public class OrderSystemController {
      * @return - Price of the order (total price, discount price, discount percentage).
      */
     @PutMapping("/order/{id}")
-    public ResponseEntity<String> addOrder(@PathVariable("id") Long userId) throws CustomException {
+    public ResponseEntity<OrderSystemDTO> addOrder(@PathVariable("id") Long userId) throws CustomException {
         Optional<OrderSystemDTO> orderSystem = orderSystemService.addOrder(userId);
         if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Order successful."
-                            + "\nTotal price : " + orderSystem.get().getTotalPrice()
-                            + "\nDiscount : " + orderSystem.get().getDiscountPercentage() + "%"
-                            + "\nDiscount price : " + orderSystem.get().getDiscountPrice());
+                    .body(orderSystem.get());
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("order unsuccessful");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     /**
@@ -57,8 +55,12 @@ public class OrderSystemController {
      * @return - All users order details.
      */
     @GetMapping("/allorder")
-    public ResponseEntity<List<OrderSystem>> getAllOrder() {
-        return (ResponseEntity.status(HttpStatus.ACCEPTED).body(orderSystemService.getAllOrder()));
+    public ResponseEntity<List<OrderSystemDTO>> getAllOrder() throws CustomException {
+        List<OrderSystemDTO> orderSystemDTOList = orderSystemService.getAllOrder();
+        if (null != orderSystemDTOList)
+            return (ResponseEntity.status(HttpStatus.ACCEPTED).body(orderSystemDTOList));
+        else
+            throw new CustomException(Constants.ORDER_ITEM_NOT_FOUND);
     }
 
     /**
@@ -67,14 +69,14 @@ public class OrderSystemController {
      * @return - One user order details
      */
     @GetMapping("/order/{id}")
-    public ResponseEntity<OrderSystem> getOrderByUserId(@PathVariable("id") Long userId) {
-        Optional<OrderSystem> orderSystem = orderSystemService.getOrderByUserId(userId);
+    public ResponseEntity<OrderSystemDTO> getOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
+        Optional<OrderSystemDTO> orderSystem = orderSystemService.getOrderByUserId(userId);
         if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(orderSystem.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw new CustomException(Constants.ORDER_ITEM_NOT_FOUND);
         }
     }
 

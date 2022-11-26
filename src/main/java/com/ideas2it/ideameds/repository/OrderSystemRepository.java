@@ -23,5 +23,4 @@ import java.util.Optional;
 public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long> {
 
     Optional<OrderSystem> findByUser(User user);
-
 }
