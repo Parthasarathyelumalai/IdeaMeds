@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Where(clause = "is_deleted_status = false")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +43,7 @@ public class User {
     private List<Address> addresses;
     @Column(columnDefinition = "BIT default 0" )
     @NotNull
-    private int deletedStatus;
+    private boolean isDeletedStatus;
     @OneToMany(mappedBy = "user")
     private List<Prescription> prescription;
     @OneToMany(mappedBy = "user")
@@ -51,4 +53,5 @@ public class User {
     private Role roleType;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+
 }

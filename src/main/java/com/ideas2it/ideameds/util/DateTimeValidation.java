@@ -39,7 +39,7 @@ public class DateTimeValidation {
      *
      * @return datetime - gives date and time;
      */
-    public LocalDateTime getDate() {
+    public static LocalDateTime getDate() {
         String currentDateAndTime;
         String dateTimeFormatter = "yyyy-MM-dd HH:mm:ss";
         LocalDateTime currentDate = LocalDateTime.now();
