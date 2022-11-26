@@ -41,7 +41,7 @@ public interface CartService {
      *
      * @return All cart.
      */
-    List<CartDTO> getAllCart();
+    List<CartDTO> getAllCart() throws CustomException;
 
     boolean deleteCartByUserId(Long userId);
 }
