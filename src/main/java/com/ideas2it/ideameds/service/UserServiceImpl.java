@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ideas2it.ideameds.util.DateTimeValidation.getDate;
+
 /**
  * Service of User.
  *
@@ -45,6 +47,8 @@ public class UserServiceImpl implements UserService {
         for(AddressDTO addressDTO : userDTO.getAddresses()) {
             addresses.add(modelMapper.map(addressDTO,Address.class));
         }
+        user.setCreatedAt(getDate());
+        user.setModifiedAt(getDate());
         return Optional.of(modelMapper.map(userRepository.save(user), UserDTO.class));
     }
 
@@ -56,7 +60,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(userId);
         UserDTO fetchedUser = modelMapper.map(user,UserDTO.class);
 
-        if (fetchedUser != null && (fetchedUser.getDeletedStatus() != 1)) {
+        if (fetchedUser != null && (!fetchedUser.isDeletedStatus())) {
             return fetchedUser;
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
@@ -82,6 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateUser(UserDTO userDTO) throws CustomException {
         User user = modelMapper.map(userDTO, User.class);
+        user.setModifiedAt(getDate());
         UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
 
         if (null != updatedUser) {
@@ -98,8 +103,8 @@ public class UserServiceImpl implements UserService {
     public String deleteUser(UserDTO userDTO) throws CustomException {
         User user = modelMapper.map(userDTO, User.class);
         Optional<User> userOptional = userRepository.findById(user.getUserId());
-        if (userOptional.isPresent() && userOptional.get().getDeletedStatus() != 1) {
-            user.setDeletedStatus(1);
+        if (userOptional.isPresent() && !userOptional.get().isDeletedStatus() ) {
+            user.setDeletedStatus(true);
             Optional<UserDTO> deleteUser = Optional.of(modelMapper.map(userRepository.save(user),UserDTO.class));
             return deleteUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
         }
