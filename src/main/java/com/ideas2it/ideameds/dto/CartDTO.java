@@ -2,10 +2,8 @@
  * Copyright 2022 Ideas2IT Technologies. All rights reserved.
  * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
  */
-
 package com.ideas2it.ideameds.dto;
 
-import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.Discount;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

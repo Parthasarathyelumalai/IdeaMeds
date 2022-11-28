@@ -55,7 +55,6 @@ public class OrderSystemServiceImpl implements OrderSystemService {
                 OrderSystem orderSystem =  new OrderSystem();
                 List<CartItem> cartItemList = cart.get().getCartItemList();
                 orderSystem.setUser(user.get());
-                orderSystem.setCart(cart.get());
                 orderSystem.setTotalPrice(cart.get().getTotalPrice());
                 orderSystem.setDiscountPercentage(cart.get().getDiscountPercentage());
                 orderSystem.setDiscountPrice(cart.get().getDiscountPrice());
@@ -71,6 +70,12 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         } throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
+    /**
+     * Convert order entity to order dto.
+     * @param savedOrder - To show for user convert order entity to order dto.
+     * @return - Order dto.
+     * @throws CustomException - Brand item not found.
+     */
     private OrderSystemDTO convertToOrderDto(OrderSystem savedOrder) throws CustomException {
         OrderSystemDTO orderSystemDTO = modelMapper.map(savedOrder, OrderSystemDTO.class);
         List<OrderItem> orderItemList = savedOrder.getOrderItemList();
@@ -78,6 +83,12 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         return orderSystemDTO;
     }
 
+    /**
+     * Convert order item entity to order item dto.
+     * @param orderItemList - To convert order item entity to order item dto.
+     * @return - List of order item dto.
+     * @throws CustomException - Brand item not found.
+     */
     private List<OrderItemDTO> convertToOrderItemDto(List<OrderItem> orderItemList) throws CustomException {
         List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
         for (OrderItem orderItem : orderItemList) {
@@ -92,11 +103,22 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         return orderItemDTOList;
     }
 
+    /**
+     * Brand item entity convert into brand item dto.
+     * @param brandItems - To convert brand item entity to brand item dto.
+     * @return - Brand item dto.
+     */
     public Optional<BrandItemsDTO> convertToBrandItemDto(BrandItems brandItems) {
         if (null != brandItems) return Optional.of(modelMapper.map(brandItems, BrandItemsDTO.class));
         return  Optional.empty();
     }
 
+    /**
+     * Convert to medicine entity to medicine dto.
+     * @param medicine - Convert to medicine entity to medicine dto.
+     * @return - medicine dto.
+     * @throws CustomException -  medicine not found.
+     */
     public MedicineDTO convertToMedicineDto(Medicine medicine) throws CustomException {
         if (null != medicine) return modelMapper.map(medicine, MedicineDTO.class);
         else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
@@ -111,6 +133,8 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         if (cartItemList != null) {
             for(CartItem cartItem : cartItemList) {
                 OrderItem orderItem  = new OrderItem();
+                orderItem.setCreatedAt(DateTimeValidation.getDate());
+                orderItem.setModifiedAt(DateTimeValidation.getDate());
                 orderItem.setMedicine(cartItem.getMedicine());
                 orderItem.setQuantity(cartItem.getQuantity());
                 orderItem.setBrandItems(cartItem.getBrandItems());
@@ -165,6 +189,4 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         }
         return previousOrder;
     }
-
-
 }
