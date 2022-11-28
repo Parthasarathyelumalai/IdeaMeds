@@ -18,7 +18,7 @@ public class Constants {
     public static final String UPDATED_SUCCESSFULLY = " Has Updated Successfully";
     public static final String CAN_NOT_ADD_ITEMS_IN_CART = "Can't Add Items In Cart.";
 
-    public static final String ORDER_ITEM_NOT_FOUND = "There Is No Order Items";
+    public static final String ORDER_ITEM_NOT_FOUND = "There Is No Items to Order";
 
 
 }

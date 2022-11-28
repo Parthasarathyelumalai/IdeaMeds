@@ -9,8 +9,17 @@ import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDto;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.*;
-import com.ideas2it.ideameds.repository.*;
+import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.Discount;
+import com.ideas2it.ideameds.model.Medicine;
+import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.BrandItemsRepository;
+import com.ideas2it.ideameds.repository.CartItemRepository;
+import com.ideas2it.ideameds.repository.CartRepository;
+import com.ideas2it.ideameds.repository.DiscountRepository;
+import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
@@ -51,11 +60,11 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException {
-        List<CartItem> cartItems = this.convertToCartItem(cartDto.getCartItemDtoList());
-        Cart cart = modelMapper.map(cartDto, Cart.class);
-        cart.setCartItemList(cartItems);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
+            List<CartItem> cartItems = this.convertToCartItem(cartDto.getCartItemDtoList());
+            Cart cart = modelMapper.map(cartDto, Cart.class);
+            cart.setCartItemList(cartItems);
             Optional<Cart> existedCart = cartRepository.findByUser(user.get());
             if(existedCart.isPresent()) {
                 cart.setCartId(existedCart.get().getCartId());
@@ -76,8 +85,7 @@ public class CartServiceImpl implements CartService {
                 CartDTO cartDTO = convertToCartDto(savedCart);
                 return Optional.of(cartDTO);
             }
-        }
-        return Optional.empty();
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
