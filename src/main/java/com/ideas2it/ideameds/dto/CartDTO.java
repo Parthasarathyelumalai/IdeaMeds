@@ -5,6 +5,7 @@
 package com.ideas2it.ideameds.dto;
 
 import com.ideas2it.ideameds.model.Discount;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
 public class CartDTO {
 

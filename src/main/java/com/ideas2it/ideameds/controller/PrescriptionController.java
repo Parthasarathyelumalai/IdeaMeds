@@ -117,7 +117,9 @@ public class PrescriptionController {
         if(null != userDTO) {
             if (null != prescriptionDTO) {
                 DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
-                addToCart(prescriptionDTO.getPrescriptionItems(), userDTO);
+                if (null != prescriptionDTO.getPrescriptionItems()) {
+                    addToCart(prescriptionDTO.getPrescriptionItems(), userDTO);
+                } else return ResponseEntity.status(HttpStatus.CREATED).body("There is no medicines in the prescription");
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
             } else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
@@ -135,14 +137,16 @@ public class PrescriptionController {
         List<CartItemDto> cartItems = new ArrayList<>();
         if(prescriptionItems != null){
             List<BrandItemsDTO> brandItemsList = brandItemsService.getAllBrandItems();
-            for(PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
-                for (BrandItemsDTO brandItem : brandItemsList) {
-                    if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
-                        CartItemDto cartItem = new CartItemDto();
-                        cartItem.setBrandItemsDTO(brandItem);
-                        cartItem.setQuantity(prescriptionItem.getQuantity());
-                        cartItems.add(cartItem);
-                        cart.setCartItemDtoList(cartItems);
+            if(brandItemsList != null) {
+                for (PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
+                    for (BrandItemsDTO brandItem : brandItemsList) {
+                        if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
+                            CartItemDto cartItem = new CartItemDto();
+                            cartItem.setBrandItemsDTO(brandItem);
+                            cartItem.setQuantity(prescriptionItem.getQuantity());
+                            cartItems.add(cartItem);
+                            cart.setCartItemDtoList(cartItems);
+                        }
                     }
                 }
             }

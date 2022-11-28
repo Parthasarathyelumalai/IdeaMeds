@@ -14,6 +14,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
         User user = modelMapper.map(userDTO, User.class);
         List<Address> addresses = user.getAddresses();
         addresses.removeAll(user.getAddresses());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
         for(AddressDTO addressDTO : userDTO.getAddresses()) {
             addresses.add(modelMapper.map(addressDTO,Address.class));
         }

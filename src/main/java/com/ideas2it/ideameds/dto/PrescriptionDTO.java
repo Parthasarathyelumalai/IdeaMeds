@@ -37,7 +37,7 @@ public class PrescriptionDTO {
     @Pattern(regexp = "^[a-zA-Z][a-zA-Z\\s]*$",message = "Invalid Format")
     private String patientName;
 
-    @NotNull(message = "Age is required")
+    @NotBlank(message = "Age is required")
     @Pattern(regexp = "[0-9.]{1,3}", message = "Age should not contain letters")
     @Min(value = 1, message = "Age should not be less than 1")
     @Max(value = 130, message = "Age should not be greater than 130")
@@ -50,5 +50,6 @@ public class PrescriptionDTO {
     @PastOrPresent(message = "Prescription date should not be in future")
     private LocalDate dateOfIssue;
 
+    @NotNull(message = "Prescribed Medicines cannot be empty")
     private List<PrescriptionItemsDTO> prescriptionItems;
 }
