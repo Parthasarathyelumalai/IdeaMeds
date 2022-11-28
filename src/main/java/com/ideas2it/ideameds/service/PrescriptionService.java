@@ -30,7 +30,6 @@ public interface PrescriptionService {
 
     /**
      * Get the Prescription from the repository
-     *
      * @param prescriptionId To get the required prescription
      * @return returns the PrescriptionDTO object
      * @throws CustomException occurs when prescription was not found

@@ -5,7 +5,6 @@
 package com.ideas2it.ideameds.util;
 
 import com.ideas2it.ideameds.exception.CustomException;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,7 +17,6 @@ import java.time.format.DateTimeFormatter;
  * @version 1.0
  * @since  2022-11-22
  */
-@Component
 public class DateTimeValidation {
 
     /**
@@ -27,7 +25,7 @@ public class DateTimeValidation {
      * @throws CustomException if prescription's date is exceeded by 6 month
      * it will throw custom exception
      */
-    public void validateDateOfIssue(LocalDate issuedDate) throws CustomException {
+    public static void validateDateOfIssue(LocalDate issuedDate) throws CustomException {
         final int MAXIMUM_MONTH = 6;
         LocalDate currentDate = LocalDate.now();
         Period monthDifference = Period.between(currentDate,issuedDate);

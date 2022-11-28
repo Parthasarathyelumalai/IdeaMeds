@@ -8,6 +8,7 @@ import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,6 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Where(clause = "deleted_status = false")
 public class Prescription {
 
     @Id
@@ -72,6 +74,10 @@ public class Prescription {
     @JoinColumn(name = "prescription_id")
     @NotNull
     private List<PrescriptionItems> prescriptionItems;
+
+    @NotNull
     private LocalDateTime createdAt;
+
+    @NotNull
     private LocalDateTime modifiedAt;
 }
