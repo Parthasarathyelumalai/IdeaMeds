@@ -26,13 +26,9 @@ import java.util.Optional;
 @Service
 public class MedicineServiceImpl implements MedicineService {
     private final MedicineRepository medicineRepository;
-
-    private final DateTimeValidation dateTimeValidation;
-
     private final ModelMapper modelMapper = new ModelMapper();
-    public MedicineServiceImpl(MedicineRepository medicineRepository, DateTimeValidation dateTimeValidation) {
+    public MedicineServiceImpl(MedicineRepository medicineRepository) {
         this.medicineRepository = medicineRepository;
-        this.dateTimeValidation = dateTimeValidation;
     }
 
     /**
@@ -40,8 +36,8 @@ public class MedicineServiceImpl implements MedicineService {
      */
     public MedicineDTO addMedicine(MedicineDTO medicineDTO) {
         Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
-//        medicine.setCreatedAt(dateTimeValidation.getDate());
-//        medicine.setModifiedAt(dateTimeValidation.getDate());
+        medicine.setCreatedAt(DateTimeValidation.getDate());
+        medicine.setModifiedAt(DateTimeValidation.getDate());
         return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
     }
 
@@ -84,7 +80,7 @@ public class MedicineServiceImpl implements MedicineService {
             throw new CustomException(Constants.MEDICINE_NOT_FOUND);
         }
         medicine.setCreatedAt(existMedicine.get().getCreatedAt());
-//        medicine.setModifiedAt(dateTimeValidation.getDate());
+        medicine.setModifiedAt(DateTimeValidation.getDate());
         return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
     }
 
@@ -95,7 +91,7 @@ public class MedicineServiceImpl implements MedicineService {
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
         if (medicine.isPresent()) {
             medicine.get().setDeletedStatus(1);
-//            medicine.get().setModifiedAt(dateTimeValidation.getDate());
+            medicine.get().setModifiedAt(DateTimeValidation.getDate());
         return medicineRepository.save(medicine.get()).getMedicineId();
         } else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
     }

@@ -27,11 +27,9 @@ import java.util.Optional;
 public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseRepository warehouseRepository;
     private final ModelMapper modelMapper = new ModelMapper();
-    private final DateTimeValidation dateTimeValidation;
 
-    public WarehouseServiceImpl(WarehouseRepository warehouseRepository, DateTimeValidation dateTimeValidation) {
+    public WarehouseServiceImpl(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
-        this.dateTimeValidation = dateTimeValidation;
     }
 
     /**
@@ -39,8 +37,8 @@ public class WarehouseServiceImpl implements WarehouseService {
      */
     public WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) {
         Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
-        warehouse.setCreatedAt(dateTimeValidation.getDate());
-        warehouse.setModifiedAt(dateTimeValidation.getDate());
+        warehouse.setCreatedAt(DateTimeValidation.getDate());
+        warehouse.setModifiedAt(DateTimeValidation.getDate());
         return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
     }
 
@@ -71,7 +69,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         Optional<Warehouse> existWarehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
         if(existWarehouse.isPresent()) {
             warehouse.setCreatedAt(existWarehouse.get().getCreatedAt());
-            warehouse.setModifiedAt(dateTimeValidation.getDate());
+            warehouse.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
         } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
     }
