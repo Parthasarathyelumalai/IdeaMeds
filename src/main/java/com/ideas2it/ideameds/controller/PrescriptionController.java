@@ -38,7 +38,6 @@ import java.util.List;
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
-    private final DateTimeValidation dateTimeValidation;
     private final BrandItemsService brandItemsService;
     private final CartServiceImpl cartService;
 
@@ -117,7 +116,7 @@ public class PrescriptionController {
 
         if(null != userDTO) {
             if (null != prescriptionDTO) {
-                dateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
+                DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
                 addToCart(prescriptionDTO.getPrescriptionItems(), userDTO);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
             } else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
