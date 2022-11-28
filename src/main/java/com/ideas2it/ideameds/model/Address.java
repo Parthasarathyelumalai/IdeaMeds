@@ -2,9 +2,12 @@ package com.ideas2it.ideameds.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Simple JavaBean domain object representing an Address.
@@ -33,6 +36,6 @@ public class Address {
     private String stateName;
     @NotNull
     private String pinCode;
-    private Date createdAt;
-    private Date modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }
