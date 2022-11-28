@@ -4,13 +4,13 @@
  */
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.dto.*;
+import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.CartDTO;
+import com.ideas2it.ideameds.dto.CartItemDto;
+import com.ideas2it.ideameds.dto.PrescriptionDTO;
+import com.ideas2it.ideameds.dto.PrescriptionItemsDTO;
+import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.BrandItems;
-import com.ideas2it.ideameds.model.Cart;
-import com.ideas2it.ideameds.model.CartItem;
-import com.ideas2it.ideameds.model.PrescriptionItems;
-import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.service.BrandItemsService;
 import com.ideas2it.ideameds.service.CartServiceImpl;
 import com.ideas2it.ideameds.service.PrescriptionService;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Represents the Prescription Controller
@@ -76,7 +75,7 @@ public class PrescriptionController {
      * @param userId To get the
      * @return returns the httpStatus and list of prescription DTOs
      * @throws CustomException occurs when user not found
-     * @throws CustomException occurs when prescription was not found
+     * and occurs when prescription was not found
      */
     @GetMapping("/prescription/user/{userId}")
     public ResponseEntity<List<PrescriptionDTO>> getPrescriptionByUserId(@PathVariable Long userId) throws CustomException {
@@ -129,6 +128,8 @@ public class PrescriptionController {
      * Add the prescribed medicines to the cart
      * @param prescriptionItems To map the prescribed medicines
      * @param user To add the medicines to required user's cart
+     * @exception CustomException occurs when prescription was
+     * exceeded by 6 months
      */
     private void addToCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO user) throws CustomException {
         CartDTO cart = new CartDTO();

@@ -32,7 +32,6 @@ import java.util.Optional;
 public class PrescriptionServiceImpl implements PrescriptionService{
     private final PrescriptionRepository prescriptionRepository;
     private final UserRepository userRepository;
-    private final DateTimeValidation dateTimeValidation;
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -43,11 +42,11 @@ public class PrescriptionServiceImpl implements PrescriptionService{
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
             Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
-//            prescription.setPrescriptionItems(prescriptionDTO.getPrescriptionItems().stream().map(prescriptionItemsDTO -> modelMapper.map(prescriptionItemsDTO, PrescriptionItems.class)).toList());
+            prescription.setPrescriptionItems(prescriptionDTO.getPrescriptionItems().stream().map(prescriptionItemsDTO -> modelMapper.map(prescriptionItemsDTO, PrescriptionItems.class)).toList());
             prescription.setUser(user.get());
-            dateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
-            prescription.setCreatedAt(dateTimeValidation.getDate());
-            prescription.setModifiedAt(dateTimeValidation.getDate());
+            DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
+            prescription.setCreatedAt(DateTimeValidation.getDate());
+            prescription.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(prescriptionRepository.save(prescription), PrescriptionDTO.class);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
