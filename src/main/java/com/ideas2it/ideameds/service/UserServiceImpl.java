@@ -11,6 +11,7 @@ import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.util.Constants;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.ideas2it.ideameds.util.DateTimeValidation.getDate;
 
 /**
  * Service of User.
@@ -41,14 +40,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Optional<UserDTO> addUser(UserDTO userDTO) {
-        User user = modelMapper.map(userDTO, User.class);;
+        User user = modelMapper.map(userDTO, User.class);
         List<Address> addresses = user.getAddresses();
         addresses.removeAll(user.getAddresses());
         for(AddressDTO addressDTO : userDTO.getAddresses()) {
             addresses.add(modelMapper.map(addressDTO,Address.class));
         }
-        user.setCreatedAt(getDate());
-        user.setModifiedAt(getDate());
+        user.setCreatedAt(DateTimeValidation.getDate());
+        user.setModifiedAt(DateTimeValidation.getDate());
+        for(Address address : user.getAddresses()) {
+            address.setCreatedAt(DateTimeValidation.getDate());
+            address.setModifiedAt(DateTimeValidation.getDate());
+        }
         return Optional.of(modelMapper.map(userRepository.save(user), UserDTO.class));
     }
 
@@ -86,7 +89,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateUser(UserDTO userDTO) throws CustomException {
         User user = modelMapper.map(userDTO, User.class);
-        user.setModifiedAt(getDate());
+        user.setModifiedAt(DateTimeValidation.getDate());
+        for(Address address : user.getAddresses()) {
+            address.setModifiedAt(DateTimeValidation.getDate());
+        }
         UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
 
         if (null != updatedUser) {
