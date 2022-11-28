@@ -29,11 +29,9 @@ public class BrandServiceImpl implements BrandService{
     private final BrandRepository brandRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
-    private final DateTimeValidation dateTimeValidation;
 
-    public BrandServiceImpl(BrandRepository brandRepository, DateTimeValidation dateTimeValidation) {
+    public BrandServiceImpl(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
-        this.dateTimeValidation = dateTimeValidation;
     }
 
     /**
@@ -41,8 +39,8 @@ public class BrandServiceImpl implements BrandService{
      */
     public BrandDTO addBrand(BrandDTO brandDTO) {
         Brand brand = modelMapper.map(brandDTO, Brand.class);
-        brand.setCreatedAt(dateTimeValidation.getDate());
-        brand.setModifiedAt(dateTimeValidation.getDate());
+        brand.setCreatedAt(DateTimeValidation.getDate());
+        brand.setModifiedAt(DateTimeValidation.getDate());
         return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
     }
 
@@ -83,7 +81,7 @@ public class BrandServiceImpl implements BrandService{
         Optional<Brand> existBrand = brandRepository.findById(brandDTO.getBrandId());
         if (existBrand.isPresent()) {
             brand.setCreatedAt(existBrand.get().getCreatedAt());
-            brand.setModifiedAt(dateTimeValidation.getDate());
+            brand.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
         } else throw new CustomException(Constants.BRAND_NOT_FOUND);
     }

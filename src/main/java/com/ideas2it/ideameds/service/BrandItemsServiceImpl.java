@@ -34,13 +34,10 @@ import java.util.Optional;
 public class BrandItemsServiceImpl implements BrandItemsService {
 
     private final BrandItemsRepository brandItemsRepository;
-
-    private final DateTimeValidation dateTimeValidation;
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public BrandItemsServiceImpl(BrandItemsRepository brandItemsRepository, DateTimeValidation dateTimeValidation) {
+    public BrandItemsServiceImpl(BrandItemsRepository brandItemsRepository) {
         this.brandItemsRepository = brandItemsRepository;
-        this.dateTimeValidation = dateTimeValidation;
     }
 
     /**
@@ -51,6 +48,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         BrandItems brandItems = modelMapper.map(brandItemsDTO, BrandItems.class);
         brandItems.setMedicine(modelMapper.map(medicineDTO, Medicine.class));
         brandItems.setBrand(modelMapper.map(brandDTO, Brand.class));
+        brandItems.setCreatedAt(DateTimeValidation.getDate());
         return modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
 
     }
@@ -85,7 +83,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         Optional<BrandItems> existBrandItems = brandItemsRepository.findById(brandItemsDTO.getBrandItemsId());
         if(existBrandItems.isPresent()) {
             brandItems.setCreatedAt(existBrandItems.get().getCreatedAt());
-            brandItems.setModifiedAt(dateTimeValidation.getDate());
+            brandItems.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
@@ -98,7 +96,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         Optional<BrandItems> brandItem = brandItemsRepository.findById(brandItemId);
         if (brandItem.isPresent()) {
             brandItem.get().setDeletedStatus(1);
-            brandItem.get().setModifiedAt(dateTimeValidation.getDate());
+            brandItem.get().setModifiedAt(DateTimeValidation.getDate());
             return brandItemsRepository.save(brandItem.get()).getBrandItemsId();
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
