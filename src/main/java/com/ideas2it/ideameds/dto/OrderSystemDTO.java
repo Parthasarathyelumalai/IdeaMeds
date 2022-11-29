@@ -4,9 +4,6 @@
  */
 package com.ideas2it.ideameds.dto;
 
-import com.ideas2it.ideameds.model.Cart;
-import com.ideas2it.ideameds.model.OrderItem;
-import com.ideas2it.ideameds.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +21,5 @@ public class OrderSystemDTO {
     private float totalPrice;
     private float discountPrice;
     private float discountPercentage;
-//    private int deletedStatus;
-//    private User user;
     private List<OrderItemDTO> orderItemDTOList;
 }
