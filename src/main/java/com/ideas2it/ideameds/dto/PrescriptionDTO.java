@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -51,5 +52,5 @@ public class PrescriptionDTO {
     private LocalDate dateOfIssue;
 
     @NotNull(message = "Prescribed Medicines cannot be empty")
-    private List<PrescriptionItemsDTO> prescriptionItems;
+    private List<@Valid PrescriptionItemsDTO> prescriptionItems;
 }

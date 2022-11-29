@@ -20,19 +20,20 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
 public class PrescriptionItemsDTO {
     private Long prescriptionItemsId;
 
-    @NotBlank(message = "Quantity cannot be empty")
+    @NotNull(message = "Quantity cannot be empty")
     private int quantity;
 
-    @NotBlank(message = "Dosage cannot be empty")
+    @NotNull(message = "Dosage cannot be empty")
     private int dosage;
 
     @NotBlank(message = "Medicine Type cannot be empty")
     private String medicineType;
 
-    @NotBlank(message = "Medicine Type cannot be empty")
+    @NotBlank(message = "Medicine Name cannot be empty")
     private String brandItemName;
 }
