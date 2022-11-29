@@ -4,12 +4,9 @@
  */
 package com.ideas2it.ideameds;
 
-import com.ideas2it.ideameds.security.SecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /**
  * Contain main method for the Application
@@ -18,7 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
  * @version 1.0
  * @since 2022-11-17
  */
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class})
+@SpringBootApplication
+@EnableWebSecurity
 public class MiniProjectApplication {
 
     /**
@@ -29,5 +27,5 @@ public class MiniProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(MiniProjectApplication.class, args);
     }
-
+    
 }

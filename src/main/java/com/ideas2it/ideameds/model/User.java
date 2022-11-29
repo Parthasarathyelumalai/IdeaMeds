@@ -54,6 +54,8 @@ public class User {
     @Column(columnDefinition = "BIT default 0" )
     @NotNull
     private boolean isDeletedStatus;
+    @NotNull
+    private String password;
     @OneToMany(mappedBy = "user")
     private List<Prescription> prescription;
     @OneToMany(mappedBy = "user")

@@ -1,5 +1,12 @@
 package com.ideas2it.ideameds.util;
 
+/**
+ * Constant class for String message
+ *
+ * @author Parthasarathy Elumalai
+ * @version 1.0
+ * @since 2022-11-22
+ */
 public class Constants {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String PRESCRIPTION_EXPIRED = "Prescription has Expired";

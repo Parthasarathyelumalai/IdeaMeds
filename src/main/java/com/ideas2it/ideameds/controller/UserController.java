@@ -7,17 +7,32 @@ package com.ideas2it.ideameds.controller;
 import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.JwtRequest;
+import com.ideas2it.ideameds.model.JwtResponse;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
 import com.ideas2it.ideameds.util.Constants;
+import com.ideas2it.ideameds.util.JwtUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.annotation.WebFilter;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,15 +45,20 @@ import java.util.Optional;
  */
 @RestController
 @Slf4j
+@WebFilter(urlPatterns = {"/user"})
 public class UserController {
     private final UserService userService;
     private final UserMedicineService userMedicineService;
     private final OrderSystemService orderSystemService;
+    private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService) {
+    private final JwtUtility jwtUtility;
+    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService,AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
         this.orderSystemService = orderSystemService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtility = jwtUtility;
     }
 
     /**
@@ -48,7 +68,7 @@ public class UserController {
      * @throws CustomException - occur when user's email and phone number are already registered
      */
     @PostMapping("/user")
-    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO user) throws CustomException {
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> savedUser;
         if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())  ) {
             throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
@@ -164,5 +184,29 @@ public class UserController {
             }
         }
         return false;
+    }
+
+    /**
+     * Authentication request using jwt token
+     *
+     * @param jwtRequest - get a username and password
+     * @return JwtResponse - send a response as token
+     */
+    @PostMapping("/authenticate")
+    public JwtResponse authenticate(@Valid @RequestBody JwtRequest jwtRequest) throws CustomException {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            jwtRequest.getUsername(),
+                            jwtRequest.getPassword()
+                    )
+            );
+        } catch ( BadCredentialsException exception ) {
+            throw new CustomException("Invalid_credentials");
+        }
+        final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUsername());
+        final String token = jwtUtility.generateToken(userDetails);
+
+        return new JwtResponse(token);
     }
 }
