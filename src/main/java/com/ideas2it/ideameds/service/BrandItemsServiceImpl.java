@@ -127,4 +127,14 @@ public class BrandItemsServiceImpl implements BrandItemsService {
                     .toList();
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
+
+    /**
+     *{@inheritDoc}
+     */
+    public BrandItemsDTO getBrandItemByName(String brandItemName) throws CustomException {
+        Optional<BrandItems> brandItems = brandItemsRepository.findBrandItemsByBrandItemName(brandItemName);
+        if (brandItems.isPresent()) {
+            return modelMapper.map(brandItems.get(), BrandItemsDTO.class);
+        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+    }
 }

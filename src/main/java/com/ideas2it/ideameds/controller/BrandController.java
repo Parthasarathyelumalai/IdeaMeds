@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class BrandController {
      * @return brand after added
      */
     @PostMapping("/brand")
-    public ResponseEntity<BrandDTO> addBrand(@RequestBody BrandDTO brandDTO) {
+    public ResponseEntity<BrandDTO> addBrand(@Valid @RequestBody BrandDTO brandDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.addBrand(brandDTO));
     }
 
@@ -91,7 +92,7 @@ public class BrandController {
      *         throws when the brand was not found
      */
     @PutMapping("/brand")
-    public ResponseEntity<BrandDTO> updateBrand(@RequestBody BrandDTO brandDTO) throws CustomException {
+    public ResponseEntity<BrandDTO> updateBrand(@Valid @RequestBody BrandDTO brandDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.updateBrand(brandDTO));
     }
 
