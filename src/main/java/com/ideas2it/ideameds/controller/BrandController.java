@@ -61,7 +61,7 @@ public class BrandController {
      * @throws CustomException
      *         throws when brand is not found
      */
-    @GetMapping("/getBrandByName/{brandName}")
+    @GetMapping("/Brand/{brandName}")
     public ResponseEntity<BrandDTO> getBrandByBrandName(@PathVariable String brandName) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.getBrandByBrandName(brandName));
     }
