@@ -1,11 +1,12 @@
 package com.ideas2it.ideameds.dto;
 
-import lombok.Data;
+import com.ideas2it.ideameds.util.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
  * <p>
@@ -23,11 +24,14 @@ public class BrandDTO {
     private Long brandId;
 
     @NotBlank(message = "brand name should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_MEDICINE_NAME, message = "Invalid format - Enter a valid brand name")
     private String brandName;
 
     @NotBlank(message = "brand location should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid Brand location")
     private String location;
 
     @NotBlank(message = "Brand description should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid description about brand")
     private String description;
 }

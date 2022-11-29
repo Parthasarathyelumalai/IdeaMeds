@@ -31,6 +31,18 @@ public interface BrandItemsRepository extends JpaRepository<BrandItems, Long> {
      * @param medicineName
      *        name or a word to get list of medicines
      * @return list of brand items using search
+     *         null if not related
      */
     Optional<List<BrandItems>> findAllByBrandItemNameContainingIgnoreCase(String medicineName);
+
+    /**
+     * <p>
+     *     gets brand Item using brand item name
+     * </p>
+     * @param brandItemName
+     *        name to get a single brand item
+     * @return single brand item using brand Item name
+     *         null if not found
+     */
+    Optional<BrandItems> findBrandItemsByBrandItemName(String brandItemName);
 }

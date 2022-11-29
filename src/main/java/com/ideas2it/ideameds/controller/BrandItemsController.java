@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ public class BrandItemsController {
      * @return added brand item
      */
     @PostMapping("/brandItems/{medicineId}/{brandId}")
-    public ResponseEntity<BrandItemsDTO> addBrandItem(@RequestBody BrandItemsDTO brandItemsDTO,
+    public ResponseEntity<BrandItemsDTO> addBrandItem(@Valid @RequestBody BrandItemsDTO brandItemsDTO,
                                       @PathVariable("medicineId") Long medicineId,
                                       @PathVariable("brandId") Long brandId) throws CustomException {
         MedicineDTO medicineDTO = medicineService.getMedicineById(medicineId);
@@ -84,9 +85,40 @@ public class BrandItemsController {
      * @throws CustomException
      *         throws when the brand item not found
      */
-    @GetMapping("/brandItem/{brandItemsId}")
+    @GetMapping("/brandItems/{brandItemsId}")
     public ResponseEntity<BrandItemsDTO> getBrandItemById(@PathVariable("brandItemsId") Long brandItemsId) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getBrandItemById(brandItemsId));
+    }
+
+    /**
+     * <p>
+     *     Gets brand Items with brand Item Name
+     * </p>
+     * @param brandItemName
+     *        name to get Brand Item
+     * @return brand Item using brand Item Name
+     * @throws CustomException
+     *         throws when brand item not found
+     */
+    @GetMapping("/brandItems/{brandItemsName}")
+    public ResponseEntity<BrandItemsDTO> getBrandItemByName(@PathVariable("brandItemsName") String brandItemName) throws CustomException {
+        return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getBrandItemByName(brandItemName));
+    }
+
+    /**
+     * <p>
+     *     Gets list of brand items related with medicine name or a partial word
+     * </p>
+     * @param medicineName
+     *        medicine name or a word to get brand items
+     * @return list of brand items using user input
+     * @throws CustomException
+     *         throws when brand item not found
+     */
+    @GetMapping("/medicineName/{medicineName}")
+    public ResponseEntity<List<BrandItemsDTO>> getByMedicineName(@PathVariable String medicineName) throws CustomException {
+        List<BrandItemsDTO> brandItemsDTOs = brandItemsService.getByMedicineName(medicineName);
+        return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsDTOs);
     }
 
     /**
@@ -100,7 +132,7 @@ public class BrandItemsController {
      *         throws when brand item not found
      */
     @PutMapping("/brandItems")
-    public ResponseEntity<BrandItemsDTO> updateBrandItem(@RequestBody BrandItemsDTO brandItemsDTO) throws CustomException {
+    public ResponseEntity<BrandItemsDTO> updateBrandItem(@Valid @RequestBody BrandItemsDTO brandItemsDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandItemsService.updateBrandItem(brandItemsDTO));
     }
 
@@ -145,21 +177,4 @@ public class BrandItemsController {
         } else
             return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
     }
-
-    /**
-     * <p>
-     *     Gets brand items by medicine name or a partial word
-     * </p>
-     * @param medicineName
-     *        medicine name or a word to get brand items
-     * @return list of brand items using user input
-     * @throws CustomException
-     *         throws when brand item not found
-     */
-    @GetMapping("/medicineName/{medicineName}")
-    public ResponseEntity<List<BrandItemsDTO>> getByMedicineName(@PathVariable String medicineName) throws CustomException {
-        List<BrandItemsDTO> brandItemsDTOs = brandItemsService.getByMedicineName(medicineName);
-        return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsDTOs);
-    }
-
 }

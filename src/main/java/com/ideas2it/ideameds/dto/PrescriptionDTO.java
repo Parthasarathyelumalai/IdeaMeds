@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.dto;
 
+import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,19 +28,19 @@ public class PrescriptionDTO {
     private Long prescriptionId;
 
     @NotBlank(message = "Doctor name should be mentioned")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z\\s]*$", message = "Invalid format - e.g. Firstname LastName")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - e.g. Firstname LastName")
     private String doctorName;
 
     @NotBlank(message = "Clinic Address should be mentioned")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z\\s]*$", message = "Invalid format")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format")
     private String clinicAddress;
 
     @NotBlank(message = "patient Name should be mentioned")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z\\s]*$",message = "Invalid Format")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT,message = "Invalid Format")
     private String patientName;
 
-    @NotBlank(message = "Age is required")
-    @Pattern(regexp = "[0-9.]{1,3}", message = "Age should not contain letters")
+    @NotNull(message = "Age is required")
+    @Pattern(regexp = Constants.REGEX_FOR_NUMBERS, message = "Age should not contain letters")
     @Min(value = 1, message = "Age should not be less than 1")
     @Max(value = 130, message = "Age should not be greater than 130")
     private String patientAge;

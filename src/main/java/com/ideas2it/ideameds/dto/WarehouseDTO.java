@@ -1,11 +1,13 @@
 package com.ideas2it.ideameds.dto;
 
+import com.ideas2it.ideameds.util.Constants;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 
 /**
@@ -24,8 +26,10 @@ public class WarehouseDTO {
     private Long warehouseId;
 
     @NotBlank(message = "warehouse name should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid Warehouse name")
     private String warehouseName;
 
-    @NotBlank(message = "brand location should be mentioned                     ")
+    @NotBlank(message = "brand location should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid Warehouse location")
     private String location;
 }
