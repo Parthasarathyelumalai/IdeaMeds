@@ -68,7 +68,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
                 orderSystem.setOrderDate(DateTimeValidation.getDate());
                 orderSystem.setCreatedAt(DateTimeValidation.getDate());
                 orderSystem.setModifiedAt(DateTimeValidation.getDate());
-                orderSystem.setOrderItemList(cartItemToOrderItem(cartItemList));
+                orderSystem.setOrderItems(cartItemToOrderItem(cartItemList));
                 OrderSystem savedOrder = orderSystemRepository.save(orderSystem);
                 OrderSystemDTO orderDto = convertToOrderDto(savedOrder);
                 return Optional.of(orderDto);
@@ -84,7 +84,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      */
     private OrderSystemDTO convertToOrderDto(OrderSystem orderSystem) throws CustomException {
         OrderSystemDTO orderSystemDTO = modelMapper.map(orderSystem, OrderSystemDTO.class);
-        List<OrderItem> orderItemList = orderSystem.getOrderItemList();
+        List<OrderItem> orderItemList = orderSystem.getOrderItems();
         orderSystemDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
         return orderSystemDTO;
     }
@@ -160,7 +160,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
         for (OrderSystem orderSystem : orderSystemList) {
             OrderSystemDTO orderSystemDTO = modelMapper.map(orderSystem, OrderSystemDTO.class);
-            orderSystemDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderSystem.getOrderItemList()));
+            orderSystemDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderSystem.getOrderItems()));
             orderSystemDTOList.add(orderSystemDTO);
         }
         return orderSystemDTOList;

@@ -45,9 +45,8 @@ public class OrderSystem {
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "order_id")
-    private List<OrderItem> orderItemList;
+    private List<OrderItem> orderItems;
     @Column(columnDefinition = "BIT default 0" )
-    private int deletedStatus;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }

@@ -38,12 +38,9 @@ public class OrderSystemController {
     @PutMapping("/order/{id}")
     public ResponseEntity<OrderSystemDTO> addOrder(@PathVariable("id") Long userId) throws CustomException {
         Optional<OrderSystemDTO> orderSystem = orderSystemService.addOrder(userId);
-        if (orderSystem.isPresent()) {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(orderSystem.get());
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return orderSystem.map(orderSystemDTO -> ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(orderSystemDTO)).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     /**

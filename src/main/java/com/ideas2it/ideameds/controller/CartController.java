@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,9 +42,7 @@ public class CartController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(cartDTO.get());
-        } else {
-           throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
-        }
+        } else throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
     }
 
     /**
@@ -56,13 +53,10 @@ public class CartController {
     @GetMapping("/cart/{id}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
         CartDTO cart = cartService.getCartByUserId(userId);
-        if (null != cart) {
-            return ResponseEntity
+        if (null != cart) return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(cart);
-        } else {
-            throw new CustomException(Constants.USER_NOT_FOUND);
-        }
+        else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -73,13 +67,9 @@ public class CartController {
     @DeleteMapping("/cart/{id}")
     public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) throws CustomException {
         boolean isDelete = cartService.deleteCartByUserId(userId);
-        if (isDelete) {
-            return ResponseEntity
+        if (isDelete) return ResponseEntity
                     .status(HttpStatus.GONE)
                     .body(Constants.REMOVED_SUCCESSFULLY);
-        }
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(Constants.NO_ITEMS);
+        else throw new CustomException(Constants.NOT_DELETED_SUCCESSFULLY);
     }
 }
