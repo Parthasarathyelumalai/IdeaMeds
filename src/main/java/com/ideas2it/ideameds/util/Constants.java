@@ -39,4 +39,7 @@ public class Constants {
     public static final String CAN_NOT_CANCEL_THE_ORDER = "Can Not Cancel The Order";
     public static final String NO_ITEM_TO_CANCEL_THE_ORDER = "There Is No Item To Cancel The Order";
     public static final String NO_HISTORY_OF_ORDERS = "There Is No History Of Orders";
+    public static final String CAN_NOT_ADD_DISCOUNT = "Can Not Add Discount";
+    public static final String NO_DISCOUNT          = "There Is No Discount";
+    public static final String CAN_NOT_DELETE = "Can Not Deleted";
 }
