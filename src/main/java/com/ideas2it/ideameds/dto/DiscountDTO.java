@@ -11,6 +11,5 @@ public class DiscountDTO {
     private Long discountId;
     private String name;
     private String couponCode;
-    private float discount;
-    private int deletedStatus;
+    private float discountPercentage;
 }

@@ -149,7 +149,7 @@ public class BrandItemsController {
      *         throws when warehouse not found and also
      *         throws when brand item not found
      */
-    @PutMapping("/assignBrandItems/{brandItemId}/{warehouseId}")
+    @PutMapping("/brandItems/assign/{brandItemId}/{warehouseId}")
         public ResponseEntity<BrandItemsDTO> assignToWarehouse(@PathVariable("warehouseId") Long warehouseId,
                                         @PathVariable("brandItemId") Long brandItemId) throws CustomException {
         WarehouseDTO warehouseDTO = warehouseService.getWarehouseById(warehouseId);
