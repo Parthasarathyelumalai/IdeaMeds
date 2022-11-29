@@ -41,12 +41,14 @@ public interface OrderSystemService {
      * @param userId - To get one user order.
      * @return - One user order details
      */
-    Optional<OrderSystemDTO> getOrderByUserId(Long userId) throws CustomException;
+    Optional<List<OrderSystemDTO>> getOrderByUserId(Long userId) throws CustomException;
 
     /**
      * Get all previous order items for given user id.
      * @param userId - To get previous order items.
      * @return All previous order items.
      */
-    List<OrderSystem> getUserPreviousOrder(Long userId);
+    Optional<List<OrderSystemDTO>> getUserPreviousOrder(Long userId) throws CustomException;
+
+    boolean cancelOrder(Long userId) throws CustomException;
 }

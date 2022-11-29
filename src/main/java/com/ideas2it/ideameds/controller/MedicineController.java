@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class MedicineController {
      * @return medicine which was added
      */
     @PostMapping("/medicine")
-    public ResponseEntity<MedicineDTO> addMedicine(@RequestBody MedicineDTO medicineDTO) {
+    public ResponseEntity<MedicineDTO> addMedicine(@Valid @RequestBody MedicineDTO medicineDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(medicineService.addMedicine(medicineDTO));
     }
 
@@ -100,7 +101,7 @@ public class MedicineController {
      *         throws exception when there is no medicine found
      */
     @PutMapping("/medicine")
-    public ResponseEntity<MedicineDTO> updateMedicine(@RequestBody MedicineDTO medicineDTO) throws CustomException {
+    public ResponseEntity<MedicineDTO> updateMedicine(@Valid @RequestBody MedicineDTO medicineDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(medicineService.updateMedicine(medicineDTO));
     }
 

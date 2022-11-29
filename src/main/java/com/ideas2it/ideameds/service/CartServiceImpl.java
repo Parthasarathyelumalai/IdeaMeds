@@ -16,7 +16,6 @@ import com.ideas2it.ideameds.model.Discount;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.BrandItemsRepository;
-import com.ideas2it.ideameds.repository.CartItemRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
@@ -45,8 +44,6 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
 
-    private final CartItemRepository cartItemRepository;
-
     private final UserRepository userRepository;
 
     private final DiscountRepository discountRepository;
@@ -61,31 +58,38 @@ public class CartServiceImpl implements CartService {
     @Override
     public Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            List<CartItem> cartItems = this.convertToCartItem(cartDto.getCartItemDtoList());
-            Cart cart = modelMapper.map(cartDto, Cart.class);
-            cart.setCartItemList(cartItems);
+        if (user.isPresent() && !user.get().isDeletedStatus()) {
+            Cart cart = convertToCart(cartDto);
             Optional<Cart> existedCart = cartRepository.findByUser(user.get());
-            if(existedCart.isPresent()) {
+            if (existedCart.isPresent()) {
                 cart.setCartId(existedCart.get().getCartId());
                 cart.setUser(user.get());
-                cart.setCreatedAt(DateTimeValidation.getDate());
-                cart.setModifiedAt(DateTimeValidation.getDate());
                 existedCart = Optional.of(cart);
-                Cart addedCart = getTotalPriceOfCart(existedCart.get());
-                Cart savedCart = cartRepository.save(addedCart);
+                Cart savedCart = cartRepository.save(getTotalPriceOfCart(existedCart.get()));
                 CartDTO cartDTO = convertToCartDto(savedCart);
                 return Optional.of(cartDTO);
             } else {
                 cart.setUser(user.get());
-                cart.setCreatedAt(DateTimeValidation.getDate());
-                cart.setModifiedAt(DateTimeValidation.getDate());
-                Cart addedCart = getTotalPriceOfCart(cart);
-                Cart savedCart = cartRepository.save(addedCart);
+                Cart savedCart = cartRepository.save(getTotalPriceOfCart(cart));
                 CartDTO cartDTO = convertToCartDto(savedCart);
                 return Optional.of(cartDTO);
             }
         } else throw new CustomException(Constants.USER_NOT_FOUND);
+    }
+
+    /**
+     * Convert cartDto into cart.
+     * @param cartDto - To convert cart entity to cart dto.
+     * @return - cart
+     * @throws CustomException - Brand item not found exception.
+     */
+    private Cart convertToCart(CartDTO cartDto) throws CustomException {
+        Cart cart =  modelMapper.map(cartDto, Cart.class);
+        cart.setCreatedAt(DateTimeValidation.getDate());
+        cart.setModifiedAt(DateTimeValidation.getDate());
+        List<CartItem> cartItems = convertToCartItem(cartDto.getCartItemDtoList());
+        cart.setCartItemList(cartItems);
+        return cart;
     }
 
     /**
@@ -102,7 +106,7 @@ public class CartServiceImpl implements CartService {
                 CartItem cartItem = modelMapper.map(cartItemDto, CartItem.class);
                 cartItem.setBrandItems(brandItems.get());
                 cartItem.setMedicine(brandItems.get().getMedicine());
-                cartItemList.add(cartItemRepository.save(cartItem));
+                cartItemList.add(cartItem);
             } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
         }
         return cartItemList;
@@ -137,10 +141,10 @@ public class CartServiceImpl implements CartService {
         List<Discount> discountList = discountRepository.findAll();
         float afterDiscount = 0;
         for (Discount discount : discountList) {
-            if ((price > 100 && price < 1000 && discount.getDiscount() == 5) || (price > 1000 && price < 2000 && discount.getDiscount() == 10)){
+            if ((price > 100 && price < 1000 && discount.getDiscountPercentage() == 5) || (price > 1000 && price < 2000 && discount.getDiscountPercentage() == 10)){
                 cart.setDiscount(discount);
-                cart.setDiscountPercentage(discount.getDiscount());
-                float discountPrice = (price * discount.getDiscount()) / 100;
+                cart.setDiscountPercentage(discount.getDiscountPercentage());
+                float discountPrice = (price * discount.getDiscountPercentage()) / 100;
                 afterDiscount = price - discountPrice;
             } else {
                 afterDiscount = price;
@@ -171,19 +175,6 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Convert cart entity to cart dto to return to the user after save in repository.
-     * @param savedCart - To convert cart to cart dto to return.
-     * @return CartDto
-     * @throws CustomException - Brand item not found.
-     */
-    private CartDTO convertToCartDto(Cart savedCart) throws CustomException {
-        CartDTO cartDTO = modelMapper.map(savedCart, CartDTO.class);
-        List<CartItem> cartItemList = savedCart.getCartItemList();
-        cartDTO.setCartItemDtoList(convertToCartItemDtoList(cartItemList));
-        return cartDTO;
-    }
-
-    /**
      * Convert cart items entity to cart items dto to return.
      * @param cartItemList - To convert cart item list to cart item dto list to return.
      * @return CartItemDto list.
@@ -205,6 +196,19 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
+     * Convert cart entity to cart dto to return to the user after save in repository.
+     * @param savedCart - To convert cart to cart dto to return.
+     * @return CartDto
+     * @throws CustomException - Brand item not found.
+     */
+    private CartDTO convertToCartDto(Cart savedCart) throws CustomException {
+        CartDTO cartDTO = modelMapper.map(savedCart, CartDTO.class);
+        List<CartItem> cartItemList = savedCart.getCartItemList();
+        cartDTO.setCartItemDtoList(convertToCartItemDtoList(cartItemList));
+        return cartDTO;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -222,24 +226,6 @@ public class CartServiceImpl implements CartService {
         } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CartDTO> getAllCart() throws CustomException {
-        List<CartDTO> cartDTOList = new ArrayList<>();
-        List<Cart> carts = cartRepository.findAll();
-        for (Cart cart : carts) {
-            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-            List<CartItemDto> cartItemDtoList = convertToCartItemDtoList(cart.getCartItemList());
-            cartDTO.setCartItemDtoList(cartItemDtoList);
-            cartDTOList.add(cartDTO);
-        }
-        return cartDTOList;
-    }
-
     /**
      * Delete user cart by user id.
      *
@@ -247,13 +233,15 @@ public class CartServiceImpl implements CartService {
      * @return boolean.
      */
     @Override
-    public boolean deleteCartByUserId(Long userId) {
+    public boolean deleteCartByUserId(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
+        if (user.isPresent() && !user.get().isDeletedStatus()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
-            cart.ifPresent(value -> cartRepository.deleteById(value.getCartId()));
-            return true;
-        }
-        return false;
+            if (cart.isPresent()) {
+                cart.get().setUser(null);
+                cartRepository.deleteById(cart.get().getCartId());
+                return true;
+            } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 }

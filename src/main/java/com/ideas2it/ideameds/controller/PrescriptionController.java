@@ -51,11 +51,8 @@ public class PrescriptionController {
      * amd occurs when prescription was exceeded by 6 months
      */
     @PostMapping( "/prescription/{userId}")
-    public ResponseEntity<String> addPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO, @PathVariable Long userId) throws CustomException {
-        PrescriptionDTO prescriptionSaved = prescriptionService.addPrescription(prescriptionDTO, userId);
-
-        if (null != prescriptionSaved) return ResponseEntity.status(HttpStatus.OK).body("Prescription Added Successfully");
-            else return ResponseEntity.status(HttpStatus.OK).body("Prescription Not Added");
+    public ResponseEntity<PrescriptionDTO> addPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO, @PathVariable Long userId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.addPrescription(prescriptionDTO, userId));
     }
 
     /**
@@ -117,36 +114,53 @@ public class PrescriptionController {
         if(null != userDTO) {
             if (null != prescriptionDTO) {
                 DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
-                addToCart(prescriptionDTO.getPrescriptionItems(), userDTO);
+                if (null != prescriptionDTO.getPrescriptionItems()) {
+                    getMedicinesForCart(prescriptionDTO.getPrescriptionItems(), userDTO);
+                } else return ResponseEntity.status(HttpStatus.CREATED).body("There is no medicines in the prescription");
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
             } else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
-     * Add the prescribed medicines to the cart
+     * Get the medicines from the database and check with the prescribed medicines
+     * whether it is available or not
      * @param prescriptionItems To map the prescribed medicines
      * @param user To add the medicines to required user's cart
      * @exception CustomException occurs when prescription was
      * exceeded by 6 months
      */
-    private void addToCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO user) throws CustomException {
+    private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO user) throws CustomException {
         CartDTO cart = new CartDTO();
         List<CartItemDto> cartItems = new ArrayList<>();
-        if(prescriptionItems != null){
-            List<BrandItemsDTO> brandItemsList = brandItemsService.getAllBrandItems();
-            for(PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
-                for (BrandItemsDTO brandItem : brandItemsList) {
-                    if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
-                        CartItemDto cartItem = new CartItemDto();
-                        cartItem.setBrandItemsDTO(brandItem);
-                        cartItem.setQuantity(prescriptionItem.getQuantity());
-                        cartItems.add(cartItem);
-                        cart.setCartItemDtoList(cartItems);
-                    }
-                }
+        List<BrandItemsDTO> brandItemsList = brandItemsService.getAllBrandItems();
+        List<PrescriptionItemsDTO> prescriptionItemsDTOs = new ArrayList<>();
+
+        for (PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
+            for (BrandItemsDTO brandItem : brandItemsList) {
+                if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
+                    CartItemDto cartItem = new CartItemDto();
+                    cartItem.setBrandItemsDTO(brandItem);
+                    cartItem.setQuantity(prescriptionItem.getQuantity());cartItems.add(cartItem);
+                    cart.setCartItemDtoList(cartItems);
+                } else prescriptionItemsDTOs.add(prescriptionItem);
             }
         }
-        cartService.addCart(user.getUserId(), cart);
+        addToCart(prescriptionItemsDTOs,user,cart);
+    }
+
+    /**
+     * Add the prescribed medicines to the cart
+     * whether it is available or not
+     * @param prescriptionItemsDTOs To map the prescribed medicines
+     * @param userDTO To add the medicines to required user's cart
+     * @param cartDTO TO add the medicines in the cart
+     * @exception CustomException occurs when prescription was
+     * exceeded by 6 months
+     */
+    private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, UserDTO userDTO, CartDTO cartDTO) throws CustomException {
+        if (prescriptionItemsDTOs.isEmpty())
+            cartService.addCart(userDTO.getUserId(), cartDTO);
+        else throw new CustomException(Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemsDTOs);
     }
 }

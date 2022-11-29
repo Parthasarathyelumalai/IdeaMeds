@@ -152,8 +152,8 @@ public class UserController {
      * @return list of order - gives response as list of order by user
      */
     @GetMapping("/user/user-medicine/{id}")
-    public List<OrderSystemDTO> getUserPreviousOrder(@PathVariable("id") Long userId) {
-        return orderSystemService. getUserPreviousOrder(userId);
+    public List<OrderSystemDTO> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
+        return orderSystemService. getUserPreviousOrder(userId).get();
     }
 
     /**

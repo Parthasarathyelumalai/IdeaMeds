@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.dto;
 import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.UserMedicine;
+import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.Role;
 import lombok.Data;
 import lombok.Getter;
@@ -27,13 +28,13 @@ import java.util.List;
 public class UserDTO {
     private Long userId;
     @NotBlank(message = "User name should be mentioned")
-    @Pattern(regexp = "^[a-zA-z]{1}[a-zA-Z\\s]*$", message = "Invalid format - e.g. Firstname LastName")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - e.g. Firstname LastName")
     private String name;
     @NotBlank(message = "Phone number should be mentioned")
-    @Pattern(regexp = "^[6-9]{1}[0-9]{9}", message = "Invalid format - Start with 6 - 9 e.g. 6**********")
+    @Pattern(regexp = Constants.REGEX_FOR_PHONE_NUMBER, message = "Invalid format - Start with 6 - 9 e.g. 6**********")
     private String phoneNumber;
     @NotBlank(message = "Email should be mentioned")
-    @Email(regexp = "^[a-z]{1}[a-z0-9._]+@[a-z0-9]+[.][a-z]*$",message = "Invalid format e.g. john@xyz.com")
+    @Email(regexp = Constants.REGEX_FOR_EMAIL_ID ,message = "Invalid format e.g. john@xyz.com")
     private String emailId;
     private List<@Valid AddressDTO> addresses;
     private List<Prescription> prescription;

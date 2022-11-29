@@ -107,5 +107,17 @@ public interface BrandItemsService {
      * @throws CustomException
      *         throws when there is no brand item found
      */
-    List<BrandItemsDTO> getByMedicineName(String medicineName) throws CustomException;
+    public List<BrandItemsDTO> getByMedicineName(String medicineName) throws CustomException;
+
+    /**
+     * <p>
+     *     Gets brand Item By brand Item Name
+     * </p>
+     * @param brandItemName
+     *        name to get brand item
+     * @return brand item using brand item name
+     * @throws CustomException
+     *         throws when Brand Item is not found
+     */
+    public BrandItemsDTO getBrandItemByName(String brandItemName) throws CustomException;
 }
