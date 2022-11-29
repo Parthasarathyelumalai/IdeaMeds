@@ -6,17 +6,30 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.JwtRequest;
+import com.ideas2it.ideameds.model.JwtResponse;
 import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
 import com.ideas2it.ideameds.util.Constants;
+import com.ideas2it.ideameds.util.JwtUtility;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.annotation.WebFilter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +42,20 @@ import java.util.Optional;
  */
 @RestController
 @Slf4j
+@WebFilter(urlPatterns = {"/user"})
 public class UserController {
     private final UserService userService;
     private final UserMedicineService userMedicineService;
     private final OrderSystemService orderSystemService;
+    private AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService) {
+    private JwtUtility jwtUtility;
+    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService,AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
         this.orderSystemService = orderSystemService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtility = jwtUtility;
     }
 
     /**
@@ -163,5 +181,34 @@ public class UserController {
             }
         }
         return false;
+    }
+
+    /**
+     * Authentication request using jwt token
+     *
+     * @param jwtRequest -
+     * @return JwtResponse -
+     * @throws Exception -
+     */
+    @PostMapping("/authenticate")
+    public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
+        log.info("Inside authenticate");
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            jwtRequest.getUsername(),
+                            jwtRequest.getPassword()
+                    )
+            );
+        } catch ( BadCredentialsException exception ) {
+            throw new Exception("Invalid_credentials");
+        }
+
+        final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUsername());
+        log.info(String.valueOf(userDetails));
+        log.info(" final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUsername());");
+        final String token = jwtUtility.generateToken(userDetails);
+
+        return new JwtResponse(token);
     }
 }

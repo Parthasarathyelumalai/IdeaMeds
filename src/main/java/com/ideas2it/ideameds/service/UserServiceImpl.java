@@ -10,15 +10,24 @@ import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.security.CustomUserDetail;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service of User.
@@ -28,11 +37,16 @@ import java.util.Optional;
  * @since - 2022-11-18
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
 
+/*    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }*/
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -40,6 +54,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Optional<UserDTO> addUser(UserDTO userDTO) {
+/*        String testPasswordEncoded = bCryptPasswordEncoder().encode(userDTO.getPhoneNumber());
+        userDTO.setPhoneNumber(testPasswordEncoded);*/
         User user = modelMapper.map(userDTO, User.class);
         List<Address> addresses = user.getAddresses();
         addresses.removeAll(user.getAddresses());
@@ -140,4 +156,14 @@ public class UserServiceImpl implements UserService {
     public List<String> getUserEmail() {
         return userRepository.findAll().stream().map(User::getEmailId).toList();
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        log.info("inside public UserDetails loadUserByUsername(String username) ");
+        User fetchedUser = userRepository.findByEmailId(username);
+        log.info(String.valueOf(fetchedUser));
+        log.info("inside fetchedUser");
+        return new CustomUserDetail(fetchedUser);
+    }
+
 }

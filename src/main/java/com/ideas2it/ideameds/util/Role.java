@@ -12,8 +12,8 @@ package com.ideas2it.ideameds.util;
  * @version - 1.0
  */
 public enum Role {
-    ADMIN(0),
-    CUSTOMER(1);
+    ROLE_ADMIN(0),
+    ROLE_CUSTOMER(1);
 
     public final int value;
 
