@@ -156,7 +156,7 @@ public class PrescriptionController {
      * @param userDTO To add the medicines to required user's cart
      * @param cartDTO TO add the medicines in the cart
      * @exception CustomException occurs when prescription was
-     * exceeded by 6 months
+     * exceeded by 6 months and when prescribed medicine is not available in the database
      */
     private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, UserDTO userDTO, CartDTO cartDTO) throws CustomException {
         if (prescriptionItemsDTOs.isEmpty())
