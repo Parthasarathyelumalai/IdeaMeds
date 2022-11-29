@@ -9,7 +9,13 @@ import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.OrderItemDTO;
 import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.*;
+import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.Medicine;
+import com.ideas2it.ideameds.model.OrderItem;
+import com.ideas2it.ideameds.model.OrderSystem;
+import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.OrderSystemRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
@@ -62,24 +68,24 @@ public class OrderSystemServiceImpl implements OrderSystemService {
                 orderSystem.setOrderDate(DateTimeValidation.getDate());
                 orderSystem.setCreatedAt(DateTimeValidation.getDate());
                 orderSystem.setModifiedAt(DateTimeValidation.getDate());
-                orderSystem.setOrderItemList(cartItemToOrderItem(cartItemList));
+                orderSystem.setOrderItems(cartItemToOrderItem(cartItemList));
                 OrderSystem savedOrder = orderSystemRepository.save(orderSystem);
                 OrderSystemDTO orderDto = convertToOrderDto(savedOrder);
                 return Optional.of(orderDto);
-            } throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
-        } throw new CustomException(Constants.USER_NOT_FOUND);
+            } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
      * Convert order entity to order dto.
-     * @param savedOrder - To show for user convert order entity to order dto.
+     * @param orderSystem - To show for user convert order entity to order dto.
      * @return - Order dto.
      * @throws CustomException - Brand item not found.
      */
-    private OrderSystemDTO convertToOrderDto(OrderSystem savedOrder) throws CustomException {
-        OrderSystemDTO orderSystemDTO = modelMapper.map(savedOrder, OrderSystemDTO.class);
-        List<OrderItem> orderItemList = savedOrder.getOrderItemList();
-        orderSystemDTO.setOrderItemDTOList(convertToOrderItemDto(orderItemList));
+    private OrderSystemDTO convertToOrderDto(OrderSystem orderSystem) throws CustomException {
+        OrderSystemDTO orderSystemDTO = modelMapper.map(orderSystem, OrderSystemDTO.class);
+        List<OrderItem> orderItemList = orderSystem.getOrderItems();
+        orderSystemDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
         return orderSystemDTO;
     }
 
@@ -89,19 +95,20 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      * @return - List of order item dto.
      * @throws CustomException - Brand item not found.
      */
-    private List<OrderItemDTO> convertToOrderItemDto(List<OrderItem> orderItemList) throws CustomException {
+    private List<OrderItemDTO> convertToOrderItemDtoList(List<OrderItem> orderItemList) throws CustomException {
         List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
         for (OrderItem orderItem : orderItemList) {
-            OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
             Optional<BrandItemsDTO> brandItemsDTO = convertToBrandItemDto(orderItem.getBrandItems());
             if (brandItemsDTO.isPresent()) {
+                OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
                 orderItemDTO.setBrandItemsDTO(brandItemsDTO.get());
                 orderItemDTO.setMedicineDTO(convertToMedicineDto(orderItem.getMedicine()));
                 orderItemDTOList.add(orderItemDTO);
-            } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+            }
         }
         return orderItemDTOList;
     }
+
 
     /**
      * Brand item entity convert into brand item dto.
@@ -153,7 +160,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
         for (OrderSystem orderSystem : orderSystemList) {
             OrderSystemDTO orderSystemDTO = modelMapper.map(orderSystem, OrderSystemDTO.class);
-            orderSystemDTO.setOrderItemDTOList(convertToOrderItemDto(orderSystem.getOrderItemList()));
+            orderSystemDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderSystem.getOrderItems()));
             orderSystemDTOList.add(orderSystemDTO);
         }
         return orderSystemDTOList;
@@ -163,30 +170,56 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<OrderSystemDTO> getOrderByUserId(Long userId) throws CustomException {
+    public Optional<List<OrderSystemDTO>> getOrderByUserId(Long userId) throws CustomException {
+        List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            Optional<OrderSystem> orderSystem = orderSystemRepository.findByUser(user.get());
-            if (orderSystem.isPresent()) {
-                OrderSystemDTO orderSystemDTO = convertToOrderDto(orderSystem.get());
-                return Optional.of(orderSystemDTO);
-            }
+            Optional<List<OrderSystem>> orderSystemList = orderSystemRepository.findByUser(user.get());
+            if (orderSystemList.isPresent()) {
+                for (OrderSystem orderSystem : orderSystemList.get()) {
+                    OrderSystemDTO orderSystemDTO = convertToOrderDto(orderSystem);
+                    orderSystemDTOList.add(orderSystemDTO);
+                }
+            } else throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
-        return Optional.empty();
+        return Optional.of(orderSystemDTOList);
     }
 
     /**
      *{@inheritDoc}
      */
-    public List<OrderSystem> getUserPreviousOrder(Long userId) {
+    public Optional<List<OrderSystemDTO>> getUserPreviousOrder(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
-        List<OrderSystem> previousOrder = new ArrayList<>();
-        for (OrderSystem orderSystem : orderSystemList) {
-            if (user.isPresent() && Objects.equals(user.get().getUserId(), orderSystem.getUser().getUserId())) {
-                previousOrder.add(orderSystem);
-            }
-        }
-        return previousOrder;
+        List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
+        if (user.isPresent()) {
+            Optional<List<OrderSystem>> orderSystemList = orderSystemRepository.findByUser(user.get());
+            if (orderSystemList.isPresent()) {
+                for (OrderSystem orderSystem : orderSystemList.get()) {
+                    OrderSystemDTO orderSystemDTO = convertToOrderDto(orderSystem);
+                    orderSystemDTOList.add(orderSystemDTO);
+                }
+            } else throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
+        return Optional.of(orderSystemDTOList);
+    }
+
+    /**
+     * Cancel the order by user id.
+     * @param userId - To get user from repository.
+     * @return - boolean
+     * @throws CustomException - User not found, Order not found.
+     */
+    @Override
+    public boolean cancelOrder(Long userId) throws CustomException {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent() && !user.get().isDeletedStatus()) {
+            Optional<List<OrderSystem>> orderSystemList = orderSystemRepository.findByUser(user.get());
+            if (orderSystemList.isPresent()) {
+                for (OrderSystem historyOfOrder : orderSystemList.get()) {
+                    orderSystemRepository.deleteById(historyOfOrder.getOrderId());
+                }
+                return true;
+            } else throw new CustomException(Constants.NO_ITEM_TO_CANCEL_THE_ORDER);
+        } throw new CustomException(Constants.USER_NOT_FOUND);
     }
 }

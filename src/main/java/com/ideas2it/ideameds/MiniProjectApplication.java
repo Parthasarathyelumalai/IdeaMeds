@@ -6,6 +6,7 @@ package com.ideas2it.ideameds;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /**
  * Contain main method for the Application
@@ -15,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2022-11-17
  */
 @SpringBootApplication
+@EnableWebSecurity
 public class MiniProjectApplication {
 
     /**
@@ -25,5 +27,5 @@ public class MiniProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(MiniProjectApplication.class, args);
     }
-
+    
 }

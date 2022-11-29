@@ -6,7 +6,7 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public interface UserService {
 
     /**
      * Add user in database
-     * @param user - To store the user in databases
+     * @param userDTO - To store the user in databases
      * @return user - To give a response as user details
      */
     Optional<UserDTO> addUser(UserDTO userDTO);
@@ -76,4 +76,9 @@ public interface UserService {
      */
     List<String> getUserEmail();
 
+    /**
+     * get UserDetails by username(EmailId)
+     * @return userDetails - Send userDetails
+     */
+    UserDetails loadUserByUsername(String username);
 }

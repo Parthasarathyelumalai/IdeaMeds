@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
 public class PrescriptionItemsDTO {
     private Long prescriptionItemsId;
@@ -32,6 +34,6 @@ public class PrescriptionItemsDTO {
     @NotBlank(message = "Medicine Type cannot be empty")
     private String medicineType;
 
-    @NotBlank(message = "Medicine Type cannot be empty")
+    @NotBlank(message = "Medicine Name cannot be empty")
     private String brandItemName;
 }

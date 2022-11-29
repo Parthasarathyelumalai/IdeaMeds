@@ -10,10 +10,15 @@ import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.security.CustomUserDetail;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,11 +33,11 @@ import java.util.Optional;
  * @since - 2022-11-18
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -40,7 +45,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Optional<UserDTO> addUser(UserDTO userDTO) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
         User user = modelMapper.map(userDTO, User.class);
+        String testPasswordEncoded = bCryptPasswordEncoder.encode(user.getPhoneNumber());
+        user.setPassword(testPasswordEncoded);
         List<Address> addresses = user.getAddresses();
         addresses.removeAll(user.getAddresses());
         for(AddressDTO addressDTO : userDTO.getAddresses()) {
@@ -140,4 +149,20 @@ public class UserServiceImpl implements UserService {
     public List<String> getUserEmail() {
         return userRepository.findAll().stream().map(User::getEmailId).toList();
     }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        log.info("inside public UserDetails loadUserByUsername(String username) ");
+        Optional<User> fetchedUser = Optional.of(userRepository.findByEmailId(username));
+        log.info(String.valueOf(fetchedUser));
+        log.info("inside fetchedUser");
+        if ( fetchedUser.isPresent() ) {
+            return new CustomUserDetail(fetchedUser.get());
+        }
+        return null;
+    }
+
 }

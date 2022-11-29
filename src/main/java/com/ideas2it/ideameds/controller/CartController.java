@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,18 +42,7 @@ public class CartController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(cartDTO.get());
-        } else {
-           throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
-        }
-    }
-
-    /**
-     * Retrieve all data from cart repository.
-     * @return All cart.
-     */
-    @GetMapping("/allcart")
-    public ResponseEntity<List<CartDTO>> getAllCart() throws CustomException {
-        return (ResponseEntity.status(HttpStatus.ACCEPTED).body(cartService.getAllCart()));
+        } else throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
     }
 
     /**
@@ -65,13 +53,10 @@ public class CartController {
     @GetMapping("/cart/{id}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
         CartDTO cart = cartService.getCartByUserId(userId);
-        if (null != cart) {
-            return ResponseEntity
+        if (null != cart) return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(cart);
-        } else {
-            throw new CustomException(Constants.USER_NOT_FOUND);
-        }
+        else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -80,15 +65,11 @@ public class CartController {
      * @return Deleted message.
      */
     @DeleteMapping("/cart/{id}")
-    public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) {
-        boolean deletedMessage = cartService.deleteCartByUserId(userId);
-        if (deletedMessage) {
-            return ResponseEntity
+    public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) throws CustomException {
+        boolean isDelete = cartService.deleteCartByUserId(userId);
+        if (isDelete) return ResponseEntity
                     .status(HttpStatus.GONE)
-                    .body("Deleted successfully");
-        }
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("No cart available");
+                    .body(Constants.REMOVED_SUCCESSFULLY);
+        else throw new CustomException(Constants.NOT_DELETED_SUCCESSFULLY);
     }
 }

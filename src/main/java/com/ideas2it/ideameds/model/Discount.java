@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Simple JavaBean domain object representing a cart item.
@@ -26,7 +25,7 @@ public class Discount {
     private Long discountId;
     private String name;
     private String couponCode;
-    private float discount;
+    private float discountPercentage;
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
     private LocalDateTime createdAt;
