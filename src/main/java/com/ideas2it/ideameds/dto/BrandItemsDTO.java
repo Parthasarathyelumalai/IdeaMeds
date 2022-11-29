@@ -18,6 +18,7 @@ import javax.validation.constraints.*;
  */
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
 public class BrandItemsDTO {
     private Long brandItemsId;

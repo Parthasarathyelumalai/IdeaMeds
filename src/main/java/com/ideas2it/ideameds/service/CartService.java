@@ -36,12 +36,5 @@ public interface CartService {
      */
     CartDTO getCartByUserId(Long userId) throws CustomException;
 
-    /**
-     * Retrieve all data from cart repository.
-     *
-     * @return All cart.
-     */
-    List<CartDTO> getAllCart() throws CustomException;
-
-    boolean deleteCartByUserId(Long userId);
+    boolean deleteCartByUserId(Long userId) throws CustomException;
 }
