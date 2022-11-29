@@ -15,7 +15,7 @@ import java.util.List;
  * Controller for Brand details
  *
  * @author Dinesh Kumar R
- * @since 18/11/2022
+ * @since 2022-11-18
  * @version 1.0
  */
 @RestController
