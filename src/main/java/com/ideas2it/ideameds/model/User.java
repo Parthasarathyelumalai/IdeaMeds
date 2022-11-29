@@ -43,6 +43,8 @@ public class User {
     @NotNull
     private String phoneNumber;
     @NotNull
+    private String password;
+    @NotNull
     private String emailId;
     @NotNull
     @OneToMany(cascade = CascadeType.ALL)
@@ -61,5 +63,4 @@ public class User {
     private Role roleType;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
 }
