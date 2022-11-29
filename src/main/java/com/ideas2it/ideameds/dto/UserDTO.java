@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -34,8 +35,7 @@ public class UserDTO {
     @NotBlank(message = "Email should be mentioned")
     @Email(regexp = "^[a-z]{1}[a-z0-9._]+@[a-z0-9]+[.][a-z]*$",message = "Invalid format e.g. john@xyz.com")
     private String emailId;
-    private String password;
-    private List<AddressDTO> addresses;
+    private List<@Valid AddressDTO> addresses;
     private List<Prescription> prescription;
     private List<UserMedicine> userMedicines;
     private Role roleType;

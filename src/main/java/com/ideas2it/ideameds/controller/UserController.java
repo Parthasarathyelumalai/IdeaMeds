@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.JwtRequest;
@@ -16,20 +17,22 @@ import com.ideas2it.ideameds.service.UserService;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.JwtUtility;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.DispatcherType;
 import javax.servlet.annotation.WebFilter;
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,9 +50,9 @@ public class UserController {
     private final UserService userService;
     private final UserMedicineService userMedicineService;
     private final OrderSystemService orderSystemService;
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private JwtUtility jwtUtility;
+    private final JwtUtility jwtUtility;
     public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService,AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
@@ -65,7 +68,7 @@ public class UserController {
      * @throws CustomException - occur when user's email and phone number are already registered
      */
     @PostMapping("/user")
-    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO user) throws CustomException {
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> savedUser;
         if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())  ) {
             throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
@@ -149,7 +152,7 @@ public class UserController {
      * @return list of order - gives response as list of order by user
      */
     @GetMapping("/user/user-medicine/{id}")
-    public List<OrderSystem> getUserPreviousOrder(@PathVariable("id") Long userId) {
+    public List<OrderSystemDTO> getUserPreviousOrder(@PathVariable("id") Long userId) {
         return orderSystemService. getUserPreviousOrder(userId);
     }
 
@@ -186,13 +189,11 @@ public class UserController {
     /**
      * Authentication request using jwt token
      *
-     * @param jwtRequest -
-     * @return JwtResponse -
-     * @throws Exception -
+     * @param jwtRequest - get a username and password
+     * @return JwtResponse - send a response as token
      */
     @PostMapping("/authenticate")
-    public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
-        log.info("Inside authenticate");
+    public JwtResponse authenticate(@Valid @RequestBody JwtRequest jwtRequest) throws CustomException {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -201,12 +202,9 @@ public class UserController {
                     )
             );
         } catch ( BadCredentialsException exception ) {
-            throw new Exception("Invalid_credentials");
+            throw new CustomException("Invalid_credentials");
         }
-
         final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUsername());
-        log.info(String.valueOf(userDetails));
-        log.info(" final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUsername());");
         final String token = jwtUtility.generateToken(userDetails);
 
         return new JwtResponse(token);
