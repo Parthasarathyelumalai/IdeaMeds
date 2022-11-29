@@ -6,16 +6,12 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import com.ideas2it.ideameds.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,8 +65,8 @@ public class OrderSystemController {
      * @return - One user order details
      */
     @GetMapping("/order/{id}")
-    public ResponseEntity<OrderSystemDTO> getOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
-        Optional<OrderSystemDTO> orderSystem = orderSystemService.getOrderByUserId(userId);
+    public ResponseEntity<List<OrderSystemDTO>> getOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
+        Optional<List<OrderSystemDTO>> orderSystem = orderSystemService.getOrderByUserId(userId);
         if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -86,10 +82,22 @@ public class OrderSystemController {
      * @return All previous order items.
      */
     @GetMapping("/previousorder/{id}")
-    public ResponseEntity<List<OrderSystem>> getUserPreviousOrder(@PathVariable("id") Long userId) {
-        List<OrderSystem> orderSystemList = orderSystemService.getUserPreviousOrder(userId);
-        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(orderSystemList);
+    public ResponseEntity<List<OrderSystemDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
+        Optional<List<OrderSystemDTO>> orderSystemList = orderSystemService.getUserPreviousOrder(userId);
+        if (orderSystemList.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.ACCEPTED)
+                    .body(orderSystemList.get());
+        } throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
+    }
+
+    @DeleteMapping("/order/{id}")
+    public ResponseEntity<String> cancelOrder(@PathVariable("id") Long userId) throws CustomException {
+        boolean isCancel = orderSystemService.cancelOrder(userId);
+        if (isCancel) {
+            return ResponseEntity
+                    .status(HttpStatus.GONE)
+                    .body(Constants.ORDER_CANCELED_SUCCESSFULLY);
+        } throw new CustomException(Constants.CAN_NOT_CANCEL_THE_ORDER);
     }
 }

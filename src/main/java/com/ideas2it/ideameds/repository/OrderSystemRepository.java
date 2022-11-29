@@ -9,6 +9,7 @@ import com.ideas2it.ideameds.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,5 +23,8 @@ import java.util.Optional;
 @Repository
 public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long> {
 
-    Optional<OrderSystem> findByUser(User user);
+    Optional<List<OrderSystem>> findByUser(User user);
+
+    Optional<List<OrderSystem>> findByOrderId(Long orderId);
+
 }

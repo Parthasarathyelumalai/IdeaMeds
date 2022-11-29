@@ -61,12 +61,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            List<CartItem> cartItems = this.convertToCartItem(cartDto.getCartItemDtoList());
+        if (user.isPresent() && !user.get().isDeletedStatus()) {
+            List<CartItem> cartItems = convertToCartItem(cartDto.getCartItemDtoList());
             Cart cart = modelMapper.map(cartDto, Cart.class);
             cart.setCartItemList(cartItems);
             Optional<Cart> existedCart = cartRepository.findByUser(user.get());
-            if(existedCart.isPresent()) {
+            if (existedCart.isPresent()) {
                 cart.setCartId(existedCart.get().getCartId());
                 cart.setUser(user.get());
                 cart.setCreatedAt(DateTimeValidation.getDate());
@@ -102,7 +102,7 @@ public class CartServiceImpl implements CartService {
                 CartItem cartItem = modelMapper.map(cartItemDto, CartItem.class);
                 cartItem.setBrandItems(brandItems.get());
                 cartItem.setMedicine(brandItems.get().getMedicine());
-                cartItemList.add(cartItemRepository.save(cartItem));
+                cartItemList.add(cartItem);
             } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
         }
         return cartItemList;
@@ -222,24 +222,6 @@ public class CartServiceImpl implements CartService {
         } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CartDTO> getAllCart() throws CustomException {
-        List<CartDTO> cartDTOList = new ArrayList<>();
-        List<Cart> carts = cartRepository.findAll();
-        for (Cart cart : carts) {
-            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-            List<CartItemDto> cartItemDtoList = convertToCartItemDtoList(cart.getCartItemList());
-            cartDTO.setCartItemDtoList(cartItemDtoList);
-            cartDTOList.add(cartDTO);
-        }
-        return cartDTOList;
-    }
-
     /**
      * Delete user cart by user id.
      *
@@ -247,13 +229,15 @@ public class CartServiceImpl implements CartService {
      * @return boolean.
      */
     @Override
-    public boolean deleteCartByUserId(Long userId) {
+    public boolean deleteCartByUserId(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
+        if (user.isPresent() && !user.get().isDeletedStatus()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
-            cart.ifPresent(value -> cartRepository.deleteById(value.getCartId()));
-            return true;
-        }
-        return false;
+            if (cart.isPresent()) {
+                cart.get().setUser(null);
+                cartRepository.deleteById(cart.get().getCartId());
+                return true;
+            } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 }

@@ -49,15 +49,6 @@ public class CartController {
     }
 
     /**
-     * Retrieve all data from cart repository.
-     * @return All cart.
-     */
-    @GetMapping("/allcart")
-    public ResponseEntity<List<CartDTO>> getAllCart() throws CustomException {
-        return (ResponseEntity.status(HttpStatus.ACCEPTED).body(cartService.getAllCart()));
-    }
-
-    /**
      * Get one cart by user id.
      * @param userId - To get one cart.
      * @return One cart.
@@ -80,15 +71,15 @@ public class CartController {
      * @return Deleted message.
      */
     @DeleteMapping("/cart/{id}")
-    public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) {
-        boolean deletedMessage = cartService.deleteCartByUserId(userId);
-        if (deletedMessage) {
+    public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) throws CustomException {
+        boolean isDelete = cartService.deleteCartByUserId(userId);
+        if (isDelete) {
             return ResponseEntity
                     .status(HttpStatus.GONE)
-                    .body("Deleted successfully");
+                    .body(Constants.REMOVED_SUCCESSFULLY);
         }
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body("No cart available");
+                .body(Constants.NO_ITEMS);
     }
 }
