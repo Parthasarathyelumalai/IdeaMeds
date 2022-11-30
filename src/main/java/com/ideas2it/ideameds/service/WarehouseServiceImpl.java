@@ -80,7 +80,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public Long deleteWarehouse(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()) {
-            warehouse.get().setDeletedStatus(1);
+            warehouse.get().setDeletedStatus(true);
             return warehouseRepository.save(warehouse.get()).getWarehouseId();
         } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
     }

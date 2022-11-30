@@ -123,7 +123,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     public Long deleteBrandItem(Long brandItemId) throws CustomException {
         Optional<BrandItems> brandItem = brandItemsRepository.findById(brandItemId);
         if (brandItem.isPresent()) {
-            brandItem.get().setDeletedStatus(1);
+            brandItem.get().setDeletedStatus(true);
             brandItem.get().setModifiedAt(DateTimeValidation.getDate());
             return brandItemsRepository.save(brandItem.get()).getBrandItemsId();
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);

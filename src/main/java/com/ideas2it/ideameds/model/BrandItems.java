@@ -3,6 +3,7 @@ package com.ideas2it.ideameds.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Where(clause = "is_deleted_status = false")
 public class BrandItems {
 
     @Id
@@ -69,6 +72,7 @@ public class BrandItems {
     )
     private List<Warehouse> warehouses;
 
+    @NotNull
     @Column(columnDefinition = "BIT default 0" )
-    private int deletedStatus;
+    private boolean isDeletedStatus;
 }
