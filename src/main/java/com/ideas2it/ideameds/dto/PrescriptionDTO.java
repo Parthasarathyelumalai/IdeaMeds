@@ -7,7 +7,6 @@ package com.ideas2it.ideameds.dto;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
@@ -23,7 +22,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 public class PrescriptionDTO {
     private Long prescriptionId;
 
@@ -40,7 +38,7 @@ public class PrescriptionDTO {
     private String patientName;
 
     @NotNull(message = "Age is required")
-    @Pattern(regexp = Constants.REGEX_FOR_NUMBERS, message = "Age should not contain letters")
+    @Pattern(regexp = Constants.REGEX_FOR_AGE, message = "Age should not contain letters")
     @Min(value = 1, message = "Age should not be less than 1")
     @Max(value = 130, message = "Age should not be greater than 130")
     private String patientAge;

@@ -13,7 +13,6 @@ import com.ideas2it.ideameds.repository.PrescriptionRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +27,20 @@ import java.util.Optional;
  * @since 2022-11-18
  */
 @Service
-@RequiredArgsConstructor
 public class PrescriptionServiceImpl implements PrescriptionService{
     private final PrescriptionRepository prescriptionRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper = new ModelMapper();
+
+    /**
+     * Constructs a new object
+     * @param prescriptionRepository create new instance for prescription repository
+     * @param userRepository create new instance for user repository
+     */
+    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository) {
+        this.prescriptionRepository = prescriptionRepository;
+        this.userRepository = userRepository;
+    }
 
     /**
      *{@inheritDoc}
