@@ -8,8 +8,8 @@ package com.ideas2it.ideameds.util;
  * Enum Illness Categories
  *
  * @author - Parthasarathy Elumalai
- * @since - 2022-11-18
  * @version - 1.0
+ * @since - 2022-11-18
  */
 public enum IllnessCategories {
 
@@ -20,13 +20,18 @@ public enum IllnessCategories {
 
     public final int value;
 
+    /**
+     * Constructs a new object
+     *
+     * @param value - pass a value of enum
+     */
     IllnessCategories(final int value) {
         this.value = value;
     }
 
     public static IllnessCategories getIllnessCategories(int value) {
         IllnessCategories result = null;
-        IllnessCategories type[] = IllnessCategories.values();
+        IllnessCategories[] type = IllnessCategories.values();
         for (IllnessCategories illnessCategorie : type) {
             if ( illnessCategorie.value == value ) {
                 return illnessCategorie;

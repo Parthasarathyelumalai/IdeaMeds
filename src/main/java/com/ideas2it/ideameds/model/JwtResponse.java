@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Class for  getting token
+ * Class for  JWT Response as token
  *
  * @author - Parthasarathy Elumalai
  * @since - 2022-11-26

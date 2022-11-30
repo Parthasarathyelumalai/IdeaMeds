@@ -51,11 +51,11 @@ public interface UserService {
 
     /**
      * deleted user details in databases
-     * @param user - set user(Which contains deleted status = true)
+     * @param userId - set user(Which contains deleted status = true)
      * @return String - give a response statement as response
      * @throws CustomException - throws error message
      */
-    String deleteUser(UserDTO user) throws CustomException;
+    String deleteUser(Long userId) throws CustomException;
 
     /**
      * Check the user is exists or not
