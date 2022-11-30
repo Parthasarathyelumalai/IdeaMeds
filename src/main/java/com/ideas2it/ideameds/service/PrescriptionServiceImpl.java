@@ -22,20 +22,22 @@ import java.util.Optional;
 /**
  * Service Interface Implementation
  * Performs Create, Read, Update and Delete operations for the Prescription
+ *
  * @author Nithish K
  * @version 1.0
  * @since 2022-11-18
  */
 @Service
-public class PrescriptionServiceImpl implements PrescriptionService{
+public class PrescriptionServiceImpl implements PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      * Constructs a new object
+     *
      * @param prescriptionRepository create new instance for prescription repository
-     * @param userRepository create new instance for user repository
+     * @param userRepository         create new instance for user repository
      */
     public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository) {
         this.prescriptionRepository = prescriptionRepository;
@@ -43,12 +45,12 @@ public class PrescriptionServiceImpl implements PrescriptionService{
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
             prescription.setPrescriptionItems(prescriptionDTO.getPrescriptionItems().stream().map(prescriptionItemsDTO -> modelMapper.map(prescriptionItemsDTO, PrescriptionItems.class)).toList());
             prescription.setUser(user.get());
@@ -65,21 +67,21 @@ public class PrescriptionServiceImpl implements PrescriptionService{
     @Override
     public PrescriptionDTO getPrescription(Long prescriptionId) throws CustomException {
         Optional<Prescription> prescription = prescriptionRepository.findById(prescriptionId);
-        if (prescription.isPresent()) return modelMapper.map(prescription,PrescriptionDTO.class);
+        if (prescription.isPresent()) return modelMapper.map(prescription, PrescriptionDTO.class);
         else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent())
-            return prescriptionRepository.getPrescriptionByUser(user.get()).stream()
-                        .map(prescription -> modelMapper
-                        .map(prescription, PrescriptionDTO.class))
-                        .toList();
+            return prescriptionRepository.getPrescriptionByUser(user.get())
+                    .stream()
+                    .map(prescription -> modelMapper.map(prescription, PrescriptionDTO.class))
+                    .toList();
         else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
@@ -90,7 +92,7 @@ public class PrescriptionServiceImpl implements PrescriptionService{
     public Long deletePrescriptionById(Long prescriptionId, Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
 
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             List<Prescription> prescriptions = user.get().getPrescription();
 
             if (prescriptions.isEmpty()) throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);

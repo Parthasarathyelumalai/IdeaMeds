@@ -20,5 +20,10 @@ import java.util.List;
  */
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription,Long> {
+    /**
+     * Get all the prescriptions of the User
+     * @param user To get prescription of required user
+     * @return returns the list of prescriptions
+     */
     List<Prescription> getPrescriptionByUser(User user);
 }
