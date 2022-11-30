@@ -17,10 +17,15 @@ import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -34,13 +39,26 @@ import java.util.List;
  * @since - 2022-11-19
  */
 @RestController
-@RequiredArgsConstructor
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
     private final BrandItemsService brandItemsService;
     private final CartServiceImpl cartService;
 
+    /**
+     * Constructs a new object
+     * @param prescriptionService create new instance for prescription service
+     * @param userService create new instance for user service
+     * @param brandItemsService create new instance for brand items service
+     * @param cartService create new instance for cart service
+     */
+    @Autowired
+    public PrescriptionController(PrescriptionService prescriptionService, UserService userService, BrandItemsService brandItemsService, CartServiceImpl cartService) {
+        this.prescriptionService = prescriptionService;
+        this.userService = userService;
+        this.brandItemsService = brandItemsService;
+        this.cartService = cartService;
+    }
 
     /**
      * Add the prescription to the user

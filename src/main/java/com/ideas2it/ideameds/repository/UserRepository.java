@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository of User.
+ * Repository of User
  *
  * @author - Parthasarathy Elumalai
  * @version - 1.0
@@ -17,5 +17,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    /**
+     *  find email in user table
+     * @param emailId - pass string as a email
+     * @return User - return a user
+     */
     User findByEmailId(String emailId);
 }

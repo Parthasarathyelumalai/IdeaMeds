@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public Optional<UserDTO> addUser(UserDTO userDTO) {
@@ -52,27 +52,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(testPasswordEncoded);
         List<Address> addresses = user.getAddresses();
         addresses.removeAll(user.getAddresses());
-        for(AddressDTO addressDTO : userDTO.getAddresses()) {
-            addresses.add(modelMapper.map(addressDTO,Address.class));
+
+        for (AddressDTO addressDTO : userDTO.getAddresses()) {
+            addresses.add(modelMapper.map(addressDTO, Address.class));
         }
+
         user.setCreatedAt(DateTimeValidation.getDate());
         user.setModifiedAt(DateTimeValidation.getDate());
-        for(Address address : user.getAddresses()) {
+
+        for (Address address : user.getAddresses()) {
             address.setCreatedAt(DateTimeValidation.getDate());
             address.setModifiedAt(DateTimeValidation.getDate());
         }
+
         return Optional.of(modelMapper.map(userRepository.save(user), UserDTO.class));
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public UserDTO getUserById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        UserDTO fetchedUser = modelMapper.map(user,UserDTO.class);
+        UserDTO fetchedUser = modelMapper.map(user, UserDTO.class);
 
-        if (fetchedUser != null && (!fetchedUser.isDeletedStatus())) {
+        if ( fetchedUser != null && (!fetchedUser.isDeletedStatus()) ) {
             return fetchedUser;
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
@@ -80,12 +84,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<UserDTO> getAllUser() {
         List<UserDTO> users = new ArrayList<>();
-        for (User user: userRepository.findAll()) {
+
+        for (User user : userRepository.findAll()) {
             UserDTO userDTO = modelMapper.map(user, UserDTO.class);
             users.add(userDTO);
         }
@@ -93,41 +98,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public String updateUser(UserDTO userDTO) throws CustomException {
         User user = modelMapper.map(userDTO, User.class);
         user.setModifiedAt(DateTimeValidation.getDate());
-        for(Address address : user.getAddresses()) {
+
+        for (Address address : user.getAddresses()) {
             address.setModifiedAt(DateTimeValidation.getDate());
         }
+
         UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
 
-        if (null != updatedUser) {
-            return updatedUser.getName() + " ." + "Updated Successfully";
-        }  else {
+        if ( null != updatedUser ) {
+            return updatedUser.getName() + Constants.UPDATED_SUCCESSFULLY;
+        } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
         }
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public String deleteUser(UserDTO userDTO) throws CustomException {
-        User user = modelMapper.map(userDTO, User.class);
-        Optional<User> userOptional = userRepository.findById(user.getUserId());
-        if (userOptional.isPresent() && !userOptional.get().isDeletedStatus() ) {
-            user.setDeletedStatus(true);
-            Optional<UserDTO> deleteUser = Optional.of(modelMapper.map(userRepository.save(user),UserDTO.class));
-            return deleteUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
+    public String deleteUser(Long userId) throws CustomException {
+        Optional<User> fetchedUser = userRepository.findById(userId);
+
+        if ( fetchedUser.isPresent() && !fetchedUser.get().isDeletedStatus() ) {
+            fetchedUser.get().setDeletedStatus(true);
+            Optional<UserDTO> deletedUser = Optional.of(modelMapper.map(userRepository.save(fetchedUser.get()), UserDTO.class));
+            return deletedUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
         }
         throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public boolean isUserExist(Long userId) {
@@ -135,7 +142,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<String> getUserPhoneNumber() {
@@ -143,7 +150,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<String> getUserEmail() {
@@ -151,14 +158,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        log.info("inside public UserDetails loadUserByUsername(String username) ");
         Optional<User> fetchedUser = Optional.of(userRepository.findByEmailId(username));
-        log.info(String.valueOf(fetchedUser));
-        log.info("inside fetchedUser");
         if ( fetchedUser.isPresent() ) {
             return new CustomUserDetail(fetchedUser.get());
         }

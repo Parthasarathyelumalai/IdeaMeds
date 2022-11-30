@@ -27,6 +27,7 @@ public class RestResponseEntityExceptionHandling {
 
     /**
      * method used to handle Custom exception
+     *
      * @param customException - send exception
      * @return errorMessage - gives a response as error msg and http status code
      */
@@ -39,6 +40,7 @@ public class RestResponseEntityExceptionHandling {
 
     /**
      * method used to handle MethodArgumentNotValid exception
+     *
      * @param methodArgumentNotValidException - send exception
      * @return errorMessage - gives a response as error msg and http status code
      */
@@ -52,6 +54,6 @@ public class RestResponseEntityExceptionHandling {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResponseEntity<>(errors,HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(errors, HttpStatus.NOT_ACCEPTABLE);
     }
 }

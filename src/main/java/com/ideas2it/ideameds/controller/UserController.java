@@ -9,7 +9,6 @@ import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.JwtRequest;
 import com.ideas2it.ideameds.model.JwtResponse;
-import com.ideas2it.ideameds.model.OrderSystem;
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.service.OrderSystemService;
 import com.ideas2it.ideameds.service.UserMedicineService;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.annotation.WebFilter;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -45,15 +43,14 @@ import java.util.Optional;
  */
 @RestController
 @Slf4j
-@WebFilter(urlPatterns = {"/user"})
 public class UserController {
     private final UserService userService;
     private final UserMedicineService userMedicineService;
     private final OrderSystemService orderSystemService;
     private final AuthenticationManager authenticationManager;
-
     private final JwtUtility jwtUtility;
-    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService,AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
+
+    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService, AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
         this.orderSystemService = orderSystemService;
@@ -63,6 +60,7 @@ public class UserController {
 
     /**
      * Add User in database
+     *
      * @param user - send the user to store
      * @return user - gives a response as user details
      * @throws CustomException - occur when user's email and phone number are already registered
@@ -70,7 +68,8 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> savedUser;
-        if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())  ) {
+
+        if ( validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber()) ) {
             throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
         } else if ( validUserByEmailId(user.getEmailId()) ) {
             throw new CustomException(Constants.EMAIL_ID_EXISTS);
@@ -84,6 +83,7 @@ public class UserController {
 
     /**
      * Get a user details by id
+     *
      * @param userId - send the user id
      * @return user - give response as user details
      * @throws CustomException - occur when User is not Found
@@ -96,6 +96,7 @@ public class UserController {
 
     /**
      * Get list of user details
+     *
      * @return list of user - gives a response as list of user details
      */
     @GetMapping("/user")
@@ -105,31 +106,34 @@ public class UserController {
 
     /**
      * Updated a user details
+     *
      * @param user - to store an updated user details
      * @return String - give a response statement as a response
      * @throws CustomException - occur when User is not Found
      */
     @PutMapping("/user")
     public ResponseEntity<String> updateUser(@RequestBody UserDTO user) throws CustomException {
-        String updateUser = userService.updateUser(user);
-        return ResponseEntity.status(HttpStatus.OK).body(updateUser);
+        String updatedUser = userService.updateUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
 
     /**
      * Delete the user in databases(Soft -delete)
-     * @param user - send a user to delete
+     *
+     * @param  userId - send a user id to delete
      * @return String - give a response as
-     * @throws CustomException - throw an error message
+     * @throws CustomException - Occur when user is not found
      */
-    @DeleteMapping("/user")
-    public ResponseEntity<String> deleteUser(@RequestBody UserDTO user) throws CustomException {
-        String deletedStatus = userService.deleteUser(user);
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) throws CustomException {
+        String deletedStatus = userService.deleteUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(deletedStatus);
     }
 
     /**
      * Add user medicines for specific user
-     * @param userId - send user id to set medicines
+     *
+     * @param userId        - send user id to set medicines
      * @param userMedicines - send user medicines
      * @return list of medicine - gives a response as list of user medicines
      * @throws CustomException - occur when User is not Found
@@ -148,23 +152,29 @@ public class UserController {
 
     /**
      * Get a user previous order details
+     *
      * @param userId - send user id
      * @return list of order - gives response as list of order by user
      */
     @GetMapping("/user/user-medicine/{id}")
-    public List<OrderSystemDTO> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        return orderSystemService. getUserPreviousOrder(userId).get();
+    public ResponseEntity<List<OrderSystemDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
+        Optional<List<OrderSystemDTO>> savedOrders =  orderSystemService.getUserPreviousOrder(userId);
+        if(savedOrders.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(savedOrders.get());
+        }
+            throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
     }
 
     /**
      * To valid User By phone number
+     *
      * @param userPhoneNumber - send a user Email id to validate
      * @return boolean - true or false
      */
     private boolean validUserByPhoneNumber(String userPhoneNumber) {
         List<String> userPhoneNumbers = userService.getUserPhoneNumber();
         for (String number : userPhoneNumbers) {
-            if ( number.equals(userPhoneNumber)) {
+            if ( number.equals(userPhoneNumber) ) {
                 return true;
             }
         }
@@ -173,13 +183,14 @@ public class UserController {
 
     /**
      * To valid User By EmailId
+     *
      * @param userEmailId - send a user Email id to validate
      * @return boolean - true or false
      */
     private boolean validUserByEmailId(String userEmailId) {
         List<String> userEmailIds = userService.getUserEmail();
         for (String emailId : userEmailIds) {
-            if ( userEmailId.equals(emailId)) {
+            if ( userEmailId.equals(emailId) ) {
                 return true;
             }
         }
@@ -197,14 +208,14 @@ public class UserController {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            jwtRequest.getUsername(),
+                            jwtRequest.getUserName(),
                             jwtRequest.getPassword()
                     )
             );
         } catch ( BadCredentialsException exception ) {
-            throw new CustomException("Invalid_credentials");
+            throw new CustomException(Constants.INVALID_CREDENTIALS);
         }
-        final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUsername());
+        final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUserName());
         final String token = jwtUtility.generateToken(userDetails);
 
         return new JwtResponse(token);
