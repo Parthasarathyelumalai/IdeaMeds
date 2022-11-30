@@ -57,7 +57,7 @@ public class MedicineController {
      * @throws CustomException
      *         throws exception when there is no entry for medicine
      */
-    @GetMapping("/medicine")
+    @GetMapping("/medicine/getAll")
     public ResponseEntity<List<MedicineDTO>> getAllMedicines() throws CustomException {
         List<MedicineDTO> medicineDTOList = medicineService.getAllMedicines();
         if (medicineDTOList != null) {

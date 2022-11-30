@@ -90,7 +90,7 @@ public class MedicineServiceImpl implements MedicineService {
     public Long deleteMedicine(Long medicineId) throws CustomException {
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
         if (medicine.isPresent()) {
-            medicine.get().setDeletedStatus(1);
+            medicine.get().setDeletedStatus(true);
             medicine.get().setModifiedAt(DateTimeValidation.getDate());
         return medicineRepository.save(medicine.get()).getMedicineId();
         } else throw new CustomException(Constants.MEDICINE_NOT_FOUND);

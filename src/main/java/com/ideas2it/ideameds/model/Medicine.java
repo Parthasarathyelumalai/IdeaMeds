@@ -6,6 +6,7 @@ import com.ideas2it.ideameds.util.MedicineType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Where(clause = "is_deleted_status = false")
 public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,8 +45,10 @@ public class Medicine {
     private MedicineType medicineType;
     @Column(columnDefinition = "boolean default false")
     private boolean prescriptionRequired;
+    @NotNull
     @Column(columnDefinition = "BIT default 0" )
-    private int deletedStatus;
+    private boolean isDeletedStatus;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")

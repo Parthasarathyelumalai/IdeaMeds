@@ -86,7 +86,7 @@ public class BrandItemsController {
      * </p>
      * @return List of brand items
      */
-    @GetMapping("/brandItems")
+    @GetMapping("/brandItems/getAll")
     public ResponseEntity<List<BrandItemsDTO>> getAllBrandItems() {
         return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getAllBrandItems());
     }
@@ -116,7 +116,7 @@ public class BrandItemsController {
      * @throws CustomException
      *         throws when brand item not found
      */
-    @GetMapping("/brandItems/{brandItemsName}")
+    @GetMapping("/brandItems/byName/{brandItemsName}")
     public ResponseEntity<BrandItemsDTO> getBrandItemByName(@PathVariable("brandItemsName") String brandItemName) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getBrandItemByName(brandItemName));
     }
@@ -168,8 +168,6 @@ public class BrandItemsController {
     public ResponseEntity<MedicineDTO> getMedicineByBrandItemId(@PathVariable("brandItemId") Long brandItemsId) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getMedicineByBrandItemId(brandItemsId));
     }
-
-    @GetMapping("")
 
     /**
      * <p>

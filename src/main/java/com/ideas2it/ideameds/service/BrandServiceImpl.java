@@ -93,7 +93,7 @@ public class BrandServiceImpl implements BrandService {
     public Long deleteBrand(Long brandId) throws CustomException {
         Optional<Brand> brand = brandRepository.findById(brandId);
         if(brand.isPresent()) {
-            brand.get().setDeletedStatus(1);
+            brand.get().setDeletedStatus(true);
             return brandRepository.save(brand.get()).getBrandId();
         } else throw new CustomException(Constants.BRAND_NOT_FOUND);
     }
