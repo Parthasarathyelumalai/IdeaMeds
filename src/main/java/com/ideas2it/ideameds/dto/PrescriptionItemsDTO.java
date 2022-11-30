@@ -20,8 +20,6 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
-@Data
-@NoArgsConstructor
 public class PrescriptionItemsDTO {
     private Long prescriptionItemsId;
 
