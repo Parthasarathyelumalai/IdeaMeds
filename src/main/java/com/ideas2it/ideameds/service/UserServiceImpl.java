@@ -163,10 +163,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         Optional<User> fetchedUser = Optional.of(userRepository.findByEmailId(username));
-        if ( fetchedUser.isPresent() ) {
-            return new CustomUserDetail(fetchedUser.get());
-        }
-        return null;
+        return fetchedUser.map(CustomUserDetail::new).orElse(null);
     }
 
 }

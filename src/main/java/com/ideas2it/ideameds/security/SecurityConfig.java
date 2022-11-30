@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * Configuration - Authentication Manager(To Build it which provide Authentication provider )
      *
      * @param auth the {@link AuthenticationManagerBuilder} to use
-     * @throws Exception
+     * @throws Exception - occur runtime exception
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * BCryptPassword Encoder to encrypt and decrypt password
      *
-     * @return BCryptPasswordEncoder -
+     * @return BCryptPasswordEncoder
      */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * Configure the http security
      *
      * @param http the {@link HttpSecurity} to modify
-     * @throws Exception
+     * @throws Exception - occur runtime exception
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -76,6 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/user", "/authenticate")
                 .permitAll()
+                .antMatchers(HttpMethod.GET, "/user/user-medicine/{id}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/user/order/{id}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/user/{id}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/user").hasRole("CUSTOMER")
@@ -85,12 +87,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/prescription/user/{userId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET,"/addToCart/{userId}/{prescriptionId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.DELETE,"/prescription/{userId}/{prescriptionId}").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.POST,"/brand").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET,"/brand/{brandName}").hasRole("CUSTOMER")
-                .antMatchers("/brand/**","/brand").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/brand").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/brand/byName").hasAnyRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/brand/getAll").hasAnyRole("CUSTOMER","ADMIN")
+                .antMatchers(HttpMethod.GET,"/brand/{brandId}").hasRole("ADMIN")
+                .antMatchers("/brand/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/medicine/getAll").hasRole("CUSTOMER")
                 .antMatchers("/medicine","/medicine/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET,"/medicine").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET,"/medicine/{medicineName}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET,"/brandItems/getAll").hasRole("CUSTOMER")
                 .antMatchers("/brandItems/**","/medicineName/{medicineName}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET,"/brandItems/{brandItemsName}","/medicineName/{medicineName}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET,"/brandItems").hasRole("CUSTOMER")

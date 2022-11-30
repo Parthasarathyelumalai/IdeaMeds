@@ -155,8 +155,9 @@ public class UserController {
      *
      * @param userId - send user id
      * @return list of order - gives response as list of order by user
+     * @throws CustomException - occur when there is no order history
      */
-    @GetMapping("/user/user-medicine/{id}")
+    @GetMapping("/user/order/{id}")
     public ResponseEntity<List<OrderSystemDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
         Optional<List<OrderSystemDTO>> savedOrders =  orderSystemService.getUserPreviousOrder(userId);
         if(savedOrders.isPresent()) {
