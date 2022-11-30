@@ -24,6 +24,7 @@ public interface PrescriptionService {
      * passes to the repository to add the prescription to the user
      *
      * @param prescriptionDTO To pass prescriptionDTO object {@link PrescriptionDTO}
+     * @param userId          To get the required user
      * @return returns the prescriptionDTO object
      * @throws CustomException occurs when user not found
      *                         and occurs when prescription was exceeded by 6 months
