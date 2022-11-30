@@ -32,6 +32,19 @@ public class BrandItemsController {
     private final BrandService brandService;
     private final MedicineService medicineService;
 
+    /**
+     * <p>
+     *     Constructs a new object
+     * </p>
+     * @param brandItemsService
+     *        creates new instance for brand Items Service
+     * @param warehouseService
+     *        creates new instance for warehouse service
+     * @param brandService
+     *        creates new instance for brand service
+     * @param medicineService
+     *        creates new instance for medicine service
+     */
     public BrandItemsController(BrandItemsService brandItemsService,
                                 WarehouseService warehouseService,
                                 BrandService brandService,
@@ -52,6 +65,9 @@ public class BrandItemsController {
      *        to get medicine to assign
      * @param brandId
      *        to get brand to assign
+     * @throws CustomException
+     *         throws when the brand not found and
+     *         throws when the medicine not found
      * @return added brand item
      */
     @PostMapping("/brandItems/{medicineId}/{brandId}")
@@ -120,6 +136,40 @@ public class BrandItemsController {
         List<BrandItemsDTO> brandItemsDTOs = brandItemsService.getByMedicineName(medicineName);
         return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsDTOs);
     }
+
+    /**
+     * <p>
+     *     Gets brand using brand Items Id
+     * </p>
+     * @param brandItemsId
+     *        Id to get brand Items
+     * @return brand from brand Items
+     * @throws CustomException
+     *         throws when brand Item not found and
+     *         throws when brand not found
+     */
+    @GetMapping("/brandItems/getBrand/{brandItemsId}")
+    public ResponseEntity<BrandDTO> getBrandByBrandItemId(@PathVariable("brandItemsId") Long brandItemsId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getBrandByBrandItemId(brandItemsId));
+    }
+
+    /**
+     * <p>
+     *     Gets medicine using brand Items Id
+     * </p>
+     * @param brandItemsId
+     *        Id to get brand Items
+     * @return medicine from brand Items
+     * @throws CustomException
+     *         throws when brand Item not found and
+     *         throws when medicine not found
+     */
+    @GetMapping("/brandItems/getMedicine/{brandItemId}")
+    public ResponseEntity<MedicineDTO> getMedicineByBrandItemId(@PathVariable("brandItemId") Long brandItemsId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getMedicineByBrandItemId(brandItemsId));
+    }
+
+    @GetMapping("")
 
     /**
      * <p>

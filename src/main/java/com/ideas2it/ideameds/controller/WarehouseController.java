@@ -23,6 +23,13 @@ import java.util.List;
 public class WarehouseController {
     private final WarehouseService warehouseService;
 
+    /**
+     * <p>
+     *     Constructs a new object
+     * </p>
+     * @param warehouseService
+     *        creates a new instance for warehouse service
+     */
     public WarehouseController(WarehouseService warehouseService) {
         this.warehouseService = warehouseService;
     }

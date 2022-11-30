@@ -24,6 +24,13 @@ import java.util.List;
 public class MedicineController {
     private final MedicineService medicineService;
 
+    /**
+     * <p>
+     *     constructs a new object
+     * </p>
+     * @param medicineService
+     *        creates new instance for medicine service
+     */
     public MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
     }

@@ -23,6 +23,13 @@ public class BrandController {
 
     private final BrandService brandService;
 
+    /**
+     * <p>
+     *     Constructs a new object
+     * </p>
+     * @param brandService
+     *        creates new instance for brand service
+     */
     public BrandController(BrandService brandService) {
         this.brandService = brandService;
     }
