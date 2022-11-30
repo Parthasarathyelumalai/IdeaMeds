@@ -8,6 +8,13 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+/**
+ * Represents the Address DTO
+ *
+ * @author Parthasarathy Elumalai
+ * @version 1.0
+ * @since - 2022-11-19
+ */
 @Getter
 @Setter
 @NoArgsConstructor
