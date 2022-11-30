@@ -13,8 +13,8 @@ import java.util.List;
  * Class for user details
  *
  * @author - Parthasarathy Elumalai
- * @since - 2022-11-26
  * @version - 1.0
+ * @since - 2022-11-26
  */
 @Slf4j
 public class CustomUserDetail implements UserDetails {
@@ -27,7 +27,6 @@ public class CustomUserDetail implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        log.info("public Collection<? extends GrantedAuthority> getAuthorities()" +user.getRoleType().toString());
         return List.of(new SimpleGrantedAuthority(user.getRoleType().toString()));
     }
 

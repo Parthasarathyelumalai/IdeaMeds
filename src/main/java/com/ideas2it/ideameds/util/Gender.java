@@ -8,8 +8,8 @@ package com.ideas2it.ideameds.util;
  * Enum Gender
  *
  * @author - Parthasarathy Elumalai
- * @since - 2022-11-18
  * @version - 1.0
+ * @since - 2022-11-18
  */
 public enum Gender {
     MALE(0),
@@ -18,13 +18,24 @@ public enum Gender {
 
     public final int value;
 
+    /**
+     * Constructs a new object
+     *
+     * @param value - pass a value of enum
+     */
     Gender(final int value) {
         this.value = value;
     }
 
+    /**
+     * get medicine type
+     *
+     * @param value - pass value of enum option
+     * @return gender - return value of gender
+     */
     public static Gender getMedicineType(int value) {
         Gender result = null;
-        Gender type[] = Gender.values();
+        Gender[] type = Gender.values();
         for (Gender gender : type) {
             if ( gender.value == value ) {
                 return gender;

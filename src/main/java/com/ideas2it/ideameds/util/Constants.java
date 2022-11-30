@@ -152,6 +152,11 @@ public class Constants {
      * Share that there is no history of orders message
      */
     public static final String NO_HISTORY_OF_ORDERS = "There Is No History Of Orders";
+    
+    /**
+     * Share that Invalid_credentials message
+     */
+    public static final String INVALID_CREDENTIALS = "Invalid_credentials";
 
     /**
      * Share the discount cannot be added message
