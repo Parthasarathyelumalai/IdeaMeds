@@ -67,6 +67,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
                 orderSystem.setDiscount(cart.get().getDiscount());
                 orderSystem.setOrderDate(DateTimeValidation.getDate());
                 orderSystem.setCreatedAt(DateTimeValidation.getDate());
+                orderSystem.setDeliveryDate(DateTimeValidation.getDate().plusDays(5));
                 orderSystem.setModifiedAt(DateTimeValidation.getDate());
                 orderSystem.setOrderItems(cartItemToOrderItem(cartItemList));
                 OrderSystem savedOrder = orderSystemRepository.save(orderSystem);

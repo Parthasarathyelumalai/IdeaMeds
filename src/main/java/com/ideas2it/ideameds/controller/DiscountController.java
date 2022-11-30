@@ -31,6 +31,7 @@ public class DiscountController {
      * Add discount and save in discount repository.
      * @param discountDTO - To add discount in repository.
      * @return Discount.
+     * @throws CustomException - Can not add discount.
      */
     @PostMapping("/discount")
     public ResponseEntity<DiscountDTO> addDiscount(@RequestBody DiscountDTO discountDTO) throws CustomException {
@@ -45,6 +46,7 @@ public class DiscountController {
     /**
      * Retrieve all discount details from repository.
      * @return All discount details.
+     * @throws CustomException - No discount.
      */
     @GetMapping("/alldiscount")
     public ResponseEntity<List<DiscountDTO>> getAll() throws CustomException {
