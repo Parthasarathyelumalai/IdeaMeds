@@ -65,6 +65,8 @@ public class WarehouseController {
      * @param warehouseId
      *        warehouse id to get warehouse
      * @return warehouse using id
+     * @throws CustomException
+     *         throws when the warehouse not found
      */
     @GetMapping("/warehouse/{warehouseId}")
     public ResponseEntity<WarehouseDTO> getWarehouseById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
