@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Represents the Prescription DTO
+ *
  * @author Nithish K
  * @version 1.0
  * @since - 2022-11-17
@@ -34,7 +35,7 @@ public class PrescriptionDTO {
     private String clinicAddress;
 
     @NotBlank(message = "patient Name should be mentioned")
-    @Pattern(regexp = Constants.REGEX_FOR_TEXT,message = "Invalid Format")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid Format")
     private String patientName;
 
     @NotNull(message = "Age is required")

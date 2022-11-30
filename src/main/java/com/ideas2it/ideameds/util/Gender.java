@@ -37,7 +37,7 @@ public enum Gender {
         Gender result = null;
         Gender[] type = Gender.values();
         for (Gender gender : type) {
-            if ( gender.value == value ) {
+            if (gender.value == value) {
                 return gender;
             }
         }

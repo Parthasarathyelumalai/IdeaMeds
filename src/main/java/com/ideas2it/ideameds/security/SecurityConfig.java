@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * BCryptPassword Encoder to encrypt & decrypt password
+     * BCryptPassword Encoder to encrypt and decrypt password
      *
      * @return BCryptPasswordEncoder -
      */
