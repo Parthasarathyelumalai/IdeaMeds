@@ -9,13 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * controller for discount repository.
+ * Controller for discount repository.
  *
- * @author - Soundharrajan.S
+ * @author - Soundharrajan S.
  * @version - 1.0
- * @since - 2022-11-21
+ * @since - 2022-11-30
  */
 
 @Repository
-public interface DiscountRepository extends JpaRepository<Discount, Long> {
-}
+public interface DiscountRepository extends JpaRepository<Discount, Long> {}

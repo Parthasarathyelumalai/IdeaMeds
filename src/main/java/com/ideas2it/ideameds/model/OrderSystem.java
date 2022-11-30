@@ -24,11 +24,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Simple JavaBean domain object representing an order.
+ * Represents an Order.
  *
- * @author - Soundharrajan.S
+ * @author - Soundharrajan S.
  * @version - 1.0
- * @since - 2022-11-21
+ * @since - 2022-11-30
  */
 
 @Entity

@@ -11,16 +11,21 @@ import com.ideas2it.ideameds.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 /**
- * controller for cart.
+ * This cart controller is used to manipulate the cart service and cart service implementation.
  *
  * @author - Soundharrajan.S
  * @version - 1.0
- * @since - 2022-11-21
+ * @since - 2022-11-30
  */
 
 @RestController
@@ -46,17 +51,18 @@ public class CartController {
     }
 
     /**
-     * Get one cart by user id.
+     * Get cart by user id.
      * @param userId - To get one cart.
      * @return One cart.
      */
     @GetMapping("/cart/{id}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
-        CartDTO cart = cartService.getCartByUserId(userId);
-        if (null != cart) return ResponseEntity
+        Optional<CartDTO> cartDTO = cartService.getCartByUserId(userId);
+        if (cartDTO.isPresent()) {
+            return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(cart);
-        else throw new CustomException(Constants.USER_NOT_FOUND);
+                    .body(cartDTO.get());
+        } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
     }
 
     /**
@@ -67,9 +73,10 @@ public class CartController {
     @DeleteMapping("/cart/{id}")
     public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) throws CustomException {
         boolean isDelete = cartService.deleteCartByUserId(userId);
-        if (isDelete) return ResponseEntity
+        if (isDelete) {
+            return ResponseEntity
                     .status(HttpStatus.GONE)
                     .body(Constants.REMOVED_SUCCESSFULLY);
-        else throw new CustomException(Constants.NOT_DELETED_SUCCESSFULLY);
+        } else throw new CustomException(Constants.NOT_DELETED_SUCCESSFULLY);
     }
 }

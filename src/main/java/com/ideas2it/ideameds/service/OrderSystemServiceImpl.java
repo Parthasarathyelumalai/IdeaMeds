@@ -204,10 +204,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     }
 
     /**
-     * Cancel the order by user id.
-     * @param userId - To get user from repository.
-     * @return - boolean
-     * @throws CustomException - User not found, Order not found.
+     *{@inheritDoc}
      */
     @Override
     public boolean cancelOrder(Long userId) throws CustomException {

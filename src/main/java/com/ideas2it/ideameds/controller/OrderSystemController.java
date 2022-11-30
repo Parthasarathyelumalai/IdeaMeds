@@ -88,6 +88,12 @@ public class OrderSystemController {
         } throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
     }
 
+    /**
+     * Cancel the order by user id.
+     * @param userId - To get user from repository.
+     * @return - boolean
+     * @throws CustomException - User not found, Order not found.
+     */
     @DeleteMapping("/order/{id}")
     public ResponseEntity<String> cancelOrder(@PathVariable("id") Long userId) throws CustomException {
         boolean isCancel = orderSystemService.cancelOrder(userId);

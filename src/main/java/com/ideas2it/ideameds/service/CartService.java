@@ -7,15 +7,14 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Service for cart.
  *
- * @author - Soundharrajan.S
+ * @author - Soundharrajan S.
  * @version - 1.0
- * @since - 2022-11-21
+ * @since - 2022-11-30
  */
 
 public interface CartService {
@@ -34,7 +33,12 @@ public interface CartService {
      * @param userId - To get one cart.
      * @return One cart.
      */
-    CartDTO getCartByUserId(Long userId) throws CustomException;
+    Optional<CartDTO> getCartByUserId(Long userId) throws CustomException;
 
+    /**
+     * Delete cart by user id.
+     * @param userId - To delete the cart by user id.
+     * @return boolean.
+     */
     boolean deleteCartByUserId(Long userId) throws CustomException;
 }

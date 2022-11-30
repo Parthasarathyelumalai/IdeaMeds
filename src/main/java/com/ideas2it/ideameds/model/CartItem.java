@@ -16,11 +16,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 /**
- * Simple JavaBean domain object representing a cart item.
+ * Represents the cart item.
  *
- * @author - Soundharrajan.S
+ * @author - Soundharrajan S.
  * @version - 1.0
- * @since - 2022-11-17
+ * @since - 2022-11-30
  */
 
 @Entity

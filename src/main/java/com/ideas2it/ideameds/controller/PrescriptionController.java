@@ -6,7 +6,7 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.dto.CartDTO;
-import com.ideas2it.ideameds.dto.CartItemDto;
+import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.dto.PrescriptionItemsDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
@@ -150,17 +150,17 @@ public class PrescriptionController {
      */
     private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO user) throws CustomException {
         CartDTO cart = new CartDTO();
-        List<CartItemDto> cartItems = new ArrayList<>();
+        List<CartItemDTO> cartItems = new ArrayList<>();
         List<BrandItemsDTO> brandItemsList = brandItemsService.getAllBrandItems();
         List<PrescriptionItemsDTO> prescriptionItemsDTOs = new ArrayList<>();
 
         for (PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
             for (BrandItemsDTO brandItem : brandItemsList) {
                 if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
-                    CartItemDto cartItem = new CartItemDto();
+                    CartItemDTO cartItem = new CartItemDTO();
                     cartItem.setBrandItemsDTO(brandItem);
                     cartItem.setQuantity(prescriptionItem.getQuantity());cartItems.add(cartItem);
-                    cart.setCartItemDtoList(cartItems);
+                    cart.setCartItemDTOList(cartItems);
                 } else prescriptionItemsDTOs.add(prescriptionItem);
             }
         }
