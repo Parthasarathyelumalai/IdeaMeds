@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Represents the User DTO
+ *
  * @author Parthasarathy Elumalai
  * @version 1.0
  * @since - 2022-11-19
@@ -34,7 +35,7 @@ public class UserDTO {
     @Pattern(regexp = Constants.REGEX_FOR_PHONE_NUMBER, message = "Invalid format - Start with 6 - 9 e.g. 6**********")
     private String phoneNumber;
     @NotBlank(message = "Email should be mentioned")
-    @Email(regexp = Constants.REGEX_FOR_EMAIL_ID ,message = "Invalid format e.g. john@xyz.com")
+    @Email(regexp = Constants.REGEX_FOR_EMAIL_ID, message = "Invalid format e.g. john@xyz.com")
     private String emailId;
     private List<@Valid AddressDTO> addresses;
     private List<Prescription> prescription;
