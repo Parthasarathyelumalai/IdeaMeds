@@ -172,4 +172,9 @@ public class Constants {
      * Share that the discount cannot be deleted message
      */
     public static final String CAN_NOT_DELETE = "Cannot Deleted";
+
+    /**
+     * Share that the user details updated successfully message
+     */
+    public static final String UPDATED_SUCCESSFULLY = " Has Updated Successfully";
 }
