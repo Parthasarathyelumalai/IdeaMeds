@@ -14,17 +14,19 @@ import java.util.Optional;
 
 
 /**
- * Repository for order.
+ * Repository for Order System.
  *
- * @author - Soundharrajan.S
+ * @author - Soundharrajan S.
  * @version - 1.0
- * @since - 2022-11-17
+ * @since - 2022-11-30
  */
 @Repository
 public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long> {
 
+    /**
+     * Get all order by user.
+     * @param user - To get list of order.
+     * @return - List of order system.
+     */
     Optional<List<OrderSystem>> findByUser(User user);
-
-    Optional<List<OrderSystem>> findByOrderId(Long orderId);
-
 }

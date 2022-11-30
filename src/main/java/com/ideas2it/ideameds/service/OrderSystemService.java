@@ -6,19 +6,17 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.OrderSystemDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.OrderSystem;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Service for placing order(order system).
+ * Service for Order System.
  *
- * @author - Soundharrajan.S
+ * @author - Soundharrajan S.
  * @version - 1.0
- * @since - 2022-11-17
+ * @since - 2022-11-30
  */
-
 public interface OrderSystemService {
 
     /**
@@ -50,5 +48,11 @@ public interface OrderSystemService {
      */
     Optional<List<OrderSystemDTO>> getUserPreviousOrder(Long userId) throws CustomException;
 
+    /**
+     * Cancel the order by user id.
+     * @param userId - To get user from repository.
+     * @return - boolean
+     * @throws CustomException - User not found, Order not found.
+     */
     boolean cancelOrder(Long userId) throws CustomException;
 }

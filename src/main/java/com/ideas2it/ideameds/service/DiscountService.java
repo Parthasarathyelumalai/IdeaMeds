@@ -7,16 +7,15 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.Discount;
 
 import java.util.List;
 
 /**
- * Service for discount.
+ * Service for Discount.
  *
  * @author - Soundharrajan.S
  * @version - 1.0
- * @since - 2022-11-21
+ * @since - 2022-11-30
  */
 
 public interface DiscountService {

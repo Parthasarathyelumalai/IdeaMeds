@@ -4,12 +4,16 @@
  */
 package com.ideas2it.ideameds.dto;
 
-import com.ideas2it.ideameds.model.BrandItems;
-import com.ideas2it.ideameds.model.Medicine;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents the Order Item Dto.
+ * @author Soundharrajan S.
+ * @version 1.0
+ * @since - 2022-11-30
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -12,6 +12,12 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Represents the Cart Dto.
+ * @author Soundharrajan S.
+ * @version 1.0
+ * @since - 2022-11-30.
+ */
 @Getter
 @Setter
 @Data
@@ -24,5 +30,5 @@ public class CartDTO {
     private float discountPercentage;
     private Discount discount;
     private String userName;
-    private List<CartItemDto> cartItemDtoList;
+    private List<CartItemDTO> cartItemDTOList;
 }

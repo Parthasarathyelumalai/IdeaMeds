@@ -19,11 +19,11 @@ import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
 /**
- * Simple JavaBean domain object representing a order item.
+ * Represents the Order Item.
  *
  * @author - Soundharrajan.S
  * @version - 1.0
- * @since - 2022-11-21
+ * @since - 2022-11-30
  */
 
 @Entity
