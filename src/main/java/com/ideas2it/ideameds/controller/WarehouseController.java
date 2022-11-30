@@ -16,13 +16,20 @@ import java.util.List;
  * </p>
  *
  * @author Dinesh Kumar R
- * @since 18/11/2022
+ * @since 2022-11-18
  * @version 1.0
  */
 @RestController
 public class WarehouseController {
     private final WarehouseService warehouseService;
 
+    /**
+     * <p>
+     *     Constructs a new object
+     * </p>
+     * @param warehouseService
+     *        creates a new instance for warehouse service
+     */
     public WarehouseController(WarehouseService warehouseService) {
         this.warehouseService = warehouseService;
     }

@@ -61,6 +61,32 @@ public interface BrandItemsService {
 
     /**
      * <p>
+     *     Gets brand using brandItems id
+     * </p>
+     * @param brandItemId
+     *        brand item id to get a brand Item
+     * @return brand from brand Item
+     * @throws CustomException
+     *         throws when brand Items not found and
+     *         throws when brand not found
+     */
+    public BrandDTO getBrandByBrandItemId(Long brandItemId) throws CustomException;
+
+    /**
+     * <p>
+     *     Gets medicine using brandItems id
+     * </p>
+     * @param brandItemId
+     *        brand item id to get a brand Item
+     * @return medicine from brand Item
+     * @throws CustomException
+     *         throws when brand Items not found and
+     *         throws when medicine not found
+     */
+    public MedicineDTO getMedicineByBrandItemId(Long brandItemId) throws CustomException;
+
+    /**
+     * <p>
      *     updates the Brand Item
      * </p>
      * @param brandItemsDTO

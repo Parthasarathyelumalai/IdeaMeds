@@ -2,7 +2,6 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.service.MedicineService;
 import com.ideas2it.ideameds.util.Constants;
 import org.springframework.http.HttpStatus;
@@ -18,13 +17,20 @@ import java.util.List;
  * </p>
  *
  * @author Dinesh Kumar R
- * @since 18/11/2022
+ * @since 2022-11-18
  * @version 1.0
  */
 @RestController
 public class MedicineController {
     private final MedicineService medicineService;
 
+    /**
+     * <p>
+     *     constructs a new object
+     * </p>
+     * @param medicineService
+     *        creates new instance for medicine service
+     */
     public MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
     }

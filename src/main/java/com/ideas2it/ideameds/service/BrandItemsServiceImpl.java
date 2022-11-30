@@ -68,9 +68,37 @@ public class BrandItemsServiceImpl implements BrandItemsService {
      */
     @Override
     public BrandItemsDTO getBrandItemById(Long brandItemId) throws CustomException {
-        Optional<BrandItems> brandItems= brandItemsRepository.findById(brandItemId);
+        Optional<BrandItems> brandItems = brandItemsRepository.findById(brandItemId);
         if (brandItems.isPresent()) {
            return modelMapper.map(brandItems.get(), BrandItemsDTO.class);
+        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public BrandDTO getBrandByBrandItemId(Long brandItemId) throws CustomException {
+        Optional<BrandItems> brandItems = brandItemsRepository.findById(brandItemId);
+        if (brandItems.isPresent()) {
+            Brand brand = brandItems.get().getBrand();
+            if (brand != null) {
+                return modelMapper.map(brand, BrandDTO.class);
+            } else throw new CustomException(Constants.BRAND_NOT_FOUND);
+        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public MedicineDTO getMedicineByBrandItemId(Long brandItemId) throws CustomException {
+        Optional<BrandItems> brandItems = brandItemsRepository.findById(brandItemId);
+        if (brandItems.isPresent()) {
+            Medicine medicine = brandItems.get().getMedicine();
+            if (medicine != null) {
+                return modelMapper.map(medicine, MedicineDTO.class);
+            } else throw new CustomException(Constants.BRAND_NOT_FOUND);
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
 
