@@ -3,7 +3,6 @@ package com.ideas2it.ideameds.security;
 import com.ideas2it.ideameds.filter.JwtFilter;
 import com.ideas2it.ideameds.service.UserServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,8 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Class for security configuration
  *
  * @author - Parthasarathy Elumalai
- * @since - 2022-11-26
  * @version - 1.0
+ * @since - 2022-11-26
  */
 @Configuration
 @EnableWebSecurity
@@ -34,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Configuration - Authentication Manager(To Build it which provide Authentication provider )
+     *
      * @param auth the {@link AuthenticationManagerBuilder} to use
      * @throws Exception
      */
@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * BCryptPassword Encoder to encrypt & decrypt password
+     *
      * @return BCryptPasswordEncoder -
      */
     @Bean
@@ -53,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Bean for AuthenticationManager
+     *
      * @return AuthenticationManager
      * @throws Exception - occur runtime exception
      */
@@ -64,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Configure the http security
+     *
      * @param http the {@link HttpSecurity} to modify
      * @throws Exception
      */
@@ -71,12 +74,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST, "/user","/authenticate")
-                .permitAll().antMatchers(HttpMethod.GET,"/user/{id}").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT,"/user").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.DELETE,"/user").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.POST, "/user", "/authenticate")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/user/{id}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/user").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.DELETE, "/user").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.POST, "/prescription/{userId}").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET,"/prescription/{prescriptionId}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET,"/prescription/{prescriptionId}").hasAnyRole("CUSTOMER","ADMIN")
                 .antMatchers(HttpMethod.GET,"/prescription/user/{userId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET,"/addToCart/{userId}/{prescriptionId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.DELETE,"/prescription/{userId}/{prescriptionId}").hasRole("CUSTOMER")
@@ -92,13 +97,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/warehouse","/warehouse/**").hasRole("ADMIN")
                 .antMatchers("/cart").hasRole("CUSTOMER")
                 .antMatchers("/order").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET,"/order","/allorder","/previousorder").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/order", "/allorder", "/previousorder").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-       http.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 }
