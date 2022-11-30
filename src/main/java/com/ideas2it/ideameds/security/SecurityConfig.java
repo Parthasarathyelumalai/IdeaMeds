@@ -3,7 +3,6 @@ package com.ideas2it.ideameds.security;
 import com.ideas2it.ideameds.filter.JwtFilter;
 import com.ideas2it.ideameds.service.UserServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -76,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT,"/user").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.DELETE,"/user").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.POST, "/prescription/{userId}").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET,"/prescription/{prescriptionId}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET,"/prescription/{prescriptionId}").hasAnyRole("CUSTOMER","ADMIN")
                 .antMatchers(HttpMethod.GET,"/prescription/user/{userId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET,"/addToCart/{userId}/{prescriptionId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.DELETE,"/prescription/{userId}/{prescriptionId}").hasRole("CUSTOMER")
