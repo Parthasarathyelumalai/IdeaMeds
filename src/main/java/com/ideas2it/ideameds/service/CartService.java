@@ -24,6 +24,7 @@ public interface CartService {
      * @param userId - To map user with cart.
      * @param cartDto - To store the data in cart repository.
      * @return Total price, discount price and discount.
+     * @throws CustomException - User not found.
      */
     Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException;
 
@@ -32,6 +33,7 @@ public interface CartService {
      *
      * @param userId - To get one cart.
      * @return One cart.
+     * @throws CustomException - User not found.
      */
     Optional<CartDTO> getCartByUserId(Long userId) throws CustomException;
 
@@ -39,6 +41,7 @@ public interface CartService {
      * Delete cart by user id.
      * @param userId - To delete the cart by user id.
      * @return boolean.
+     * @throws CustomException - User not found.
      */
     boolean deleteCartByUserId(Long userId) throws CustomException;
 }

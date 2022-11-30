@@ -55,7 +55,6 @@ public class OrderSystem {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
-    @Column(columnDefinition = "BIT default 0" )
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }

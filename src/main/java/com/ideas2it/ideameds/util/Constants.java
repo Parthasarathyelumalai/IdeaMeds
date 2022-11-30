@@ -177,4 +177,9 @@ public class Constants {
      * Share that the user details updated successfully message
      */
     public static final String UPDATED_SUCCESSFULLY = " Has Updated Successfully";
+
+    /**
+     * Share that can not order message.
+     */
+    public static final String CAN_NOT_ORDER = "Can Not Order.";
 }

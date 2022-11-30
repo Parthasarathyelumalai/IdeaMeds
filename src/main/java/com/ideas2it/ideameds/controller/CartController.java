@@ -39,6 +39,7 @@ public class CartController {
      * @param userId - To map user with cart.
      * @param cartDto - To store the data in cart repository.
      * @return Total price, discount price and discount.
+     * @throws CustomException - Can not add item in cart.
      */
     @PutMapping("/cart/{id}")
     public ResponseEntity<CartDTO> addCart(@PathVariable("id") Long userId, @RequestBody CartDTO cartDto) throws CustomException {
@@ -54,6 +55,7 @@ public class CartController {
      * Get cart by user id.
      * @param userId - To get one cart.
      * @return One cart.
+     * @throws CustomException - Cart item not found.
      */
     @GetMapping("/cart/{id}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
@@ -69,6 +71,7 @@ public class CartController {
      * Delete cart by user id.
      * @param userId - To delete the cart by user id.
      * @return Deleted message.
+     * @throws CustomException - Can not delete items in cart.
      */
     @DeleteMapping("/cart/{id}")
     public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) throws CustomException {

@@ -24,12 +24,14 @@ public interface OrderSystemService {
      *
      * @param userId - To get user and cart details to map with order.
      * @return - Total price of order.
+     * @throws CustomException - user not found.
      */
     Optional<OrderSystemDTO> addOrder(Long userId) throws CustomException;
 
     /**
      * All users order details.
      * @return - All users order details.
+     * @throws CustomException - Order item not found.
      */
     List<OrderSystemDTO> getAllOrder() throws CustomException;
 
@@ -37,7 +39,8 @@ public interface OrderSystemService {
      * To get one order details by user id.
      *
      * @param userId - To get one user order.
-     * @return - One user order details
+     * @return - One user order details.
+     * @throws CustomException - User not found.
      */
     Optional<List<OrderSystemDTO>> getOrderByUserId(Long userId) throws CustomException;
 
@@ -45,6 +48,7 @@ public interface OrderSystemService {
      * Get all previous order items for given user id.
      * @param userId - To get previous order items.
      * @return All previous order items.
+     * @throws CustomException - User not found.
      */
     Optional<List<OrderSystemDTO>> getUserPreviousOrder(Long userId) throws CustomException;
 
@@ -52,7 +56,7 @@ public interface OrderSystemService {
      * Cancel the order by user id.
      * @param userId - To get user from repository.
      * @return - boolean
-     * @throws CustomException - User not found, Order not found.
+     * @throws CustomException - User not found.
      */
     boolean cancelOrder(Long userId) throws CustomException;
 }

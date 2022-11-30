@@ -234,6 +234,7 @@ public class CartServiceImpl implements CartService {
      *
      * @param userId - To get user and cart.
      * @return boolean.
+     * @throws CustomException - Cart item not found, user not found.
      */
     @Override
     public boolean deleteCartByUserId(Long userId) throws CustomException {
