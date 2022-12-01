@@ -2,10 +2,8 @@ package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.Discount;
 import com.ideas2it.ideameds.service.DiscountService;
 import com.ideas2it.ideameds.util.Constants;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +19,21 @@ import java.util.List;
  */
 
 @RestController
-@RequiredArgsConstructor
 public class DiscountController {
-
-
     private final DiscountService discountService;
 
     /**
+     * Create instance for class
+     *
+     * @param discountService to create instance for discount service
+     */
+    public DiscountController(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
+    /**
      * Add discount and save in discount repository.
+     *
      * @param discountDTO - To add discount in repository.
      * @return Discount.
      * @throws CustomException - Can not add discount.
@@ -45,21 +50,23 @@ public class DiscountController {
 
     /**
      * Retrieve all discount details from repository.
+     *
      * @return All discount details.
      * @throws CustomException - No discount.
      */
-    @GetMapping("/alldiscount")
-    public ResponseEntity<List<DiscountDTO>> getAll() throws CustomException {
+    @GetMapping("/allDiscount")
+    public ResponseEntity<List<DiscountDTO>> getAllDiscounts() throws CustomException {
         List<DiscountDTO> discountDTOList = discountService.getAll();
-        if(discountDTOList != null)
+        if (discountDTOList != null)
             return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(discountService.getAll());
+                    .status(HttpStatus.ACCEPTED)
+                    .body(discountService.getAll());
         else throw new CustomException(Constants.NO_DISCOUNT);
     }
 
     /**
      * To delete discount by discount id.
+     *
      * @param discountId - To delete discount by discount id.
      * @return - Response entity.
      * @throws CustomException - Can not delete.

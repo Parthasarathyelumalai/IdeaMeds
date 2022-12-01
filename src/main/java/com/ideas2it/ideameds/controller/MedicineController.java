@@ -17,8 +17,8 @@ import java.util.List;
  * </p>
  *
  * @author Dinesh Kumar R
- * @since 2022-11-18
  * @version 1.0
+ * @since 2022-11-18
  */
 @RestController
 public class MedicineController {
@@ -26,10 +26,10 @@ public class MedicineController {
 
     /**
      * <p>
-     *     constructs a new object
+     * constructs a new object
      * </p>
-     * @param medicineService
-     *        creates new instance for medicine service
+     *
+     * @param medicineService creates new instance for medicine service
      */
     public MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
@@ -38,10 +38,10 @@ public class MedicineController {
 
     /**
      * <p>
-     *     Adds the medicine
+     * Adds the medicine
      * </p>
-     * @param medicineDTO
-     *        new medicine to add
+     *
+     * @param medicineDTO new medicine to add
      * @return medicine which was added
      */
     @PostMapping("/medicine")
@@ -51,11 +51,11 @@ public class MedicineController {
 
     /**
      * <p>
-     *     Gets all the medicines
+     * Gets all the medicines
      * </p>
+     *
      * @return list of medicines
-     * @throws CustomException
-     *         throws exception when there is no entry for medicine
+     * @throws CustomException throws exception when there is no entry for medicine
      */
     @GetMapping("/medicine/getAll")
     public ResponseEntity<List<MedicineDTO>> getAllMedicines() throws CustomException {
@@ -68,13 +68,12 @@ public class MedicineController {
 
     /**
      * <p>
-     *     Gets medicine by an id
+     * Gets medicine by an id
      * </p>
-     * @param medicineId
-     *        medicine id for getting medicine
+     *
+     * @param medicineId medicine id for getting medicine
      * @return medicine using the id
-     * @throws CustomException
-     *         throws exception when there is no medicine found
+     * @throws CustomException throws exception when there is no medicine found
      */
     @GetMapping("/medicine/{medicineId}")
     public ResponseEntity<MedicineDTO> getMedicineById(@PathVariable("medicineId") Long medicineId) throws CustomException {
@@ -83,13 +82,12 @@ public class MedicineController {
 
     /**
      * <p>
-     *     Gets medicine by its name
+     * Gets medicine by its name
      * </p>
-     * @param medicineName
-     *        medicine name for getting medicine
+     *
+     * @param medicineName medicine name for getting medicine
      * @return medicine using the medicine name
-     * @throws CustomException
-     *         throws exception when there is no medicine found
+     * @throws CustomException throws exception when there is no medicine found
      */
     @GetMapping("/medicine/getByName/{medicineName}")
     public ResponseEntity<MedicineDTO> getMedicineByName(@PathVariable("medicineName") String medicineName) throws CustomException {
@@ -98,13 +96,12 @@ public class MedicineController {
 
     /**
      * <p>
-     *     Updates the medicine
+     * Updates the medicine
      * </p>
-     * @param medicineDTO
-     *        medicine to update
+     *
+     * @param medicineDTO medicine to update
      * @return the updated medicine
-     * @throws CustomException
-     *         throws exception when there is no medicine found
+     * @throws CustomException throws exception when there is no medicine found
      */
     @PutMapping("/medicine")
     public ResponseEntity<MedicineDTO> updateMedicine(@Valid @RequestBody MedicineDTO medicineDTO) throws CustomException {
@@ -114,18 +111,17 @@ public class MedicineController {
 
     /**
      * <p>
-     *     Deletes the medicine
+     * Deletes the medicine
      * </p>
-     * @param medicineId
-     *        corresponding medicine id to delete
+     *
+     * @param medicineId corresponding medicine id to delete
      * @return response for deletion
-     * @throws CustomException
-     *         throws exception when occurs when medicine was not found
+     * @throws CustomException throws exception when occurs when medicine was not found
      */
     @PutMapping("/medicine/delete/{medicineId}")
     public ResponseEntity<String> deleteMedicine(@PathVariable("medicineId") Long medicineId) throws CustomException {
         Long medicineById = medicineService.deleteMedicine(medicineId);
-        if(medicineById != null) {
+        if (medicineById != null) {
             return ResponseEntity.status(HttpStatus.OK).body(medicineById + Constants.DELETED_SUCCESSFULLY);
         } else
             return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);

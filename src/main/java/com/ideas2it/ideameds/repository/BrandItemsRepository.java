@@ -16,6 +16,7 @@ import java.util.Optional;
  * Repository for Brand Items
  * The Brand Items objects are saved to the database
  * </p>
+ *
  * @author - Dinesh Kumar R
  * @version - 1.0
  * @since - 2022-11-21
@@ -25,24 +26,24 @@ public interface BrandItemsRepository extends JpaRepository<BrandItems, Long> {
 
     /**
      * <p>
-     *     gets list of medicines by searching through
-     *     medicine name or word related to the brand item
+     * gets list of medicines by searching through
+     * medicine name or word related to the brand item
      * </p>
-     * @param medicineName
-     *        name or a word to get list of medicines
+     *
+     * @param medicineName name or a word to get list of medicines
      * @return list of brand items using search
-     *         null if not related
+     * null if not related
      */
     Optional<List<BrandItems>> findAllByBrandItemNameContainingIgnoreCase(String medicineName);
 
     /**
      * <p>
-     *     gets brand Item using brand item name
+     * gets brand Item using brand item name
      * </p>
-     * @param brandItemName
-     *        name to get a single brand item
+     *
+     * @param brandItemName name to get a single brand item
      * @return single brand item using brand Item name
-     *         null if not found
+     * null if not found
      */
     Optional<BrandItems> findBrandItemsByBrandItemName(String brandItemName);
 }

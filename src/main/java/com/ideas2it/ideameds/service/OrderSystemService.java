@@ -30,6 +30,7 @@ public interface OrderSystemService {
 
     /**
      * All users order details.
+     *
      * @return - All users order details.
      * @throws CustomException - Order item not found.
      */
@@ -46,14 +47,16 @@ public interface OrderSystemService {
 
     /**
      * Get all previous order items for given user id.
+     *
      * @param userId - To get previous order items.
      * @return All previous order items.
      * @throws CustomException - User not found.
      */
-    Optional<List<OrderSystemDTO>> getUserPreviousOrder(Long userId) throws CustomException;
+    Optional<List<OrderSystemDTO>> getUserPreviousOrderByUserId(Long userId) throws CustomException;
 
     /**
      * Cancel the order by user id.
+     *
      * @param userId - To get user from repository.
      * @return - boolean
      * @throws CustomException - User not found.

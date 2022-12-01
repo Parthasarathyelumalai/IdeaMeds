@@ -21,7 +21,6 @@ import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -39,21 +38,30 @@ import java.util.Optional;
  */
 
 @Service
-@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
-
     private final CartRepository cartRepository;
-
     private final UserRepository userRepository;
-
     private final DiscountRepository discountRepository;
-
     private final BrandItemsRepository brandItemsRepository;
-
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
-     *{@inheritDoc}
+     * Create instance for the class
+     *
+     * @param cartRepository       create instance for cart repository
+     * @param userRepository       create instance for user repository
+     * @param discountRepository   create instance for discount repository
+     * @param brandItemsRepository create instance for brand items repository
+     */
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, DiscountRepository discountRepository, BrandItemsRepository brandItemsRepository) {
+        this.cartRepository = cartRepository;
+        this.userRepository = userRepository;
+        this.discountRepository = discountRepository;
+        this.brandItemsRepository = brandItemsRepository;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException {
@@ -78,12 +86,13 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Convert cartDto into cart.
+     *
      * @param cartDto - To convert cart entity to cart dto.
      * @return - cart
      * @throws CustomException - Brand item not found exception.
      */
     private Cart convertToCart(CartDTO cartDto) throws CustomException {
-        Cart cart =  modelMapper.map(cartDto, Cart.class);
+        Cart cart = modelMapper.map(cartDto, Cart.class);
         cart.setCreatedAt(DateTimeValidation.getDate());
         cart.setModifiedAt(DateTimeValidation.getDate());
         List<CartItem> cartItems = convertToCartItem(cartDto.getCartItemDTOList());
@@ -93,6 +102,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Convert cart item dto list to cart item entity list.
+     *
      * @param cartItemDTOList - Convert cart item dto list to cart item entity list.
      * @return - cart item list.
      * @throws CustomException - Brand item not found exception.
@@ -115,6 +125,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * This method is used to get total price of cart(Total price of all brand items).
+     *
      * @param cart - Get cartItems to calculate total price of the cart.
      * @return - Cart with total price.
      */
@@ -135,14 +146,14 @@ public class CartServiceImpl implements CartService {
      * Set discount related details in cart - discount, discount percentage, discount price.
      *
      * @param price - To calculate suitable discount.
-     * @param cart - To set discount details in cart.
+     * @param cart  - To set discount details in cart.
      * @return price - after calculate discount.
      */
     private float calculateDiscount(float price, Cart cart) {
         List<Discount> discountList = discountRepository.findAll();
         float afterDiscount = 0;
         for (Discount discount : discountList) {
-            if ((price > 100 && price < 1000 && discount.getDiscountPercentage() == 5) || (price > 1000 && price < 2000 && discount.getDiscountPercentage() == 10)){
+            if ((price > 100 && price < 1000 && discount.getDiscountPercentage() == 5) || (price > 1000 && price < 2000 && discount.getDiscountPercentage() == 10)) {
                 cart.setDiscount(discount);
                 cart.setDiscountPercentage(discount.getDiscountPercentage());
                 float discountPrice = (price * discount.getDiscountPercentage()) / 100;
@@ -157,6 +168,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Convert brand item to brand item dto.
+     *
      * @param brandItems - To convert brand item to brand item dto.
      * @return - Brand item dto.
      */
@@ -164,11 +176,12 @@ public class CartServiceImpl implements CartService {
         if (null != brandItems) {
             return Optional.of(modelMapper.map(brandItems, BrandItemsDTO.class));
         }
-        return  Optional.empty();
+        return Optional.empty();
     }
 
     /**
      * Convert medicine to medicine dto.
+     *
      * @param medicine - To convert medicine entity to medicine dto.
      * @return - medicine dto.
      */
@@ -179,6 +192,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Convert cart items entity to cart items dto to return.
+     *
      * @param cartItemList - To convert cart item list to cart item dto list to return.
      * @return CartItemDto list.
      * @throws CustomException - Brand item not found exception.
@@ -200,6 +214,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      * Convert cart entity to cart dto to return to the user after save in repository.
+     *
      * @param savedCart - To convert cart to cart dto to return.
      * @return CartDto
      * @throws CustomException - Brand item not found.
@@ -224,8 +239,7 @@ public class CartServiceImpl implements CartService {
                 List<CartItemDTO> cartItemDTOList = convertToCartItemDtoList(cart.get().getCartItemList());
                 cartDTO.setCartItemDTOList(cartItemDTOList);
                 return Optional.of(cartDTO);
-            }
-            else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+            } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 

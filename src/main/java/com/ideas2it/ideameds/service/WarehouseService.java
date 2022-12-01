@@ -14,6 +14,7 @@ import java.util.List;
  * Service Interface
  * Performs Create, Read, Update and Delete operations for Warehouse
  * </p>
+ *
  * @author Dinesh Kumar R
  * @version 1.0
  * @since 2022-11-18
@@ -21,56 +22,54 @@ import java.util.List;
 public interface WarehouseService {
     /**
      * <p>
-     *     adds a warehouse
+     * adds a warehouse
      * </p>
-     * @param warehouseDTO
-     *        to add a new warehouse
+     *
+     * @param warehouseDTO to add a new warehouse
      * @return added warehouse
      */
-    public WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO);
+    WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO);
 
     /**
      * <p>
-     *     gets all the warehouse
+     * gets all the warehouse
      * </p>
+     *
      * @return list of warehouses
      */
-    public List<WarehouseDTO> getAllWarehouses();
+    List<WarehouseDTO> getAllWarehouses();
 
     /**
      * <p>
-     *     gets warehouse by id
+     * gets warehouse by id
      * </p>
-     * @param warehouseId
-     *        to get the warehouse
+     *
+     * @param warehouseId to get the warehouse
      * @return warehouse using the id
-     * @throws CustomException
-     *         throws when the warehouse is not found
+     * @throws CustomException throws when the warehouse is not found
      */
-    public WarehouseDTO getWarehouseById(Long warehouseId) throws CustomException;
+    WarehouseDTO getWarehouseById(Long warehouseId) throws CustomException;
 
     /**
      * <p>
-     *     updates the warehouse
+     * updates the warehouse
      * </p>
-     * @param warehouseDTO
-     *        warehouse to be updated
+     *
+     * @param warehouseDTO warehouse to be updated
      * @return updated warehouse
-     * @throws CustomException
-     *         throws when the warehouse is not found
+     * @throws CustomException throws when the warehouse is not found
      */
-    public WarehouseDTO updateWarehouse(WarehouseDTO warehouseDTO) throws CustomException;
+    WarehouseDTO updateWarehouse(WarehouseDTO warehouseDTO) throws CustomException;
 
     /**
      * <p>
-     *     Deletes a warehouse
+     * Deletes a warehouse
      * </p>
-     * @param warehouseId
-     *        to get the warehouse
+     *
+     * @param warehouseId to get the warehouse
      * @return warehouse id of deleted warehouse
-     * @throws CustomException
-     *         throws when the warehouse is not found
+     * @throws CustomException throws when the warehouse is not found
      */
-    public Long deleteWarehouse(Long warehouseId) throws CustomException;
+    Long deleteWarehouseByWarehouseId(Long warehouseId) throws CustomException;
 
 }

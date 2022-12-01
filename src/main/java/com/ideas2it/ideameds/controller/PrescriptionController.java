@@ -47,12 +47,12 @@ public class PrescriptionController {
     private final CartServiceImpl cartService;
 
     /**
-     * Constructs a new object
+     * Constructs object for the classes
      *
-     * @param prescriptionService create new instance for prescription service
-     * @param userService         create new instance for user service
-     * @param brandItemsService   create new instance for brand items service
-     * @param cartService         create new instance for cart service
+     * @param prescriptionService create instance for prescription service
+     * @param userService         create instance for user service
+     * @param brandItemsService   create instance for brand items service
+     * @param cartService         create instance for cart service
      */
     @Autowired
     public PrescriptionController(PrescriptionService prescriptionService, UserService userService, BrandItemsService brandItemsService, CartServiceImpl cartService) {
@@ -84,8 +84,8 @@ public class PrescriptionController {
      * @throws CustomException occurs when prescription was not found
      */
     @GetMapping("/prescription/{prescriptionId}")
-    public ResponseEntity<PrescriptionDTO> getPrescription(@PathVariable Long prescriptionId) throws CustomException {
-        return ResponseEntity.status(HttpStatus.FOUND).body(prescriptionService.getPrescription(prescriptionId));
+    public ResponseEntity<PrescriptionDTO> getPrescriptionByPrescriptionId(@PathVariable Long prescriptionId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.FOUND).body(prescriptionService.getPrescriptionByPrescriptionId(prescriptionId));
     }
 
     /**
@@ -135,7 +135,7 @@ public class PrescriptionController {
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws CustomException {
         UserDTO userDTO = userService.getUserById(userId);
-        PrescriptionDTO prescriptionDTO = prescriptionService.getPrescription(prescriptionId);
+        PrescriptionDTO prescriptionDTO = prescriptionService.getPrescriptionByPrescriptionId(prescriptionId);
 
         if (null != userDTO) {
             if (null != prescriptionDTO) {
