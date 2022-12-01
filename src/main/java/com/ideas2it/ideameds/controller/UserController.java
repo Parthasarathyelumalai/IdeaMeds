@@ -168,8 +168,8 @@ public class UserController {
      */
     @GetMapping("/user/order/{id}")
     public ResponseEntity<List<OrderSystemDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderSystemDTO>> savedOrders = orderSystemService.getUserPreviousOrderByUserId(userId);
-        if (savedOrders.isPresent()) {
+        Optional<List<OrderSystemDTO>> savedOrders =  orderSystemService.getOrderByUserId(userId);
+        if(savedOrders.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(savedOrders.get());
         }
         throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);

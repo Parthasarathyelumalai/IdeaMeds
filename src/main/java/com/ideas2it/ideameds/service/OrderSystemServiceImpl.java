@@ -57,7 +57,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
-            if(cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId())) {
+            if (cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId())) {
                 OrderSystem orderSystem =  new OrderSystem();
                 List<CartItem> cartItemList = cart.get().getCartItemList();
                 orderSystem.setUser(user.get());
@@ -79,7 +79,7 @@ public class OrderSystemServiceImpl implements OrderSystemService {
 
     /**
      * Convert order entity to order dto.
-     * @param orderSystem - To show for user convert order entity to order dto.
+     * @param orderSystem - Convert order entity to order dto to show for user.
      * @return - Order dto.
      * @throws CustomException - Brand item not found.
      */
@@ -122,8 +122,8 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     }
 
     /**
-     * Convert to medicine entity to medicine dto.
-     * @param medicine - Convert to medicine entity to medicine dto.
+     * Convert medicine entity to medicine dto.
+     * @param medicine - Convert medicine entity to medicine dto.
      * @return - medicine dto.
      * @throws CustomException -  medicine not found.
      */
@@ -190,35 +190,16 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      *{@inheritDoc}
      */
     @Override
-    public Optional<List<OrderSystemDTO>> getUserPreviousOrderByUserId(Long userId) throws CustomException {
+    public boolean cancelOrder(Long userId, Long orderId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
         if (user.isPresent()) {
-            Optional<List<OrderSystem>> orderSystemList = orderSystemRepository.findByUser(user.get());
-            if (orderSystemList.isPresent()) {
-                for (OrderSystem orderSystem : orderSystemList.get()) {
-                    OrderSystemDTO orderSystemDTO = convertToOrderDto(orderSystem);
-                    orderSystemDTOList.add(orderSystemDTO);
-                }
-            } else throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
-        } else throw new CustomException(Constants.USER_NOT_FOUND);
-        return Optional.of(orderSystemDTOList);
-    }
-
-    /**
-     *{@inheritDoc}
-     */
-    @Override
-    public boolean cancelOrder(Long userId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent() && !user.get().isDeletedStatus()) {
-            Optional<List<OrderSystem>> orderSystemList = orderSystemRepository.findByUser(user.get());
-            if (orderSystemList.isPresent()) {
-                for (OrderSystem historyOfOrder : orderSystemList.get()) {
-                    orderSystemRepository.deleteById(historyOfOrder.getOrderId());
-                }
+            Optional<OrderSystem> orderSystem = orderSystemRepository.findById(orderId);
+            if (orderSystem.isPresent()) {
+                orderSystem.get().setUser(null);
+                orderSystem.get().setOrderItems(null);
+                orderSystemRepository.deleteById(orderId);
                 return true;
             } else throw new CustomException(Constants.NO_ITEM_TO_CANCEL_THE_ORDER);
-        } throw new CustomException(Constants.USER_NOT_FOUND);
+        } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
 }

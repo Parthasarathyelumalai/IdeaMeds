@@ -46,20 +46,11 @@ public interface OrderSystemService {
     Optional<List<OrderSystemDTO>> getOrderByUserId(Long userId) throws CustomException;
 
     /**
-     * Get all previous order items for given user id.
-     *
-     * @param userId - To get previous order items.
-     * @return All previous order items.
-     * @throws CustomException - User not found.
-     */
-    Optional<List<OrderSystemDTO>> getUserPreviousOrderByUserId(Long userId) throws CustomException;
-
-    /**
-     * Cancel the order by user id.
-     *
+     * Cancel one order by user and order id.
      * @param userId - To get user from repository.
-     * @return - boolean
-     * @throws CustomException - User not found.
+     * @param orderId - To delete order by order id.
+     * @return Deleted message.
+     * @throws CustomException - Can not cancel the order.
      */
-    boolean cancelOrder(Long userId) throws CustomException;
+    boolean cancelOrder(Long userId, Long orderId) throws CustomException;
 }

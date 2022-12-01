@@ -91,34 +91,16 @@ public class OrderSystemController {
     }
 
     /**
-     * Get all previous order items for given user id.
-     *
-     * @param userId - To get previous order items.
-     * @return All previous order items.
-     * @throws CustomException - No history of orders.
-     */
-    @GetMapping("/previousOrder/{id}")
-    public ResponseEntity<List<OrderSystemDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderSystemDTO>> orderSystemList = orderSystemService.getUserPreviousOrderByUserId(userId);
-        if (orderSystemList.isPresent()) {
-            return ResponseEntity
-                    .status(HttpStatus.ACCEPTED)
-                    .body(orderSystemList.get());
-        } else {
-            throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
-        }
-    }
-
-    /**
-     * Cancel the order by user id.
-     *
+     * Cancel one order by user and order id.
      * @param userId - To get user from repository.
-     * @return - boolean
-     * @throws CustomException - Can not cancel order.
+     * @param orderId - To delete order by order id.
+     * @return Deleted message.
+     * @throws CustomException - Can not cancel the order.
      */
-    @DeleteMapping("/order/{id}")
-    public ResponseEntity<String> cancelOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
-        boolean isCancel = orderSystemService.cancelOrder(userId);
+    @DeleteMapping("/order/{userId}/{orderId}")
+    public ResponseEntity<String> cancelOrder(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId) throws CustomException {
+        boolean isCancel = orderSystemService.cancelOrder(userId, orderId);
+        
         if (isCancel) {
             return ResponseEntity
                     .status(HttpStatus.GONE)
