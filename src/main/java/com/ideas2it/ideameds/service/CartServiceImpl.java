@@ -142,7 +142,7 @@ public class CartServiceImpl implements CartService {
         List<Discount> discountList = discountRepository.findAll();
         float afterDiscount = 0;
         for (Discount discount : discountList) {
-            if ((price > 100 && price < 1000 && discount.getDiscountPercentage() == 5) || (price > 1000 && price < 2000 && discount.getDiscountPercentage() == 10)){
+            if ((price > 100 && price < 10000 && discount.getDiscountPercentage() == 5) || (price > 10000 && price < 100000 && discount.getDiscountPercentage() == 10)){
                 cart.setDiscount(discount);
                 cart.setDiscountPercentage(discount.getDiscountPercentage());
                 float discountPrice = (price * discount.getDiscountPercentage()) / 100;
