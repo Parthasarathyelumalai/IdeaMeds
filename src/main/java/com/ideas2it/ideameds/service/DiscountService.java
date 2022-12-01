@@ -22,6 +22,7 @@ public interface DiscountService {
 
     /**
      * add discount details and save in repository by admin.
+     *
      * @param discountDTO - To save discount details in repository.
      * @return Discount.
      */
@@ -29,12 +30,14 @@ public interface DiscountService {
 
     /**
      * Retrieve all discount details from repository.
+     *
      * @return All discount details.
      */
     List<DiscountDTO> getAll();
 
     /**
      * To delete discount by discount id.
+     *
      * @param discountId - To delete discount by discount id.
      * @return - Response entity.
      * @throws CustomException - Can not delete.

@@ -13,6 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class for User Medicine Service
+ *
+ * @author - Parthasarathy Elumalai
+ * @since - 2022-11-21
+ * @version - 1.0
+ */
 @Service
 @Slf4j
 @AllArgsConstructor

@@ -14,8 +14,9 @@ package com.ideas2it.ideameds.util;
 public enum IllnessCategories {
 
     STOMACHPAIN(0),
-    HEADACHE(1),
-    BODYPAIN(2);
+    FEVER(1),
+    BODYPAIN(2),
+    LOWIMMUNITY(3);
 
 
     public final int value;

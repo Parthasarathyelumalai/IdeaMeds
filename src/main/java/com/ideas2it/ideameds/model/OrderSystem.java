@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,11 +40,17 @@ public class OrderSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
+    @NotNull
     private LocalDateTime orderDate;
+    @NotNull
     private LocalDateTime deliveryDate;
+    @NotNull
     private String orderStatus;
+    @NotNull
     private float totalPrice;
+    @NotNull
     private float discountPrice;
+    @NotNull
     private float discountPercentage;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "discount_id")
@@ -55,6 +62,8 @@ public class OrderSystem {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems;
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 }

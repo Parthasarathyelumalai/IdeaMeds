@@ -32,7 +32,7 @@ public class MedicineDTO {
     private String medicineName;
 
     @NotBlank(message = "description should be mentioned")
-    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid Description")
+    @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid Description")
     private String description;
 
     @NotNull(message = "Illness category should be mentioned")

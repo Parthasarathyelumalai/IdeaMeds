@@ -27,6 +27,11 @@ import java.util.Optional;
 public class MedicineServiceImpl implements MedicineService {
     private final MedicineRepository medicineRepository;
     private final ModelMapper modelMapper = new ModelMapper();
+
+    /**
+     * Create instance for the class
+     * @param medicineRepository create instance for medicine repository
+     */
     public MedicineServiceImpl(MedicineRepository medicineRepository) {
         this.medicineRepository = medicineRepository;
     }

@@ -30,6 +30,7 @@ public interface OrderSystemService {
 
     /**
      * All users order details.
+     *
      * @return - All users order details.
      * @throws CustomException - Order item not found.
      */
@@ -43,7 +44,6 @@ public interface OrderSystemService {
      * @throws CustomException - User not found.
      */
     Optional<List<OrderSystemDTO>> getOrderByUserId(Long userId) throws CustomException;
-
 
     /**
      * Cancel one order by user and order id.

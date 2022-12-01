@@ -79,8 +79,8 @@ public interface UserService {
     /**
      * get UserDetails by username(EmailId)
      *
-     * @Param userName - pass user name
+     * @param userName - pass username
      * @return userDetails - Send userDetails
      */
-    UserDetails loadUserByUsername(String username);
+    UserDetails loadUserByUsername(String userName);
 }

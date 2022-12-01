@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  * Represents the cart item.
@@ -31,6 +32,7 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
+    @NotNull
     private int quantity;
     @OneToOne
     @JoinColumn(name = "medicine_id")

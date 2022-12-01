@@ -43,6 +43,8 @@ public class UserMedicine {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 }

@@ -28,7 +28,7 @@ public interface BrandService {
      *        to add a new brand
      * @return added brand
      */
-    public BrandDTO addBrand(BrandDTO brandDTO);
+    BrandDTO addBrand(BrandDTO brandDTO);
 
     /**
      * <p>
@@ -36,7 +36,7 @@ public interface BrandService {
      * </p>
      * @return list of all brands
      */
-    public List<BrandDTO> getAllBrands();
+    List<BrandDTO> getAllBrands();
 
     /**
      * <p>
@@ -48,7 +48,7 @@ public interface BrandService {
      * @throws CustomException
      *         throws when the brand is not found
      */
-    public BrandDTO getBrandById(Long brandId) throws CustomException;
+    BrandDTO getBrandById(Long brandId) throws CustomException;
 
     /**
      * <p>
@@ -60,7 +60,7 @@ public interface BrandService {
      * @throws CustomException
      *         throws when the brand is not found
      */
-    public BrandDTO getBrandByBrandName(String brandName) throws CustomException;
+    BrandDTO getBrandByBrandName(String brandName) throws CustomException;
 
     /**
      * <p>
@@ -72,7 +72,7 @@ public interface BrandService {
      * @throws CustomException
      *         throws when the brand is not found
      */
-    public BrandDTO updateBrand(BrandDTO brandDTO) throws CustomException;
+    BrandDTO updateBrand(BrandDTO brandDTO) throws CustomException;
 
     /**
      * <p>
@@ -84,5 +84,5 @@ public interface BrandService {
      * @throws CustomException
      *         throws when the brand is not found
      */
-    public Long deleteBrand(Long brandId) throws CustomException;
+    Long deleteBrand(Long brandId) throws CustomException;
 }

@@ -36,24 +36,31 @@ public class BrandItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandItemsId;
-
+    @NotNull
     private String brandItemName;
-
+    @NotNull
     private float price;
-
+    @NotNull
     private String sideEffect;
-
-    private String dosage;
-
+    @NotNull
+    private String keyIngredients;
+    @NotNull
+    private String description;
+    @NotNull
+    private String safetyInformation;
+    @NotNull
+    private String medicineUses;
+    @NotNull
     private String manufacturedDate;
-
+    @NotNull
     private String expiryDate;
-
+    @NotNull
     private String medicineImage;
-
+    @NotNull
     private int packageQuantity;
-
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 
     @ManyToOne
