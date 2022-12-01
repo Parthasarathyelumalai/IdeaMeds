@@ -55,6 +55,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         brandItems.setMedicine(modelMapper.map(medicineDTO, Medicine.class));
         brandItems.setBrand(modelMapper.map(brandDTO, Brand.class));
         brandItems.setCreatedAt(DateTimeValidation.getDate());
+        brandItems.setModifiedAt(DateTimeValidation.getDate());
         return modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
 
     }
