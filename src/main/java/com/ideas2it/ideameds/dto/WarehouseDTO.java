@@ -1,7 +1,6 @@
 package com.ideas2it.ideameds.dto;
 
 import com.ideas2it.ideameds.util.Constants;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

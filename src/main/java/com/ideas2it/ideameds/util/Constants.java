@@ -94,6 +94,11 @@ public class Constants {
     public static final String REGEX_FOR_MEDICINE_NAME = "^[\\w\\s]*$";
 
     /**
+     * Regex pattern for description
+     */
+    public static final String REGEX_FOR_PARAGRAPHS = "^[\\w\\s.,-]*$";
+
+    /**
      * Regex pattern for text
      */
     public static final String REGEX_FOR_TEXT = "^[a-zA-z][a-zA-Z\\s]*$";

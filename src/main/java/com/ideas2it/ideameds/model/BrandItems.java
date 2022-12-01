@@ -43,7 +43,13 @@ public class BrandItems {
     @NotNull
     private String sideEffect;
     @NotNull
-    private String dosage;
+    private String keyIngredients;
+    @NotNull
+    private String description;
+    @NotNull
+    private String safetyInformation;
+    @NotNull
+    private String medicineUses;
     @NotNull
     private String manufacturedDate;
     @NotNull

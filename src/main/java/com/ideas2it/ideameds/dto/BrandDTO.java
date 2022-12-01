@@ -32,6 +32,6 @@ public class BrandDTO {
     private String location;
 
     @NotBlank(message = "Brand description should be mentioned")
-    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid description about brand")
+    @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid description about brand")
     private String description;
 }
