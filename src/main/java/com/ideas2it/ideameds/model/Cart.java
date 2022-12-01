@@ -11,6 +11,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,8 +30,11 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
+    @NotNull
     private float totalPrice;
+    @NotNull
     private float discountPrice;
+    @NotNull
     private float discountPercentage;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "discount_id")
@@ -42,6 +46,8 @@ public class Cart {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "cart_id")
     private List<CartItem> cartItemList;
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 }

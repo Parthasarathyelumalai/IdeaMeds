@@ -61,6 +61,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     @NotNull
     private Role roleType;
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 }

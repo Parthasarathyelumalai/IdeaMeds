@@ -10,7 +10,6 @@ import com.ideas2it.ideameds.model.Discount;
 import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +26,17 @@ import java.util.Optional;
  */
 
 @Service
-@RequiredArgsConstructor
 public class DiscountServiceImpl implements DiscountService {
-
     private final DiscountRepository discountRepository;
-
     private final ModelMapper modelMapper = new ModelMapper();
+
+    /**
+     * Create instance for the class
+     * @param discountRepository create instance for discount repository
+     */
+    public DiscountServiceImpl(DiscountRepository discountRepository) {
+        this.discountRepository = discountRepository;
+    }
 
     /**
      *{@inheritDoc}

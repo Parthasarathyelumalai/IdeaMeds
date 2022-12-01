@@ -37,13 +37,18 @@ public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long medicineId;
+    @NotNull
     private String medicineName;
+    @NotNull
     private String description;
     @Enumerated(EnumType.STRING)
+    @NotNull
     private IllnessCategories illnessCategories;
     @Enumerated(EnumType.STRING)
+    @NotNull
     private MedicineType medicineType;
     @Column(columnDefinition = "boolean default false")
+    @NotNull
     private boolean prescriptionRequired;
     @NotNull
     @Column(columnDefinition = "BIT default 0" )

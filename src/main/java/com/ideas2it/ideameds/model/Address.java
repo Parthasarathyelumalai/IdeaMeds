@@ -36,6 +36,8 @@ public class Address {
     private String stateName;
     @NotNull
     private String pinCode;
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 }

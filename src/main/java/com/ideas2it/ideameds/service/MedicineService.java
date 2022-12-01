@@ -14,6 +14,7 @@ import java.util.List;
  * Service Interface
  * Performs Create, Read, Update and Delete operations for Medicine
  * </p>
+ *
  * @author Dinesh Kumar R
  * @version 1.0
  * @since 2022-11-18
@@ -21,67 +22,64 @@ import java.util.List;
 public interface MedicineService {
     /**
      * <p>
-     *     Adds a new medicine
+     * Adds a new medicine
      * </p>
-     * @param medicineDTO
-     *        to add a new medicine
+     *
+     * @param medicineDTO to add a new medicine
      * @return added medicine
      */
-    public MedicineDTO addMedicine(MedicineDTO medicineDTO);
+    MedicineDTO addMedicine(MedicineDTO medicineDTO);
 
     /**
      * <p>
-     *     gets All the medicines
+     * gets All the medicines
      * </p>
+     *
      * @return list of all medicines
      */
-    public List<MedicineDTO> getAllMedicines();
+    List<MedicineDTO> getAllMedicines();
 
     /**
      * <p>
-     *     Gets medicine By Id
+     * Gets medicine By Id
      * </p>
-     * @param medicineId
-     *        id to get the medicine
+     *
+     * @param medicineId id to get the medicine
      * @return medicine using the id
-     * @throws CustomException
-     *         throws when the medicine is not found
+     * @throws CustomException throws when the medicine is not found
      */
-    public MedicineDTO getMedicineById(Long medicineId) throws CustomException;
+    MedicineDTO getMedicineById(Long medicineId) throws CustomException;
 
     /**
      * <p>
-     *     Updates the medicine
+     * Updates the medicine
      * </p>
-     * @param medicineDTO
-     *        medicnine to be updated
+     *
+     * @param medicineDTO medicine to be updated
      * @return updated medicine
-     * @throws CustomException
-     *         throws when the medicine is not found
+     * @throws CustomException throws when the medicine is not found
      */
-    public MedicineDTO updateMedicine(MedicineDTO medicineDTO) throws CustomException;
+    MedicineDTO updateMedicine(MedicineDTO medicineDTO) throws CustomException;
 
     /**
      * <p>
-     *     delets a medicine
+     * delete a medicine
      * </p>
-     * @param medicineId
-     *        id to get a medicine
+     *
+     * @param medicineId id to get a medicine
      * @return medicine id after medicine is deleted successfully
-     * @throws CustomException
-     *         throws when the medicine is not found
+     * @throws CustomException throws when the medicine is not found
      */
-    public Long deleteMedicine(Long medicineId) throws CustomException;
+    Long deleteMedicine(Long medicineId) throws CustomException;
 
     /**
      * <p>
-     *     Gets medicine By Name
+     * Gets medicine By Name
      * </p>
-     * @param medicineName
-     *        medicine name to search the medicine
+     *
+     * @param medicineName medicine name to search the medicine
      * @return medicine by using medicine Name
-     * @throws CustomException
-     *         throws when the medicine is not found
+     * @throws CustomException throws when the medicine is not found
      */
-    public MedicineDTO getMedicineByName(String medicineName) throws CustomException;
+     MedicineDTO getMedicineByName(String medicineName) throws CustomException;
 }

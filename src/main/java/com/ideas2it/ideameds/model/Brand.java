@@ -24,14 +24,18 @@ public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandId;
+    @NotNull
     private String brandName;
+    @NotNull
     private String location;
+    @NotNull
     private String description;
     @Column(columnDefinition = "BIT default 0" )
     @NotNull
     private boolean isDeletedStatus;
-
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")

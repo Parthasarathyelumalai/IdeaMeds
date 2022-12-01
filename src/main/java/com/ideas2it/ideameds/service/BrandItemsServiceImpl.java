@@ -26,6 +26,7 @@ import java.util.Optional;
 /**
  * Service Interface Implementation
  * Performs Create, Read, Update and Delete operations for Brand Items
+ *
  * @author Dinesh Kumar R
  * @version 1.0
  * @since 2022-11-21
@@ -36,12 +37,17 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     private final BrandItemsRepository brandItemsRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
+    /**
+     * Creates instance for the classes
+     *
+     * @param brandItemsRepository create object for brand items repository
+     */
     public BrandItemsServiceImpl(BrandItemsRepository brandItemsRepository) {
         this.brandItemsRepository = brandItemsRepository;
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public BrandItemsDTO addBrandItem(BrandItemsDTO brandItemsDTO, MedicineDTO medicineDTO, BrandDTO brandDTO) {
@@ -54,7 +60,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<BrandItemsDTO> getAllBrandItems() {
@@ -64,18 +70,18 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public BrandItemsDTO getBrandItemById(Long brandItemId) throws CustomException {
         Optional<BrandItems> brandItems = brandItemsRepository.findById(brandItemId);
         if (brandItems.isPresent()) {
-           return modelMapper.map(brandItems.get(), BrandItemsDTO.class);
+            return modelMapper.map(brandItems.get(), BrandItemsDTO.class);
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public BrandDTO getBrandByBrandItemId(Long brandItemId) throws CustomException {
@@ -89,7 +95,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public MedicineDTO getMedicineByBrandItemId(Long brandItemId) throws CustomException {
@@ -103,13 +109,13 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public BrandItemsDTO updateBrandItem(BrandItemsDTO brandItemsDTO) throws CustomException {
         BrandItems brandItems = modelMapper.map(brandItemsDTO, BrandItems.class);
         Optional<BrandItems> existBrandItems = brandItemsRepository.findById(brandItemsDTO.getBrandItemsId());
-        if(existBrandItems.isPresent()) {
+        if (existBrandItems.isPresent()) {
             brandItems.setCreatedAt(existBrandItems.get().getCreatedAt());
             brandItems.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
@@ -117,7 +123,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public Long deleteBrandItem(Long brandItemId) throws CustomException {
@@ -130,7 +136,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public BrandItemsDTO assignToWarehouse(WarehouseDTO warehouseDTO, Long brandItemId) throws CustomException {
@@ -144,7 +150,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<BrandItemsDTO> getByMedicineName(String medicineName) throws CustomException {
@@ -157,7 +163,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public BrandItemsDTO getBrandItemByName(String brandItemName) throws CustomException {
         Optional<BrandItems> brandItems = brandItemsRepository.findBrandItemsByBrandItemName(brandItemName);

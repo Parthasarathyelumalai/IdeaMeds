@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -27,11 +28,17 @@ public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long discountId;
+    @NotNull
     private String name;
+    @NotNull
     private String couponCode;
+    @NotNull
     private float discountPercentage;
+    @NotNull
     @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 }
