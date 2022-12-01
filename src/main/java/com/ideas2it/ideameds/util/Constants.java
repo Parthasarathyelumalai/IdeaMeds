@@ -96,7 +96,7 @@ public class Constants {
     /**
      * Regex pattern for description
      */
-    public static final String REGEX_FOR_PARAGRAPHS = "^[\\w\\s.,-]*$";
+    public static final String REGEX_FOR_PARAGRAPHS = "^[\\w\\s-.,']*";
 
     /**
      * Regex pattern for text
