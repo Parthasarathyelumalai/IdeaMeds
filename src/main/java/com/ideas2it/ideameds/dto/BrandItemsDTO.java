@@ -30,12 +30,24 @@ public class BrandItemsDTO {
     private float price;
 
     @NotBlank(message = "Side effect should be mentioned")
-    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid side effect")
+    @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid side effect")
     private String sideEffect;
 
+    @NotBlank(message = "Key Ingredients should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid key Ingredients")
+    private String keyIngredients;
+
+    @NotBlank(message = "Description should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid description")
+    private String description;
+
+    @NotBlank(message = "safety information should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid safety information")
+    private String safetyInformation;
+
     @NotBlank(message = "Enter a Valid Dosage")
-    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - Enter a valid Dosage")
-    private String dosage;
+    @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid Dosage")
+    private String medicineUses;
 
     @NotBlank(message = "Enter a Valid Manufactured Date")
     @Pattern(regexp = Constants.REGEX_FOR_DATE, message = "Invalid format - Enter a valid manufactured rate")

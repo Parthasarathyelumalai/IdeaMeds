@@ -48,7 +48,6 @@ public class Medicine {
     @NotNull
     @Column(columnDefinition = "BIT default 0" )
     private boolean isDeletedStatus;
-
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")

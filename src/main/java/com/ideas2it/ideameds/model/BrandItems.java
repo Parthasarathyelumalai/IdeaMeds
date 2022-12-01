@@ -43,7 +43,13 @@ public class BrandItems {
 
     private String sideEffect;
 
-    private String dosage;
+    private String keyIngredients;
+
+    private String description;
+
+    private String safetyInformation;
+
+    private String medicineUses;
 
     private String manufacturedDate;
 
