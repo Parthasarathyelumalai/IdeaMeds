@@ -4,7 +4,7 @@
  */
 package com.ideas2it.ideameds.repository;
 
-import com.ideas2it.ideameds.model.OrderSystem;
+import com.ideas2it.ideameds.model.Order;
 import com.ideas2it.ideameds.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -21,12 +21,12 @@ import java.util.Optional;
  * @since - 2022-11-30
  */
 @Repository
-public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 
     /**
      * Get all order by user.
      * @param user - To get list of order.
      * @return - List of order system.
      */
-    Optional<List<OrderSystem>> findByUser(User user);
+    Optional<List<Order>> findByUser(User user);
 }

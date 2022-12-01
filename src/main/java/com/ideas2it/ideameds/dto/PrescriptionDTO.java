@@ -30,6 +30,10 @@ public class PrescriptionDTO {
     @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format - e.g. Firstname LastName")
     private String doctorName;
 
+    @NotBlank(message = "Clinic Name should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format")
+    private String clinicName;
+
     @NotBlank(message = "Clinic Address should be mentioned")
     @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format")
     private String clinicAddress;

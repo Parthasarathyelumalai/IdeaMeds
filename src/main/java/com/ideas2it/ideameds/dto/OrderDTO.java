@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderSystemDTO {
+public class OrderDTO {
     private Long orderId;
     private String orderDate;
     private String deliveryDate;

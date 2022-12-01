@@ -4,9 +4,9 @@
  */
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.dto.OrderSystemDTO;
+import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.service.OrderSystemService;
+import com.ideas2it.ideameds.service.OrderService;
 import com.ideas2it.ideameds.util.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +24,16 @@ import java.util.Optional;
  */
 
 @RestController
-public class OrderSystemController {
-    private final OrderSystemService orderSystemService;
+public class OrderController {
+    private final OrderService orderService;
 
     /**
      * Creates object for the class
      *
-     * @param orderSystemService to create order system service object
+     * @param orderService to create order system service object
      */
-    public OrderSystemController(OrderSystemService orderSystemService) {
-        this.orderSystemService = orderSystemService;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     /**
@@ -44,8 +44,8 @@ public class OrderSystemController {
      * @throws CustomException - Can not order items.
      */
     @PutMapping("/order/{id}")
-    public ResponseEntity<OrderSystemDTO> addOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
-        Optional<OrderSystemDTO> orderSystem = orderSystemService.addOrder(userId);
+    public ResponseEntity<OrderDTO> addOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
+        Optional<OrderDTO> orderSystem = orderService.addOrder(userId);
         if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -62,10 +62,10 @@ public class OrderSystemController {
      * @throws CustomException -Can not get all order.
      */
     @GetMapping("/allOrder")
-    public ResponseEntity<List<OrderSystemDTO>> getAllOrder() throws CustomException {
-        List<OrderSystemDTO> orderSystemDTOList = orderSystemService.getAllOrder();
-        if (null != orderSystemDTOList) {
-            return (ResponseEntity.status(HttpStatus.ACCEPTED).body(orderSystemDTOList));
+    public ResponseEntity<List<OrderDTO>> getAllOrder() throws CustomException {
+        List<OrderDTO> orderDTOList = orderService.getAllOrder();
+        if (null != orderDTOList) {
+            return (ResponseEntity.status(HttpStatus.ACCEPTED).body(orderDTOList));
         } else {
             throw new CustomException(Constants.ORDER_ITEM_NOT_FOUND);
         }
@@ -79,8 +79,8 @@ public class OrderSystemController {
      * @throws CustomException - Order item not found.
      */
     @GetMapping("/order/{id}")
-    public ResponseEntity<List<OrderSystemDTO>> getOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderSystemDTO>> orderSystem = orderSystemService.getOrderByUserId(userId);
+    public ResponseEntity<List<OrderDTO>> getOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
+        Optional<List<OrderDTO>> orderSystem = orderService.getOrderByUserId(userId);
         if (orderSystem.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -99,7 +99,7 @@ public class OrderSystemController {
      */
     @DeleteMapping("/order/{userId}/{orderId}")
     public ResponseEntity<String> cancelOrder(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId) throws CustomException {
-        boolean isCancel = orderSystemService.cancelOrder(userId, orderId);
+        boolean isCancel = orderService.cancelOrder(userId, orderId);
         
         if (isCancel) {
             return ResponseEntity
