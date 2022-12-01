@@ -4,13 +4,13 @@
  */
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.dto.OrderSystemDTO;
+import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.JwtRequest;
 import com.ideas2it.ideameds.model.JwtResponse;
 import com.ideas2it.ideameds.model.UserMedicine;
-import com.ideas2it.ideameds.service.OrderSystemService;
+import com.ideas2it.ideameds.service.OrderService;
 import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
 import com.ideas2it.ideameds.util.Constants;
@@ -46,7 +46,7 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final UserMedicineService userMedicineService;
-    private final OrderSystemService orderSystemService;
+    private final OrderService orderService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtility jwtUtility;
 
@@ -55,14 +55,14 @@ public class UserController {
      *
      * @param userService           create object for user service
      * @param userMedicineService   create object for user medicine service
-     * @param orderSystemService    create object for order system service
+     * @param orderService    create object for order system service
      * @param authenticationManager create object for authentication manager service
      * @param jwtUtility            create object for jwt utility class
      */
-    public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService, AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
+    public UserController(UserService userService, UserMedicineService userMedicineService, OrderService orderService, AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
-        this.orderSystemService = orderSystemService;
+        this.orderService = orderService;
         this.authenticationManager = authenticationManager;
         this.jwtUtility = jwtUtility;
     }
@@ -167,8 +167,8 @@ public class UserController {
      * @throws CustomException - occur when there is no order history
      */
     @GetMapping("/user/order/{id}")
-    public ResponseEntity<List<OrderSystemDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderSystemDTO>> savedOrders =  orderSystemService.getOrderByUserId(userId);
+    public ResponseEntity<List<OrderDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
+        Optional<List<OrderDTO>> savedOrders =  orderService.getOrderByUserId(userId);
         if(savedOrders.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(savedOrders.get());
         }

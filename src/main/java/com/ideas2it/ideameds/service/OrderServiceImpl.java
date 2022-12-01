@@ -7,17 +7,17 @@ package com.ideas2it.ideameds.service;
 import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.OrderItemDTO;
-import com.ideas2it.ideameds.dto.OrderSystemDTO;
+import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.OrderItem;
-import com.ideas2it.ideameds.model.OrderSystem;
+import com.ideas2it.ideameds.model.Order;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.CartRepository;
-import com.ideas2it.ideameds.repository.OrderSystemRepository;
+import com.ideas2it.ideameds.repository.OrderRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
@@ -39,13 +39,13 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class OrderSystemServiceImpl implements OrderSystemService {
+public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
 
     private final CartRepository cartRepository;
 
-    private final OrderSystemRepository orderSystemRepository;
+    private final OrderRepository orderRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
 
@@ -53,25 +53,25 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<OrderSystemDTO> addOrder(Long userId) throws CustomException {
+    public Optional<OrderDTO> addOrder(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
             if (cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId())) {
-                OrderSystem orderSystem =  new OrderSystem();
+                Order order =  new Order();
                 List<CartItem> cartItemList = cart.get().getCartItemList();
-                orderSystem.setUser(user.get());
-                orderSystem.setTotalPrice(cart.get().getTotalPrice());
-                orderSystem.setDiscountPercentage(cart.get().getDiscountPercentage());
-                orderSystem.setDiscountPrice(cart.get().getDiscountPrice());
-                orderSystem.setDiscount(cart.get().getDiscount());
-                orderSystem.setOrderDate(DateTimeValidation.getDate());
-                orderSystem.setCreatedAt(DateTimeValidation.getDate());
-                orderSystem.setDeliveryDate(DateTimeValidation.getDate().plusDays(5));
-                orderSystem.setModifiedAt(DateTimeValidation.getDate());
-                orderSystem.setOrderItems(cartItemToOrderItem(cartItemList));
-                OrderSystem savedOrder = orderSystemRepository.save(orderSystem);
-                OrderSystemDTO orderDto = convertToOrderDto(savedOrder);
+                order.setUser(user.get());
+                order.setTotalPrice(cart.get().getTotalPrice());
+                order.setDiscountPercentage(cart.get().getDiscountPercentage());
+                order.setDiscountPrice(cart.get().getDiscountPrice());
+                order.setDiscount(cart.get().getDiscount());
+                order.setOrderDate(DateTimeValidation.getDate());
+                order.setCreatedAt(DateTimeValidation.getDate());
+                order.setDeliveryDate(DateTimeValidation.getDate().plusDays(5));
+                order.setModifiedAt(DateTimeValidation.getDate());
+                order.setOrderItems(cartItemToOrderItem(cartItemList));
+                Order savedOrder = orderRepository.save(order);
+                OrderDTO orderDto = convertToOrderDto(savedOrder);
                 return Optional.of(orderDto);
             } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
@@ -79,15 +79,15 @@ public class OrderSystemServiceImpl implements OrderSystemService {
 
     /**
      * Convert order entity to order dto.
-     * @param orderSystem - Convert order entity to order dto to show for user.
+     * @param order - Convert order entity to order dto to show for user.
      * @return - Order dto.
      * @throws CustomException - Brand item not found.
      */
-    private OrderSystemDTO convertToOrderDto(OrderSystem orderSystem) throws CustomException {
-        OrderSystemDTO orderSystemDTO = modelMapper.map(orderSystem, OrderSystemDTO.class);
-        List<OrderItem> orderItemList = orderSystem.getOrderItems();
-        orderSystemDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
-        return orderSystemDTO;
+    private OrderDTO convertToOrderDto(Order order) throws CustomException {
+        OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
+        List<OrderItem> orderItemList = order.getOrderItems();
+        orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
+        return orderDTO;
     }
 
     /**
@@ -156,34 +156,34 @@ public class OrderSystemServiceImpl implements OrderSystemService {
      *{@inheritDoc}
      */
     @Override
-    public List<OrderSystemDTO> getAllOrder() throws CustomException {
-        List<OrderSystem> orderSystemList = orderSystemRepository.findAll();
-        List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
-        for (OrderSystem orderSystem : orderSystemList) {
-            OrderSystemDTO orderSystemDTO = modelMapper.map(orderSystem, OrderSystemDTO.class);
-            orderSystemDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderSystem.getOrderItems()));
-            orderSystemDTOList.add(orderSystemDTO);
+    public List<OrderDTO> getAllOrder() throws CustomException {
+        List<Order> orderList = orderRepository.findAll();
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order order : orderList) {
+            OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
+            orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(order.getOrderItems()));
+            orderDTOList.add(orderDTO);
         }
-        return orderSystemDTOList;
+        return orderDTOList;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<List<OrderSystemDTO>> getOrderByUserId(Long userId) throws CustomException {
-        List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
+    public Optional<List<OrderDTO>> getOrderByUserId(Long userId) throws CustomException {
+        List<OrderDTO> orderDTOList = new ArrayList<>();
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            Optional<List<OrderSystem>> orderSystemList = orderSystemRepository.findByUser(user.get());
+            Optional<List<Order>> orderSystemList = orderRepository.findByUser(user.get());
             if (orderSystemList.isPresent()) {
-                for (OrderSystem orderSystem : orderSystemList.get()) {
-                    OrderSystemDTO orderSystemDTO = convertToOrderDto(orderSystem);
-                    orderSystemDTOList.add(orderSystemDTO);
+                for (Order order : orderSystemList.get()) {
+                    OrderDTO orderDTO = convertToOrderDto(order);
+                    orderDTOList.add(orderDTO);
                 }
             } else throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
         } else throw new CustomException(Constants.USER_NOT_FOUND);
-        return Optional.of(orderSystemDTOList);
+        return Optional.of(orderDTOList);
     }
 
     /**
@@ -193,11 +193,11 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     public boolean cancelOrder(Long userId, Long orderId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            Optional<OrderSystem> orderSystem = orderSystemRepository.findById(orderId);
+            Optional<Order> orderSystem = orderRepository.findById(orderId);
             if (orderSystem.isPresent()) {
                 orderSystem.get().setUser(null);
                 orderSystem.get().setOrderItems(null);
-                orderSystemRepository.deleteById(orderId);
+                orderRepository.deleteById(orderId);
                 return true;
             } else throw new CustomException(Constants.NO_ITEM_TO_CANCEL_THE_ORDER);
         } else throw new CustomException(Constants.USER_NOT_FOUND);

@@ -47,6 +47,9 @@ public class Prescription {
     private String doctorName;
 
     @NotNull
+    private String clinicName;
+
+    @NotNull
     private String clinicAddress;
 
     @NotNull

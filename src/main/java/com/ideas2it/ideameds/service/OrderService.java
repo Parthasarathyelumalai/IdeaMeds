@@ -4,20 +4,20 @@
  */
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.dto.OrderSystemDTO;
+import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Service for Order System.
+ * Service for Order.
  *
  * @author - Soundharrajan S.
  * @version - 1.0
  * @since - 2022-11-30
  */
-public interface OrderSystemService {
+public interface OrderService {
 
     /**
      * add and save order items in repository.
@@ -26,7 +26,7 @@ public interface OrderSystemService {
      * @return - Total price of order.
      * @throws CustomException - user not found.
      */
-    Optional<OrderSystemDTO> addOrder(Long userId) throws CustomException;
+    Optional<OrderDTO> addOrder(Long userId) throws CustomException;
 
     /**
      * All users order details.
@@ -34,7 +34,7 @@ public interface OrderSystemService {
      * @return - All users order details.
      * @throws CustomException - Order item not found.
      */
-    List<OrderSystemDTO> getAllOrder() throws CustomException;
+    List<OrderDTO> getAllOrder() throws CustomException;
 
     /**
      * To get one order details by user id.
@@ -43,7 +43,7 @@ public interface OrderSystemService {
      * @return - One user order details.
      * @throws CustomException - User not found.
      */
-    Optional<List<OrderSystemDTO>> getOrderByUserId(Long userId) throws CustomException;
+    Optional<List<OrderDTO>> getOrderByUserId(Long userId) throws CustomException;
 
     /**
      * Cancel one order by user and order id.
