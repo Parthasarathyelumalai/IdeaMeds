@@ -31,15 +31,18 @@ public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long warehouseId;
+    @NotNull
     private String warehouseName;
+    @NotNull
     private String location;
-
     @NotNull
     @Column(columnDefinition = "BIT default 0" )
     private boolean isDeletedStatus;
 
     @ManyToMany(mappedBy = "warehouses")
     private List<BrandItems> brandItemsList;
+    @NotNull
     private LocalDateTime createdAt;
+    @NotNull
     private LocalDateTime modifiedAt;
 }

@@ -50,6 +50,15 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtility jwtUtility;
 
+    /**
+     * Creates objects for the classes
+     *
+     * @param userService           create object for user service
+     * @param userMedicineService   create object for user medicine service
+     * @param orderSystemService    create object for order system service
+     * @param authenticationManager create object for authentication manager service
+     * @param jwtUtility            create object for jwt utility class
+     */
     public UserController(UserService userService, UserMedicineService userMedicineService, OrderSystemService orderSystemService, AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;
@@ -69,11 +78,11 @@ public class UserController {
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> savedUser;
 
-        if ( validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber()) ) {
+        if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())) {
             throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
-        } else if ( validUserByEmailId(user.getEmailId()) ) {
+        } else if (validUserByEmailId(user.getEmailId())) {
             throw new CustomException(Constants.EMAIL_ID_EXISTS);
-        } else if ( validUserByPhoneNumber(user.getPhoneNumber()) ) {
+        } else if (validUserByPhoneNumber(user.getPhoneNumber())) {
             throw new CustomException(Constants.PHONE_NUMBER_EXISTS);
         } else {
             savedUser = userService.addUser(user);
@@ -120,7 +129,7 @@ public class UserController {
     /**
      * Delete the user in databases(Soft -delete)
      *
-     * @param  userId - send a user id to delete
+     * @param userId - send a user id to delete
      * @return String - give a response as
      * @throws CustomException - Occur when user is not found
      */
@@ -142,7 +151,7 @@ public class UserController {
     public ResponseEntity<List<UserMedicine>> addUserMedicine(@PathVariable("id") Long userId, @RequestBody List<UserMedicine> userMedicines) throws CustomException {
         boolean isUserExist = userService.isUserExist(userId);
         Optional<List<UserMedicine>> savedUserMedicines;
-        if ( isUserExist ) {
+        if (isUserExist) {
             savedUserMedicines = userMedicineService.addUserMedicine(userMedicines);
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
@@ -159,11 +168,11 @@ public class UserController {
      */
     @GetMapping("/user/order/{id}")
     public ResponseEntity<List<OrderSystemDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderSystemDTO>> savedOrders =  orderSystemService.getUserPreviousOrder(userId);
-        if(savedOrders.isPresent()) {
+        Optional<List<OrderSystemDTO>> savedOrders = orderSystemService.getUserPreviousOrderByUserId(userId);
+        if (savedOrders.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(savedOrders.get());
         }
-            throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
+        throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
     }
 
     /**
@@ -175,7 +184,7 @@ public class UserController {
     private boolean validUserByPhoneNumber(String userPhoneNumber) {
         List<String> userPhoneNumbers = userService.getUserPhoneNumber();
         for (String number : userPhoneNumbers) {
-            if ( number.equals(userPhoneNumber) ) {
+            if (number.equals(userPhoneNumber)) {
                 return true;
             }
         }
@@ -191,7 +200,7 @@ public class UserController {
     private boolean validUserByEmailId(String userEmailId) {
         List<String> userEmailIds = userService.getUserEmail();
         for (String emailId : userEmailIds) {
-            if ( userEmailId.equals(emailId) ) {
+            if (userEmailId.equals(emailId)) {
                 return true;
             }
         }
@@ -213,7 +222,7 @@ public class UserController {
                             jwtRequest.getPassword()
                     )
             );
-        } catch ( BadCredentialsException exception ) {
+        } catch (BadCredentialsException exception) {
             throw new CustomException(Constants.INVALID_CREDENTIALS);
         }
         final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUserName());

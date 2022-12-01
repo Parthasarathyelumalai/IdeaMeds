@@ -12,7 +12,6 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +30,10 @@ public class BrandServiceImpl implements BrandService {
 
     private final ModelMapper modelMapper = new ModelMapper();
 
+    /**
+     * Create instance for the classes
+     * @param brandRepository create object for brand repository
+     */
     public BrandServiceImpl(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
     }

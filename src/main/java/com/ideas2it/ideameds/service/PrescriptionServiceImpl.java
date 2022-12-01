@@ -65,7 +65,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionDTO getPrescription(Long prescriptionId) throws CustomException {
+    public PrescriptionDTO getPrescriptionByPrescriptionId(Long prescriptionId) throws CustomException {
         Optional<Prescription> prescription = prescriptionRepository.findById(prescriptionId);
         if (prescription.isPresent()) return modelMapper.map(prescription, PrescriptionDTO.class);
         else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);

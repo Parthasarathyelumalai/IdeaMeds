@@ -21,40 +21,66 @@ public class CustomUserDetail implements UserDetails {
 
     private User user;
 
+    /**
+     * Initialize the user object
+     * @param user to initialize required user
+     */
     public CustomUserDetail(User user) {
         this.user = user;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(user.getRoleType().toString()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPassword() {
         return user.getPassword();
     }
 
+    /**
+     * Get the email ID of the user
+     * @return returns email ID
+     */
     @Override
     public String getUsername() {
         return user.getEmailId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEnabled() {
         return !user.isDeletedStatus();

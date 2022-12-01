@@ -13,9 +13,9 @@ import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.security.CustomUserDetail;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,11 +34,19 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper = new ModelMapper();
+
+    /**
+     * Create instance for the class
+     * @param userRepository create instance for user repository
+     */
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * {@inheritDoc}

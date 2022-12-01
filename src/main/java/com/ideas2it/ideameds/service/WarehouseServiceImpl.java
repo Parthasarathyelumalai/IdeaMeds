@@ -28,6 +28,10 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseRepository warehouseRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
+    /**
+     * Create instance for the class
+     * @param warehouseRepository create instance for warehouse repository
+     */
     public WarehouseServiceImpl(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
     }
@@ -35,6 +39,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) {
         Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
         warehouse.setCreatedAt(DateTimeValidation.getDate());
@@ -45,6 +50,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public List<WarehouseDTO> getAllWarehouses() {
         return warehouseRepository.findAll().stream()
                 .map(warehouse -> modelMapper
@@ -54,6 +60,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public WarehouseDTO getWarehouseById(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()){
@@ -64,6 +71,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     /**
      *{@inheritDoc}
      */
+    @Override
     public WarehouseDTO updateWarehouse(WarehouseDTO warehouseDTO) throws CustomException {
         Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
         Optional<Warehouse> existWarehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
@@ -77,7 +85,8 @@ public class WarehouseServiceImpl implements WarehouseService {
     /**
      *{@inheritDoc}
      */
-    public Long deleteWarehouse(Long warehouseId) throws CustomException {
+    @Override
+    public Long deleteWarehouseByWarehouseId(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()) {
             warehouse.get().setDeletedStatus(true);

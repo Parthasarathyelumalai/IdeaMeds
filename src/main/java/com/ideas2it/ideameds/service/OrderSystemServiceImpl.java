@@ -189,7 +189,8 @@ public class OrderSystemServiceImpl implements OrderSystemService {
     /**
      *{@inheritDoc}
      */
-    public Optional<List<OrderSystemDTO>> getUserPreviousOrder(Long userId) throws CustomException {
+    @Override
+    public Optional<List<OrderSystemDTO>> getUserPreviousOrderByUserId(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         List<OrderSystemDTO> orderSystemDTOList = new ArrayList<>();
         if (user.isPresent()) {

@@ -38,7 +38,7 @@ public interface PrescriptionService {
      * @return returns the PrescriptionDTO object
      * @throws CustomException occurs when prescription was not found
      */
-    PrescriptionDTO getPrescription(Long prescriptionId) throws CustomException;
+    PrescriptionDTO getPrescriptionByPrescriptionId(Long prescriptionId) throws CustomException;
 
     /**
      * Get all the Prescriptions from the repository of a user
