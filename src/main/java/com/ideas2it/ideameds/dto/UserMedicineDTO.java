@@ -8,7 +8,10 @@ import com.ideas2it.ideameds.util.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
@@ -26,7 +29,7 @@ public class UserMedicineDTO {
     @NotBlank(message = "Medicine name should be mentioned")
     @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format")
     private String medicineName;
-    @NotBlank(message = "Quantity should be mentioned")
-    @Pattern(regexp = Constants.REGEX_FOR_NUMBER, message = "Invalid format")
+    @NotNull
+    @Min(1)
     private int quantity;
 }

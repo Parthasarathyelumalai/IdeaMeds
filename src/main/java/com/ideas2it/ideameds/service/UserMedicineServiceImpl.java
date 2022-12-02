@@ -12,7 +12,9 @@ import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.repository.BrandItemsRepository;
 import com.ideas2it.ideameds.repository.UserMedicineRepository;
+import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
+import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
 
     private final UserMedicineRepository userMedicineRepository;
 
+    private final UserRepository userRepository;
     private final BrandItemsRepository brandItemsRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
@@ -46,13 +49,16 @@ public class UserMedicineServiceImpl implements UserMedicineService {
      * @param userMedicineRepository create instance for user medicine repository
      * @param brandItemsRepository create instance for brand item repository
      * @param cartService create instance for cart service
+     * @param userRepository create instance for user repository
      */
     @Autowired
-    public UserMedicineServiceImpl(UserMedicineRepository userMedicineRepository, BrandItemsRepository brandItemsRepository, CartService cartService) {
+    public UserMedicineServiceImpl(UserMedicineRepository userMedicineRepository, UserRepository userRepository, BrandItemsRepository brandItemsRepository, CartService cartService) {
         this.userMedicineRepository = userMedicineRepository;
+        this.userRepository = userRepository;
         this.brandItemsRepository = brandItemsRepository;
         this.cartService = cartService;
     }
+
 
     /**
      * {@inheritDoc}
@@ -60,7 +66,11 @@ public class UserMedicineServiceImpl implements UserMedicineService {
     @Override
     public Long addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException {
         List<BrandItemsDTO> brandItems = brandItemsRepository.findAll().stream().map(brandItem -> modelMapper.map(brandItem, BrandItemsDTO.class)).toList();
-        userMedicineRepository.save(modelMapper.map(userMedicine,UserMedicine.class));
+        UserMedicine savedUserMedicine = modelMapper.map(userMedicine,UserMedicine.class);
+        savedUserMedicine.setUser(userRepository.findById(userId).get());
+        savedUserMedicine.setCreatedAt(DateTimeValidation.getDate());
+        savedUserMedicine.setModifiedAt(DateTimeValidation.getDate());
+        userMedicineRepository.save(savedUserMedicine);
         List<CartItemDTO> cartItemDTOS = new ArrayList<>();
         CartItemDTO cartItemDTO = new CartItemDTO();
         Optional<CartDTO> savedCart;
@@ -87,5 +97,13 @@ public class UserMedicineServiceImpl implements UserMedicineService {
             throw new CustomException(userMedicine.getMedicineName() + Constants.MEDICINE_NOT_FOUND);
         }
         return cartId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UserMedicineDTO> getPreviousUserMedicine(Long userId) {
+        return userMedicineRepository.findByUserId(userId).stream().map(userMedicine -> modelMapper.map(userMedicine, UserMedicineDTO.class)).toList();
     }
 }
