@@ -7,6 +7,7 @@ package com.ideas2it.ideameds.controller;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
+import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.JwtRequest;
 import com.ideas2it.ideameds.model.JwtResponse;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -137,6 +139,7 @@ public class UserController {
      * @throws CustomException - Occur when user is not found
      */
     @DeleteMapping("/user/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) throws CustomException {
         String deletedStatus = userService.deleteUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(deletedStatus);
@@ -146,20 +149,24 @@ public class UserController {
      * Add user medicines for specific user
      *
      * @param userId        - send user id to set medicines
-     * @param userMedicines - send user medicines
+     * @param userMedicine - send user medicine
      * @return list of medicine - gives a response as list of user medicines
      * @throws CustomException - occur when User is not Found
      */
     @PostMapping("/user/user-medicine/{id}")
-    public ResponseEntity<List<UserMedicine>> addUserMedicine(@PathVariable("id") Long userId, @RequestBody List<UserMedicine> userMedicines) throws CustomException {
+    public ResponseEntity<String> addUserMedicine(@PathVariable("id") Long userId, @RequestBody UserMedicineDTO userMedicine) throws CustomException {
         boolean isUserExist = userService.isUserExist(userId);
-        Optional<List<UserMedicine>> savedUserMedicines;
+        Long savedCartId;
         if (isUserExist) {
-            savedUserMedicines = userMedicineService.addUserMedicine(userMedicines);
+            savedCartId = userMedicineService.addUserMedicine(userId,userMedicine);
+            if ( savedCartId != null ) {
+                return ResponseEntity.status(HttpStatus.OK).body(Constants.ADDED_TO_CART);
+            } else {
+                throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
+            }
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(savedUserMedicines.orElse(null));
     }
 
     /**

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
 package com.ideas2it.ideameds.dto;
 
 import com.ideas2it.ideameds.util.Constants;
@@ -64,4 +68,5 @@ public class BrandItemsDTO {
     @Min(1)
     @Max(9999)
     private int packageQuantity;
+    private MedicineDTO medicineDTO;
 }
