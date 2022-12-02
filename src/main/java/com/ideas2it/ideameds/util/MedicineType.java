@@ -14,7 +14,9 @@ package com.ideas2it.ideameds.util;
 public enum MedicineType {
 
     TABLET(0),
-    SYRUP(1);
+    SYRUP(1),
+    CAPSULE(2),
+    OINTMENT(3);
 
     public final int value;
 

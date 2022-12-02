@@ -173,7 +173,7 @@ public class PrescriptionController {
                     cartItem.setQuantity(prescriptionItem.getQuantity());
                     cartItems.add(cartItem);
                     cart.setCartItemDTOList(cartItems);
-                } else prescriptionItemsDTOs.add(prescriptionItem);
+                }
             }
         }
         addToCart(prescriptionItemsDTOs, user, cart);
