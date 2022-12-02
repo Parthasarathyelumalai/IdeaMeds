@@ -5,6 +5,7 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.WarehouseDTO;
+import com.ideas2it.ideameds.dto.WarehouseResponseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 
 import java.util.List;
@@ -49,6 +50,17 @@ public interface WarehouseService {
      * @throws CustomException throws when the warehouse is not found
      */
     WarehouseDTO getWarehouseById(Long warehouseId) throws CustomException;
+
+    /**
+     * <p>
+     * gets warehouse and stocks available by id
+     * </p>
+     *
+     * @param warehouseId to get the warehouse
+     * @return warehouse and stocks in warehouse using the id
+     * @throws CustomException throws when the warehouse is not found
+     */
+    WarehouseResponseDTO getWarehouseAndStocksById(Long warehouseId) throws CustomException;
 
     /**
      * <p>
