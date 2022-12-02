@@ -16,6 +16,7 @@ import com.ideas2it.ideameds.service.UserService;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.JwtUtility;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,6 +60,7 @@ public class UserController {
      * @param authenticationManager create object for authentication manager service
      * @param jwtUtility            create object for jwt utility class
      */
+    @Autowired
     public UserController(UserService userService, UserMedicineService userMedicineService, OrderService orderService, AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
         this.userMedicineService = userMedicineService;

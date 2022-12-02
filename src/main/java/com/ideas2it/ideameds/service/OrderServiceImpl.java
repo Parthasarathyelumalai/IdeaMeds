@@ -21,8 +21,8 @@ import com.ideas2it.ideameds.repository.OrderRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,7 +38,6 @@ import java.util.Optional;
  * @since - 2022-11-21
  */
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
@@ -48,6 +47,19 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
+
+    /**
+     * Create instance for the class
+     * @param userRepository create instance for user repository
+     * @param cartRepository create instance for cart repository
+     * @param orderRepository create instance for order repository
+     */
+    @Autowired
+    public OrderServiceImpl(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository) {
+        this.userRepository = userRepository;
+        this.cartRepository = cartRepository;
+        this.orderRepository = orderRepository;
+    }
 
     /**
      * {@inheritDoc}
@@ -109,7 +121,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return orderItemDTOList;
     }
-
 
     /**
      * Brand item entity convert into brand item dto.

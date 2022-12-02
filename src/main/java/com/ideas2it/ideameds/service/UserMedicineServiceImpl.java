@@ -6,8 +6,8 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.repository.UserMedicineRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +22,18 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
-@AllArgsConstructor
 public class UserMedicineServiceImpl implements UserMedicineService {
 
-    private UserMedicineRepository userMedicineRepository;
+    private final UserMedicineRepository userMedicineRepository;
+
+    /**
+     * Create instance for the class
+     * @param userMedicineRepository create for user medicine repository
+     */
+    @Autowired
+    public UserMedicineServiceImpl(UserMedicineRepository userMedicineRepository) {
+        this.userMedicineRepository = userMedicineRepository;
+    }
 
     /**
      * {@inheritDoc}

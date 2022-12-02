@@ -8,6 +8,7 @@ import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.OrderService;
 import com.ideas2it.ideameds.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class OrderController {
      *
      * @param orderService to create order system service object
      */
+    @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }

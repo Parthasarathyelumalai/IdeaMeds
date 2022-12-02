@@ -22,6 +22,7 @@ import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class CartServiceImpl implements CartService {
      * @param discountRepository   create instance for discount repository
      * @param brandItemsRepository create instance for brand items repository
      */
+    @Autowired
     public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, DiscountRepository discountRepository, BrandItemsRepository brandItemsRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;

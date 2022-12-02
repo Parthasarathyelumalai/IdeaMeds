@@ -17,6 +17,7 @@ import com.ideas2it.ideameds.repository.BrandItemsRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
      *
      * @param brandItemsRepository create object for brand items repository
      */
+    @Autowired
     public BrandItemsServiceImpl(BrandItemsRepository brandItemsRepository) {
         this.brandItemsRepository = brandItemsRepository;
     }

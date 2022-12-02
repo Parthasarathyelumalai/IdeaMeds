@@ -11,6 +11,7 @@ import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class DiscountServiceImpl implements DiscountService {
      * Create instance for the class
      * @param discountRepository create instance for discount repository
      */
+    @Autowired
     public DiscountServiceImpl(DiscountRepository discountRepository) {
         this.discountRepository = discountRepository;
     }

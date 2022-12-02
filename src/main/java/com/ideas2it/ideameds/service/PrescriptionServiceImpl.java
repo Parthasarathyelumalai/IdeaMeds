@@ -14,8 +14,10 @@ import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Access;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +41,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      * @param prescriptionRepository create new instance for prescription repository
      * @param userRepository         create new instance for user repository
      */
+    @Autowired
     public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository) {
         this.prescriptionRepository = prescriptionRepository;
         this.userRepository = userRepository;
