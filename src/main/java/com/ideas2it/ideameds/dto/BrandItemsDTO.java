@@ -68,6 +68,5 @@ public class BrandItemsDTO {
     @Min(1)
     @Max(9999)
     private int packageQuantity;
-
     private MedicineDTO medicineDTO;
 }

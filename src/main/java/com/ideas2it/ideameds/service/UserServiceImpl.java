@@ -5,6 +5,7 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.AddressDTO;
+import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
@@ -81,10 +82,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDTO getUserById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        UserDTO fetchedUser = modelMapper.map(user, UserDTO.class);
 
-        if ( user != null && (!user.get().isDeletedStatus()) ) {
-            return fetchedUser;
+        if ( user.isPresent() && (!user.get().isDeletedStatus()) ) {
+            return modelMapper.map(user, UserDTO.class);
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
         }
@@ -94,8 +94,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * {@inheritDoc}
      */
     @Override
-    public List<UserDTO> getAllUser() {
-        return userRepository.findAll().stream().map(user -> modelMapper.map(user, UserDTO.class)).toList();
+    public List<ResponseUserDTO> getAllUser() {
+        return userRepository.findAll().stream().map(user-> modelMapper.map(user, ResponseUserDTO.class)).toList();
     }
 
     /**

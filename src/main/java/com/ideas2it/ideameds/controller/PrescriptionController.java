@@ -12,6 +12,7 @@ import com.ideas2it.ideameds.dto.PrescriptionItemsDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.BrandItemsService;
+import com.ideas2it.ideameds.service.CartService;
 import com.ideas2it.ideameds.service.CartServiceImpl;
 import com.ideas2it.ideameds.service.PrescriptionService;
 import com.ideas2it.ideameds.service.UserService;
@@ -44,13 +45,13 @@ public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     private final UserService userService;
     private final BrandItemsService brandItemsService;
-    private final CartServiceImpl cartService;
+    private final CartService cartService;
 
     /**
      * Constructs object for the classes
      *
      * @param prescriptionService create instance for prescription service
-     * @param userService         create instance for user service
+     * @param userService        create instance for user service
      * @param brandItemsService   create instance for brand items service
      * @param cartService         create instance for cart service
      */
