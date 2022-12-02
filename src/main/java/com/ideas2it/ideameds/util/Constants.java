@@ -200,5 +200,5 @@ public class Constants {
     /**
      * Share cart add successfully
      */
-    public static final String ADDED_TO_CART = "Items Added to cart Successfully";
+    public static final String ADDED_TO_CART = "Items added  to cart Successfully";
 }

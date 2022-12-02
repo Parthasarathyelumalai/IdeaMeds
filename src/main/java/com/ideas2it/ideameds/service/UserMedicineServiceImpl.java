@@ -43,9 +43,9 @@ public class UserMedicineServiceImpl implements UserMedicineService {
 
     /**
      * Create instance for the class
-     * @param userMedicineRepository
-     * @param brandItemsRepository
-     * @param cartService
+     * @param userMedicineRepository create instance for user medicine repository
+     * @param brandItemsRepository create instance for brand item repository
+     * @param cartService create instance for cart service
      */
     @Autowired
     public UserMedicineServiceImpl(UserMedicineRepository userMedicineRepository, BrandItemsRepository brandItemsRepository, CartService cartService) {

@@ -11,7 +11,6 @@ import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.JwtRequest;
 import com.ideas2it.ideameds.model.JwtResponse;
-import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.service.OrderService;
 import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
