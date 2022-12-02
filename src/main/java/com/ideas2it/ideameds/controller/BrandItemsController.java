@@ -10,6 +10,7 @@ import com.ideas2it.ideameds.service.BrandService;
 import com.ideas2it.ideameds.service.MedicineService;
 import com.ideas2it.ideameds.service.WarehouseService;
 import com.ideas2it.ideameds.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,7 @@ public class BrandItemsController {
      * @param brandService      creates new instance for brand service
      * @param medicineService   creates new instance for medicine service
      */
+    @Autowired
     public BrandItemsController(BrandItemsService brandItemsService,
                                 WarehouseService warehouseService,
                                 BrandService brandService,

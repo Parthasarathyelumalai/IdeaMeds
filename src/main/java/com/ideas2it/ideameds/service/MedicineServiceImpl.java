@@ -11,6 +11,7 @@ import com.ideas2it.ideameds.repository.MedicineRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class MedicineServiceImpl implements MedicineService {
      * Create instance for the class
      * @param medicineRepository create instance for medicine repository
      */
+    @Autowired
     public MedicineServiceImpl(MedicineRepository medicineRepository) {
         this.medicineRepository = medicineRepository;
     }

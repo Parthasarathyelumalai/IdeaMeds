@@ -11,6 +11,7 @@ import com.ideas2it.ideameds.repository.BrandRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class BrandServiceImpl implements BrandService {
      * Create instance for the classes
      * @param brandRepository create object for brand repository
      */
+    @Autowired
     public BrandServiceImpl(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
     }

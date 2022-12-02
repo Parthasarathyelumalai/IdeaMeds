@@ -11,6 +11,7 @@ import com.ideas2it.ideameds.repository.WarehouseRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class WarehouseServiceImpl implements WarehouseService {
      * Create instance for the class
      * @param warehouseRepository create instance for warehouse repository
      */
+    @Autowired
     public WarehouseServiceImpl(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
     }

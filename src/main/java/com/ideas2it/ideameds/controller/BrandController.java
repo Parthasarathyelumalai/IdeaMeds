@@ -4,6 +4,7 @@ import com.ideas2it.ideameds.dto.BrandDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.BrandService;
 import com.ideas2it.ideameds.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class BrandController {
      *
      * @param brandService creates new instance for brand service
      */
+    @Autowired
     public BrandController(BrandService brandService) {
         this.brandService = brandService;
     }

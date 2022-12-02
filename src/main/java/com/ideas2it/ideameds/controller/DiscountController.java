@@ -4,6 +4,7 @@ import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.DiscountService;
 import com.ideas2it.ideameds.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class DiscountController {
      *
      * @param discountService to create instance for discount service
      */
+    @Autowired
     public DiscountController(DiscountService discountService) {
         this.discountService = discountService;
     }

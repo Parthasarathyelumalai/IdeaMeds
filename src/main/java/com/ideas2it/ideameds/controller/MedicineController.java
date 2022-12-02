@@ -4,6 +4,7 @@ import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.MedicineService;
 import com.ideas2it.ideameds.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class MedicineController {
      *
      * @param medicineService creates new instance for medicine service
      */
+    @Autowired
     public MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
     }

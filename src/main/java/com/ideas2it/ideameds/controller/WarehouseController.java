@@ -4,6 +4,7 @@ import com.ideas2it.ideameds.dto.WarehouseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.WarehouseService;
 import com.ideas2it.ideameds.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,7 @@ public class WarehouseController {
      *
      * @param warehouseService creates a new instance for warehouse service
      */
+    @Autowired
     public WarehouseController(WarehouseService warehouseService) {
         this.warehouseService = warehouseService;
     }
