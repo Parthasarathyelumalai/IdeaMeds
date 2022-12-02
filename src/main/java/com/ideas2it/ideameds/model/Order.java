@@ -46,8 +46,6 @@ public class Order {
     @NotNull
     private LocalDateTime deliveryDate;
     @NotNull
-    private String orderStatus;
-    @NotNull
     private float totalPrice;
     @NotNull
     private float discountPrice;

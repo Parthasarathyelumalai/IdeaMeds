@@ -8,6 +8,7 @@ import com.ideas2it.ideameds.util.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.*;
 
@@ -23,6 +24,7 @@ import javax.validation.constraints.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class BrandItemsDTO {
     private Long brandItemsId;
 

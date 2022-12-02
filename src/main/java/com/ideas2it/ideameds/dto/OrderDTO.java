@@ -23,7 +23,6 @@ public class OrderDTO {
     private Long orderId;
     private String orderDate;
     private String deliveryDate;
-    private String orderStatus;
     private float totalPrice;
     private float discountPrice;
     private float discountPercentage;

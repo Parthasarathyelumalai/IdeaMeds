@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO getUserById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
 
-        if ( user.isPresent() && (!user.get().isDeletedStatus()) ) {
+        if (user.isPresent()) {
             return modelMapper.map(user, UserDTO.class);
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);

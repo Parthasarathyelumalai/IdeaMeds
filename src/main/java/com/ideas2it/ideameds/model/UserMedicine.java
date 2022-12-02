@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
 public class UserMedicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
