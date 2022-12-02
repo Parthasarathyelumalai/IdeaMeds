@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
-public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserServiceImpl userService;
 
@@ -58,11 +58,11 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
      * @return AuthenticationManager
      * @throws Exception - occur runtime exception
      */
-/*    @Override*/
-/*    @Bean
+    @Override
+    @Bean
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
-    }*/
+    }
 
     /**
      * Configure the http security
