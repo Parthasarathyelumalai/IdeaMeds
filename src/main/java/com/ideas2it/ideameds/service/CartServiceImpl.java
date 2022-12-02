@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 /**
  * Service implementation for cart.
  *
@@ -107,7 +106,7 @@ public class CartServiceImpl implements CartService {
      *
      * @param cartItemDTOList - Convert cart item dto list to cart item entity list.
      * @return - cart item list.
-     * @throws CustomException - Brand item not found exception.
+     * @throws CustomException - Brand item not found exception, medicine not found exception.
      */
     private List<CartItem> convertToCartItem(List<CartItemDTO> cartItemDTOList) throws CustomException {
         List<CartItem> cartItems = new ArrayList<>();
