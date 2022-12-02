@@ -70,4 +70,3 @@ public class BrandItemsDTO {
     private int packageQuantity;
     private MedicineDTO medicineDTO;
 }
-

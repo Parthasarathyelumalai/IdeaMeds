@@ -22,4 +22,3 @@ public class ResponseUserDTO {
     private List<AddressDTO> addresses;
     private Role roleType;
 }
-
