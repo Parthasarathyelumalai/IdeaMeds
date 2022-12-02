@@ -109,6 +109,10 @@ public class Constants {
     public static final String REGEX_FOR_DATE = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$";
 
     /**
+     * Regex pattern for number
+     */
+    public static final String REGEX_FOR_NUMBER = "^[1-9][0-9]*$";
+    /**
      * Regex pattern for plot number
      */
     public static final String REGEX_FOR_PLOT_NUMBER = "^[a-zA-Z0-9/]{1,10}$";
@@ -192,4 +196,9 @@ public class Constants {
      * Share the address not found message.
      */
     public static final String ADDRESS_NOT_FOUND = "Address not found";
+
+    /**
+     * Share cart add successfully
+     */
+    public static final String ADDED_TO_CART = "Items added  to cart Successfully";
 }

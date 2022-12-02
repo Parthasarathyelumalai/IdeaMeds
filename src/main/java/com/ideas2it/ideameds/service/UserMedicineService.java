@@ -4,10 +4,11 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.UserMedicineDTO;
+import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.UserMedicine;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface for User Medicine Service
@@ -19,8 +20,8 @@ import java.util.Optional;
 public interface UserMedicineService {
     /**
      * Add user medicine
-     * @param userMedicines - pass user medicine list
-     * @return list of user medicines - gives medicines
+     * @param userId - pass user id
+     * @return id - id of cart
      */
-    Optional<List<UserMedicine>> addUserMedicine(List<UserMedicine> userMedicines);
+     Long addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException;
 }

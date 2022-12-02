@@ -35,11 +35,6 @@ public class UserMedicine {
     private String medicineName;
     @NotNull
     private int quantity;
-    @NotNull
-    private String dosage;
-    @Column(columnDefinition = "BIT default 0" )
-    @NotNull
-    private boolean isDeletedStatus;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

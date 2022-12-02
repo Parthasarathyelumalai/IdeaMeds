@@ -4,8 +4,6 @@
  */
 package com.ideas2it.ideameds.dto;
 
-import com.ideas2it.ideameds.model.Prescription;
-import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.util.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,3 +22,4 @@ public class ResponseUserDTO {
     private List<AddressDTO> addresses;
     private Role roleType;
 }
+
