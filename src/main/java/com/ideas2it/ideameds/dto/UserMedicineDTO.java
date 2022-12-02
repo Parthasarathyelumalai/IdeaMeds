@@ -1,5 +1,11 @@
-package com.ideas2it.ideameds.model;
+/*
+ * Copyright 2022 Ideas2IT Technologies. All rights reserved.
+ * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
+ */
+package com.ideas2it.ideameds.dto;
 
+import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.util.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +18,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
 /**
@@ -22,24 +30,15 @@ import java.time.LocalDateTime;
  * @version - 1.0
  * @since - 2022-11-17
  */
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
-public class UserMedicine {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserMedicineDTO {
     private Long userMedicineId;
-    @NotNull
+    @NotBlank(message = "Medicine name should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format")
     private String medicineName;
-    @NotNull
+    @NotBlank(message = "Quantity should be mentioned")
+    @Pattern(regexp = Constants.REGEX_FOR_NUMBER, message = "Invalid format")
     private int quantity;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-    @NotNull
-    private LocalDateTime createdAt;
-    @NotNull
-    private LocalDateTime modifiedAt;
 }
