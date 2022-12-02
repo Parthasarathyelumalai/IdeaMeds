@@ -41,6 +41,5 @@ public class UserDTO {
     private String emailId;
     private List<@Valid AddressDTO> addresses;
     private List<Prescription> prescription;
-    private List<UserMedicine> userMedicines;
     private Role roleType;
 }

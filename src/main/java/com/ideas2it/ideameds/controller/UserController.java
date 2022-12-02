@@ -81,7 +81,6 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> savedUser;
-
         if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())) {
             throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
         } else if (validUserByEmailId(user.getEmailId())) {
@@ -145,15 +144,30 @@ public class UserController {
     }
 
     /**
+     * Get Previous User Medicine
+     * @param userId - pass user id
+     * @return List of UserMedicineDTO -  list of user medicine
+     * @throws CustomException - Occur when user is not found
+     */
+    @GetMapping("/user/user-medicine/{id}")
+    public ResponseEntity<List<UserMedicineDTO>> getPreviousUserMedicine(@PathVariable("id") Long userId) throws CustomException {
+        if (userService.isUserExist(userId)) {
+            return ResponseEntity.status(HttpStatus.OK).body(userMedicineService.getPreviousUserMedicine(userId));
+        }else {
+            throw new CustomException(Constants.USER_NOT_FOUND);
+        }
+    }
+
+    /**
      * Add user medicines for specific user
      *
      * @param userId        - send user id to set medicines
      * @param userMedicine - send user medicine
-     * @return list of medicine - gives a response as list of user medicines
+     * @return String  - gives a response statement
      * @throws CustomException - occur when User is not Found
      */
     @PostMapping("/user/user-medicine/{id}")
-    public ResponseEntity<String> addUserMedicine(@PathVariable("id") Long userId, @RequestBody UserMedicineDTO userMedicine) throws CustomException {
+    public ResponseEntity<String> addUserMedicine(@PathVariable("id") Long userId, @Valid @RequestBody UserMedicineDTO userMedicine) throws CustomException {
         boolean isUserExist = userService.isUserExist(userId);
         Long savedCartId;
         if (isUserExist) {

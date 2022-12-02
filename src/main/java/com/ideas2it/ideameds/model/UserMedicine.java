@@ -3,9 +3,7 @@ package com.ideas2it.ideameds.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +24,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
 public class UserMedicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
