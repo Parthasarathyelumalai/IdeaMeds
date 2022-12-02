@@ -4,7 +4,9 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.dto.WarehouseDTO;
+import com.ideas2it.ideameds.dto.WarehouseResponseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Warehouse;
 import com.ideas2it.ideameds.repository.WarehouseRepository;
@@ -67,6 +69,20 @@ public class WarehouseServiceImpl implements WarehouseService {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()){
             return modelMapper.map(warehouse, WarehouseDTO.class);
+        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public WarehouseResponseDTO getWarehouseAndStocksById(Long warehouseId) throws CustomException {
+        Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
+        if (warehouse.isPresent()){
+            WarehouseResponseDTO warehouseResponseDTO = modelMapper.map(warehouse, WarehouseResponseDTO.class);
+            warehouseResponseDTO.setBrandItemsDTOList(warehouse.get().getBrandItemsList()
+                    .stream().map(brandItems -> modelMapper.map(brandItems, BrandItemsDTO.class)).toList());
+            return warehouseResponseDTO;
         } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
     }
 

@@ -14,6 +14,7 @@ import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.Warehouse;
 import com.ideas2it.ideameds.repository.BrandItemsRepository;
+import com.ideas2it.ideameds.repository.WarehouseRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
@@ -36,16 +37,20 @@ import java.util.Optional;
 public class BrandItemsServiceImpl implements BrandItemsService {
 
     private final BrandItemsRepository brandItemsRepository;
+
+    private final WarehouseRepository warehouseRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      * Creates instance for the classes
      *
      * @param brandItemsRepository create object for brand items repository
+     * @param warehouseRepository  create object for warehouse repository
      */
     @Autowired
-    public BrandItemsServiceImpl(BrandItemsRepository brandItemsRepository) {
+    public BrandItemsServiceImpl(BrandItemsRepository brandItemsRepository, WarehouseRepository warehouseRepository) {
         this.brandItemsRepository = brandItemsRepository;
+        this.warehouseRepository = warehouseRepository;
     }
 
     /**
@@ -58,8 +63,10 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         brandItems.setBrand(modelMapper.map(brandDTO, Brand.class));
         brandItems.setCreatedAt(DateTimeValidation.getDate());
         brandItems.setModifiedAt(DateTimeValidation.getDate());
-        return modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
-
+        BrandItemsDTO newBrandItemsDTO = modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
+        newBrandItemsDTO.setBrandDTO(modelMapper.map(brandItems.getBrand(), BrandDTO.class));
+        newBrandItemsDTO.setMedicineDTO(modelMapper.map(brandItems.getMedicine(), MedicineDTO.class));
+        return newBrandItemsDTO;
     }
 
     /**
@@ -67,9 +74,15 @@ public class BrandItemsServiceImpl implements BrandItemsService {
      */
     @Override
     public List<BrandItemsDTO> getAllBrandItems() {
-        return brandItemsRepository.findAll()
-                .stream()
-                .map(brandItems -> modelMapper.map(brandItems, BrandItemsDTO.class)).toList();
+        List<BrandItems> brandItemsList = brandItemsRepository.findAll();
+        List<BrandItemsDTO> brandItemsDTOList = new ArrayList<>();
+        for (BrandItems brandItems: brandItemsList) {
+            BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems, BrandItemsDTO.class);
+            brandItemsDTO.setMedicineDTO(modelMapper.map(brandItems.getMedicine(), MedicineDTO.class));
+            brandItemsDTO.setBrandDTO(modelMapper.map(brandItems.getBrand(), BrandDTO.class));
+            brandItemsDTOList.add(brandItemsDTO);
+        }
+        return brandItemsDTOList;
     }
 
     /**
@@ -79,7 +92,10 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     public BrandItemsDTO getBrandItemById(Long brandItemId) throws CustomException {
         Optional<BrandItems> brandItems = brandItemsRepository.findById(brandItemId);
         if (brandItems.isPresent()) {
-            return modelMapper.map(brandItems.get(), BrandItemsDTO.class);
+            BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems.get(), BrandItemsDTO.class);
+            brandItemsDTO.setBrandDTO(modelMapper.map(brandItems.get().getBrand(), BrandDTO.class));
+            brandItemsDTO.setMedicineDTO(modelMapper.map(brandItems.get().getMedicine(), MedicineDTO.class));
+            return brandItemsDTO;
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
 
@@ -144,7 +160,11 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     @Override
     public BrandItemsDTO assignToWarehouse(WarehouseDTO warehouseDTO, Long brandItemId) throws CustomException {
         List<Warehouse> warehouses = new ArrayList<>();
-        warehouses.add(modelMapper.map(warehouseDTO, Warehouse.class));
+        Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
+        if (warehouse.isPresent()) {
+            warehouse.get().setModifiedAt(DateTimeValidation.getDate());
+        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+        warehouses.add(warehouse.get());
         Optional<BrandItems> brandItems = brandItemsRepository.findById(brandItemId);
         if (brandItems.isPresent()) {
             brandItems.get().setWarehouses(warehouses);

@@ -1,6 +1,7 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.WarehouseDTO;
+import com.ideas2it.ideameds.dto.WarehouseResponseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.WarehouseService;
 import com.ideas2it.ideameds.util.Constants;
@@ -78,6 +79,20 @@ public class WarehouseController {
     @GetMapping("/warehouse/{warehouseId}")
     public ResponseEntity<WarehouseDTO> getWarehouseById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(warehouseService.getWarehouseById(warehouseId));
+    }
+
+    /**
+     * <p>
+     * gets warehouse by id
+     * </p>
+     *
+     * @param warehouseId warehouse id to get warehouse
+     * @return warehouse using id
+     * @throws CustomException throws when the warehouse not found
+     */
+    @GetMapping("/warehouseAndStocks/{warehouseId}")
+    public ResponseEntity<WarehouseResponseDTO> getWarehouseAndStocksById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.FOUND).body(warehouseService.getWarehouseAndStocksById(warehouseId));
     }
 
     /**
