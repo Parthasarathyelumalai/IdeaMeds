@@ -187,4 +187,9 @@ public class Constants {
      * Share that can not order message.
      */
     public static final String CAN_NOT_ORDER = "Can Not Order.";
+
+    /**
+     * Share the address not found message.
+     */
+    public static final String ADDRESS_NOT_FOUND = "Address not found";
 }

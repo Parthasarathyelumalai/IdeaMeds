@@ -5,6 +5,7 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.AddressDTO;
+import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
@@ -21,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,10 +82,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDTO getUserById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        UserDTO fetchedUser = modelMapper.map(user, UserDTO.class);
 
-        if ( fetchedUser != null && (!fetchedUser.isDeletedStatus()) ) {
-            return fetchedUser;
+        if ( user.isPresent() && (!user.get().isDeletedStatus()) ) {
+            return modelMapper.map(user, UserDTO.class);
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
         }
@@ -95,14 +94,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * {@inheritDoc}
      */
     @Override
-    public List<UserDTO> getAllUser() {
-        List<UserDTO> users = new ArrayList<>();
-
-        for (User user : userRepository.findAll()) {
-            UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-            users.add(userDTO);
-        }
-        return users;
+    public List<ResponseUserDTO> getAllUser() {
+        return userRepository.findAll().stream().map(user-> modelMapper.map(user, ResponseUserDTO.class)).toList();
     }
 
     /**
@@ -110,10 +103,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public String updateUser(UserDTO userDTO) throws CustomException {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         User user = modelMapper.map(userDTO, User.class);
+        Optional<User> existUser = userRepository.findById(user.getUserId());
+        if(existUser.isEmpty()) {
+            throw new CustomException(Constants.USER_NOT_FOUND);
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
+        user.setCreatedAt(existUser.get().getCreatedAt());
         user.setModifiedAt(DateTimeValidation.getDate());
 
         for (Address address : user.getAddresses()) {
+            Optional<User> existAddress = userRepository.findById(address.getAddressId());
+            if(existAddress.isEmpty()) {
+                throw new CustomException(Constants.ADDRESS_NOT_FOUND);
+            }
+            address.setCreatedAt(existUser.get().getCreatedAt());
             address.setModifiedAt(DateTimeValidation.getDate());
         }
 

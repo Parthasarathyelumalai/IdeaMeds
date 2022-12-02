@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +40,7 @@ public interface UserService {
      * Get Users details from the database
      * @return user - give a response as a users details
      */
-    List<UserDTO> getAllUser();
+    List<ResponseUserDTO> getAllUser();
 
     /**
      * Updated user details in databases

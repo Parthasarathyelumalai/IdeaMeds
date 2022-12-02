@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
@@ -111,7 +112,7 @@ public class UserController {
      * @return list of user - gives a response as list of user details
      */
     @GetMapping("/user")
-    public List<UserDTO> getAllUser() {
+    public List<ResponseUserDTO> getAllUser() {
         return userService.getAllUser();
     }
 
