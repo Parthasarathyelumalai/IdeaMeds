@@ -75,12 +75,10 @@ public class CartServiceImpl implements CartService {
                 cart.setCartId(existedCart.get().getCartId());
                 existedCart = Optional.of(cart);
                 Cart savedCart = cartRepository.save(getTotalPriceOfCart(existedCart.get()));
-                CartDTO cartDTO = convertToCartDto(savedCart);
-                return Optional.of(cartDTO);
+                return Optional.of(convertToCartDto(savedCart));
             } else {
                 Cart savedCart = cartRepository.save(getTotalPriceOfCart(cart));
-                CartDTO cartDTO = convertToCartDto(savedCart);
-                return Optional.of(cartDTO);
+                return Optional.of(convertToCartDto(savedCart));
             }
         } else throw new CustomException(Constants.USER_NOT_FOUND);
     }
@@ -132,13 +130,13 @@ public class CartServiceImpl implements CartService {
      */
     private Cart getTotalPriceOfCart(Cart cart) {
         List<CartItem> cartItems = cart.getCartItemList();
-        float price = 0;
+        float totalPrice = 0;
         for (CartItem cartItem : cartItems) {
-            price = cartItem.getBrandItems().getPrice() * cartItem.getQuantity();
+            totalPrice = cartItem.getBrandItems().getPrice() * cartItem.getQuantity() + totalPrice;
         }
-        cart.setTotalPrice(price);
-        price = calculateDiscount(price, cart);
-        cart.setDiscountPrice(price);
+        cart.setTotalPrice(totalPrice);
+        float discountPrice = calculateDiscount(totalPrice, cart);
+        cart.setDiscountPrice(discountPrice);
         return cart;
     }
 

@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
 /**
  * Represents the Cart Item Dto.
  * @author Soundharrajan S.
@@ -19,6 +22,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CartItemDTO {
     private Long cartItemId;
+    @NotBlank(message = "Quantity should be minimum one")
+    @Min(1)
     private int quantity;
     private MedicineDTO medicineDTO;
     private BrandItemsDTO brandItemsDTO;
