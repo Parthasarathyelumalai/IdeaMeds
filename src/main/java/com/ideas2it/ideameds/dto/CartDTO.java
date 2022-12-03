@@ -25,10 +25,10 @@ import java.util.List;
 public class CartDTO {
 
     private Long cartId;
+    private String userName;
     private float totalPrice;
     private float discountPrice;
     private float discountPercentage;
     private Discount discount;
-    private String userName;
     private List<CartItemDTO> cartItemDTOList;
 }

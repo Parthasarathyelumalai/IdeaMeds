@@ -25,6 +25,5 @@ public class CartItemDTO {
     @NotBlank(message = "Quantity should be minimum one")
     @Min(1)
     private int quantity;
-    private MedicineDTO medicineDTO;
     private BrandItemsDTO brandItemsDTO;
 }
