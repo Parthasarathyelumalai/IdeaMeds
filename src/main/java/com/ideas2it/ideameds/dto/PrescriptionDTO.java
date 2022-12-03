@@ -7,6 +7,7 @@ package com.ideas2it.ideameds.dto;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class PrescriptionDTO {
     private Long prescriptionId;
 

@@ -81,8 +81,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent())
-            return prescriptionRepository.getPrescriptionByUser(user.get())
-                    .stream()
+            return prescriptionRepository.findByUser(user.get()).stream()
                     .map(prescription -> modelMapper.map(prescription, PrescriptionDTO.class))
                     .toList();
         else throw new CustomException(Constants.USER_NOT_FOUND);

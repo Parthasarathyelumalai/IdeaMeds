@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,6 +70,7 @@ public class Prescription {
     @NotNull
     private boolean deletedStatus;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
