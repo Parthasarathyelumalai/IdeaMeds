@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository of Prescription
@@ -23,7 +24,7 @@ public interface PrescriptionRepository extends JpaRepository<Prescription,Long>
     /**
      * Get all the prescriptions of the User
      * @param user To get prescription of required user
-     * @return returns the list of prescriptions
+     * @return returns the Optional list of prescriptions
      */
-    List<Prescription> getPrescriptionByUser(User user);
+    Optional<List<Prescription>> findByUser(User user);
 }
