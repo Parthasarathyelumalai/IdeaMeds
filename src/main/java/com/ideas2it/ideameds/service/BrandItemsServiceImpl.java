@@ -63,10 +63,8 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         brandItems.setBrand(modelMapper.map(brandDTO, Brand.class));
         brandItems.setCreatedAt(DateTimeValidation.getDate());
         brandItems.setModifiedAt(DateTimeValidation.getDate());
-        BrandItemsDTO newBrandItemsDTO = modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
-        newBrandItemsDTO.setBrandDTO(modelMapper.map(brandItems.getBrand(), BrandDTO.class));
-        newBrandItemsDTO.setMedicineDTO(modelMapper.map(brandItems.getMedicine(), MedicineDTO.class));
-        return newBrandItemsDTO;
+        BrandItems newBrandItems = brandItemsRepository.save(brandItems);
+        return setBrandAndMedicineDTO(newBrandItems, brandItems.getBrand(), brandItems.getMedicine());
     }
 
     /**
@@ -77,10 +75,9 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         List<BrandItems> brandItemsList = brandItemsRepository.findAll();
         List<BrandItemsDTO> brandItemsDTOList = new ArrayList<>();
         for (BrandItems brandItems: brandItemsList) {
-            BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems, BrandItemsDTO.class);
-            brandItemsDTO.setMedicineDTO(modelMapper.map(brandItems.getMedicine(), MedicineDTO.class));
-            brandItemsDTO.setBrandDTO(modelMapper.map(brandItems.getBrand(), BrandDTO.class));
-            brandItemsDTOList.add(brandItemsDTO);
+            brandItemsDTOList.add(setBrandAndMedicineDTO(brandItems,
+                                                         brandItems.getBrand(),
+                                                         brandItems.getMedicine()));
         }
         return brandItemsDTOList;
     }
@@ -191,7 +188,9 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     public BrandItemsDTO getBrandItemByName(String brandItemName) throws CustomException {
         Optional<BrandItems> brandItems = brandItemsRepository.findBrandItemsByBrandItemName(brandItemName);
         if (brandItems.isPresent()) {
-            return modelMapper.map(brandItems.get(), BrandItemsDTO.class);
+            return setBrandAndMedicineDTO(brandItems.get(),
+                                          brandItems.get().getBrand(),
+                                          brandItems.get().getMedicine());
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
 
@@ -201,5 +200,26 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     @Override
     public BrandItemsDTO getBrandItemByBrandItemName(String brandItemName) {
         return modelMapper.map(brandItemsRepository.findBrandItemsByBrandItemName(brandItemName), BrandItemsDTO.class);
+    }
+
+    /**
+     * <p>
+     * sets brand and medicine for the corresponding brand item
+     * and converts to brand item DTO
+     * </p>
+     * @param brandItems
+     *        brand item to assign brand and medicine
+     * @param brand
+     *        to assign a brand to a brand item
+     * @param medicine
+     *        to assign a medicine to a brand item
+     * @return brand item dto which contains brand item information
+     *  and also brand and medicine
+     */
+    private BrandItemsDTO setBrandAndMedicineDTO(BrandItems brandItems, Brand brand, Medicine medicine) {
+        BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems, BrandItemsDTO.class);
+        brandItemsDTO.setBrandDTO(modelMapper.map(brand, BrandDTO.class));
+        brandItemsDTO.setMedicineDTO(modelMapper.map(medicine, MedicineDTO.class));
+        return brandItemsDTO;
     }
 }
