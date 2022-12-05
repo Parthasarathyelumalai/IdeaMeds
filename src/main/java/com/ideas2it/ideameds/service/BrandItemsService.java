@@ -11,6 +11,7 @@ import com.ideas2it.ideameds.dto.WarehouseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -137,4 +138,15 @@ public interface BrandItemsService {
      * @throws CustomException throws when Brand Item is not found
      */
     BrandItemsDTO getBrandItemByName(String brandItemName) throws CustomException;
+
+    /**
+     * <p>
+     * Gets brand Item By brand Item Name
+     * To get Brand item for prescription
+     * </p>
+     *
+     * @param brandItemName name to get brand item
+     * @return brand item using brand item name
+     */
+    BrandItemsDTO getBrandItemByBrandItemName(String brandItemName);
 }

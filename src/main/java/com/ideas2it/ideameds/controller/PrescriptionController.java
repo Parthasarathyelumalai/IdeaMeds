@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents the Prescription Controller
@@ -162,19 +163,19 @@ public class PrescriptionController {
     private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO user) throws CustomException {
         CartDTO cart = new CartDTO();
         List<CartItemDTO> cartItems = new ArrayList<>();
-        List<BrandItemsDTO> brandItemsList = brandItemsService.getAllBrandItems();
         List<PrescriptionItemsDTO> prescriptionItemsDTOs = new ArrayList<>();
 
         for (PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
-            for (BrandItemsDTO brandItem : brandItemsList) {
-                if (brandItem.getBrandItemName().equals(prescriptionItem.getBrandItemName())) {
+            BrandItemsDTO brandItem = brandItemsService.getBrandItemByBrandItemName(prescriptionItem.getBrandItemName());
+                if (brandItem != null) {
                     CartItemDTO cartItem = new CartItemDTO();
                     cartItem.setBrandItemsDTO(brandItem);
                     cartItem.setQuantity(prescriptionItem.getQuantity());
                     cartItems.add(cartItem);
                     cart.setCartItemDTOList(cartItems);
+                } else {
+                    prescriptionItemsDTOs.add(prescriptionItem);
                 }
-            }
         }
         addToCart(prescriptionItemsDTOs, user, cart);
     }
