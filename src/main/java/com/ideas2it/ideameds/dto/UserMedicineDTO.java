@@ -27,7 +27,7 @@ import javax.validation.constraints.Pattern;
 public class UserMedicineDTO {
     private Long userMedicineId;
     @NotBlank(message = "Medicine name should be mentioned")
-    @Pattern(regexp = Constants.REGEX_FOR_TEXT, message = "Invalid format")
+    @Pattern(regexp = Constants.REGEX_FOR_BRAND_ITEM_NAME, message = "Invalid format")
     private String medicineName;
     @NotNull
     @Min(1)

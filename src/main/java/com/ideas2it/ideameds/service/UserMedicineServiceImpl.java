@@ -9,6 +9,7 @@ import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.repository.BrandItemsRepository;
@@ -67,7 +68,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
      */
     @Override
     public Long addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException {
-        List<BrandItemsDTO> brandItems = brandItemsRepository.findAll().stream().map(brandItem -> modelMapper.map(brandItem, BrandItemsDTO.class)).toList();
+        List<BrandItems> brandItems = brandItemsRepository.findAll();
         UserMedicine savedUserMedicine = modelMapper.map(userMedicine, UserMedicine.class);
         CartDTO cartDTO = null;
         Long cartId;
@@ -80,27 +81,30 @@ public class UserMedicineServiceImpl implements UserMedicineService {
             List<CartItemDTO> cartItemDTOS = new ArrayList<>();
             CartItemDTO cartItemDTO = new CartItemDTO();
             Optional<CartDTO> savedCart;
-            for (BrandItemsDTO brandItem : brandItems) {
-                if ( userMedicine.getMedicineName().equals(brandItem.getMedicineDTO().getMedicineName()) || userMedicine.getMedicineName().equals(brandItem.getBrandItemName()) ) {
-                    cartDTO = new CartDTO();
-                    cartItemDTO.setBrandItemsDTO(brandItem);
-                    cartItemDTO.setQuantity(userMedicine.getQuantity());
-                    cartItemDTOS.add(cartItemDTO);
-                    cartDTO.setCartItemDTOList(cartItemDTOS);
+            if (!brandItems.isEmpty()) {
+                for (BrandItems brandItem : brandItems) {
+                    if (userMedicine.getMedicineName().equals(brandItem.getBrandItemName()) || userMedicine.getMedicineName().equals(brandItem.getMedicine().getMedicineName())) {
+                        cartDTO = new CartDTO();
+                        cartItemDTO.setBrandItemsDTO(modelMapper.map(brandItem, BrandItemsDTO.class));
+                        cartItemDTO.setQuantity(userMedicine.getQuantity());
+                        cartItemDTOS.add(cartItemDTO);
+                        cartDTO.setCartItemDTOList(cartItemDTOS);
+                    } else {
+                        break;
+                    }
+                }
+            } else throw new CustomException(Constants.MEDICINE_NOT_AVAILABLE);
+
+            if (cartDTO != null) {
+                    savedCart = cartService.addCart(userId, cartDTO);
+                    if (savedCart.isPresent()) {
+                        cartId = savedCart.get().getCartId();
+                        return cartId;
+                    }
                 } else {
-                    break;
+                    throw new CustomException(userMedicine.getMedicineName() + Constants.MEDICINE_NOT_FOUND);
                 }
             }
-            if ( cartDTO != null ) {
-                savedCart = cartService.addCart(userId, cartDTO);
-                if ( savedCart.isPresent() ) {
-                    cartId = savedCart.get().getCartId();
-                    return cartId;
-                }
-            } else {
-                throw new CustomException(userMedicine.getMedicineName() + Constants.MEDICINE_NOT_FOUND);
-            }
-        }
         throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
