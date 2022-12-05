@@ -21,8 +21,6 @@ import java.util.Date;
  */
 @Entity
 @Getter
-@Setter
-@ToString
 public class PrescriptionItems {
 
     @Id

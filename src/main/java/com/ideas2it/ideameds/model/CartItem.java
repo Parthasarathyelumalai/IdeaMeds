@@ -34,9 +34,6 @@ public class CartItem {
     private Long cartItemId;
     @NotNull
     private int quantity;
-//    @OneToOne
-//    @JoinColumn(name = "medicine_id")
-//    private Medicine medicine;
     @OneToOne
     @JoinColumn(name = "brand_items_id")
     private BrandItems brandItems;

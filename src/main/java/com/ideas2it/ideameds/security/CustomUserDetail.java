@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class CustomUserDetail implements UserDetails {
 
-    private User user;
+    private final User user;
 
     /**
      * Initialize the user object
