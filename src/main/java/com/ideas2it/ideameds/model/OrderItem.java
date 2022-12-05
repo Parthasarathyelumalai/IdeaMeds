@@ -37,9 +37,6 @@ public class OrderItem {
     private Long orderItemId;
     @NotNull
     private int quantity;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "medicine_id")
-    private Medicine medicine;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "brand_items_id")
     private BrandItems brandItems;
