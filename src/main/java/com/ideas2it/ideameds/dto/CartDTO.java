@@ -20,7 +20,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@Data
 @NoArgsConstructor
 public class CartDTO {
 

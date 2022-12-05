@@ -7,6 +7,15 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * <p>
+ * Represents the Warehouse Response DTO
+ * </p>
+ *
+ * @author Dinesh Kumar R
+ * @version 1.0
+ * @since - 2022-11-21
+ */
 @Getter
 @Setter
 @NoArgsConstructor

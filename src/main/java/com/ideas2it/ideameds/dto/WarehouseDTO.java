@@ -12,7 +12,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-
 /**
  * <p>
  * Represents the Warehouse DTO
