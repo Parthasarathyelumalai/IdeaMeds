@@ -194,4 +194,12 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             return modelMapper.map(brandItems.get(), BrandItemsDTO.class);
         } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BrandItemsDTO getBrandItemByBrandItemName(String brandItemName) {
+        return modelMapper.map(brandItemsRepository.findBrandItemsByBrandItemName(brandItemName), BrandItemsDTO.class);
+    }
 }
