@@ -9,6 +9,7 @@ import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.repository.BrandItemsRepository;
 import com.ideas2it.ideameds.repository.UserMedicineRepository;
@@ -28,8 +29,8 @@ import java.util.Optional;
  * Class for User Medicine Service
  *
  * @author - Parthasarathy Elumalai
- * @since - 2022-11-21
  * @version - 1.0
+ * @since - 2022-11-21
  */
 @Service
 @Slf4j
@@ -46,10 +47,11 @@ public class UserMedicineServiceImpl implements UserMedicineService {
 
     /**
      * Create instance for the class
+     *
      * @param userMedicineRepository create instance for user medicine repository
-     * @param brandItemsRepository create instance for brand item repository
-     * @param cartService create instance for cart service
-     * @param userRepository create instance for user repository
+     * @param brandItemsRepository   create instance for brand item repository
+     * @param cartService            create instance for cart service
+     * @param userRepository         create instance for user repository
      */
     @Autowired
     public UserMedicineServiceImpl(UserMedicineRepository userMedicineRepository, UserRepository userRepository, BrandItemsRepository brandItemsRepository, CartService cartService) {
@@ -66,37 +68,40 @@ public class UserMedicineServiceImpl implements UserMedicineService {
     @Override
     public Long addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException {
         List<BrandItemsDTO> brandItems = brandItemsRepository.findAll().stream().map(brandItem -> modelMapper.map(brandItem, BrandItemsDTO.class)).toList();
-        UserMedicine savedUserMedicine = modelMapper.map(userMedicine,UserMedicine.class);
-        savedUserMedicine.setUser(userRepository.findById(userId).get());
-        savedUserMedicine.setCreatedAt(DateTimeValidation.getDate());
-        savedUserMedicine.setModifiedAt(DateTimeValidation.getDate());
-        userMedicineRepository.save(savedUserMedicine);
-        List<CartItemDTO> cartItemDTOS = new ArrayList<>();
-        CartItemDTO cartItemDTO = new CartItemDTO();
-        Optional<CartDTO> savedCart;
+        UserMedicine savedUserMedicine = modelMapper.map(userMedicine, UserMedicine.class);
         CartDTO cartDTO = null;
-        Long cartId = null;
-        for (BrandItemsDTO brandItem : brandItems) {
-            if ( userMedicine.getMedicineName().equals(brandItem.getMedicineDTO().getMedicineName()) || userMedicine.getMedicineName().equals(brandItem.getBrandItemName())) {
-                cartDTO = new CartDTO();
-                cartItemDTO.setBrandItemsDTO(brandItem);
-                cartItemDTO.setQuantity(userMedicine.getQuantity());
-                cartItemDTOS.add(cartItemDTO);
-                cartDTO.setCartItemDTOList(cartItemDTOS);
+        Long cartId;
+        Optional<User> user = userRepository.findById(userId);
+        if ( user.isPresent() ) {
+            savedUserMedicine.setUser(user.get());
+            savedUserMedicine.setCreatedAt(DateTimeValidation.getDate());
+            savedUserMedicine.setModifiedAt(DateTimeValidation.getDate());
+            userMedicineRepository.save(savedUserMedicine);
+            List<CartItemDTO> cartItemDTOS = new ArrayList<>();
+            CartItemDTO cartItemDTO = new CartItemDTO();
+            Optional<CartDTO> savedCart;
+            for (BrandItemsDTO brandItem : brandItems) {
+                if ( userMedicine.getMedicineName().equals(brandItem.getMedicineDTO().getMedicineName()) || userMedicine.getMedicineName().equals(brandItem.getBrandItemName()) ) {
+                    cartDTO = new CartDTO();
+                    cartItemDTO.setBrandItemsDTO(brandItem);
+                    cartItemDTO.setQuantity(userMedicine.getQuantity());
+                    cartItemDTOS.add(cartItemDTO);
+                    cartDTO.setCartItemDTOList(cartItemDTOS);
+                } else {
+                    break;
+                }
+            }
+            if ( cartDTO != null ) {
+                savedCart = cartService.addCart(userId, cartDTO);
+                if ( savedCart.isPresent() ) {
+                    cartId = savedCart.get().getCartId();
+                    return cartId;
+                }
             } else {
-                break;
+                throw new CustomException(userMedicine.getMedicineName() + Constants.MEDICINE_NOT_FOUND);
             }
         }
-        if (cartDTO != null) {
-            savedCart = cartService.addCart(userId, cartDTO);
-            if ( savedCart.isPresent() ) {
-                cartId = savedCart.get().getCartId();
-                return cartId;
-            }
-        } else {
-            throw new CustomException(userMedicine.getMedicineName() + Constants.MEDICINE_NOT_FOUND);
-        }
-        return cartId;
+        throw new CustomException(Constants.USER_NOT_FOUND);
     }
 
     /**
