@@ -133,6 +133,11 @@ public class Constants {
     public static final String REGEX_FOR_PHONE_NUMBER = "^[6-9]{1}[0-9]{9}";
 
     /**
+     * Regex Pattern for brand item name
+     */
+    public static final String REGEX_FOR_BRAND_ITEM_NAME = "^[a-zA-z][a-zA-Z0-9-\\s]*$";
+
+    /**
      * Regex pattern Email ID
      */
     public static final String REGEX_FOR_EMAIL_ID = "^[a-z]{1}[a-z0-9._]+@[a-z0-9]+[.][a-z]*$";
