@@ -27,8 +27,10 @@ public interface BrandService {
      * @param brandDTO
      *        to add a new brand
      * @return added brand
+     * @throws CustomException
+     *         throws when the new brand name already exist
      */
-    BrandDTO addBrand(BrandDTO brandDTO);
+    BrandDTO addBrand(BrandDTO brandDTO) throws CustomException;
 
     /**
      * <p>

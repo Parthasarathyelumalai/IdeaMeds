@@ -42,11 +42,14 @@ public class MedicineServiceImpl implements MedicineService {
     /**
      *{@inheritDoc}
      */
-    public MedicineDTO addMedicine(MedicineDTO medicineDTO) {
-        Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
-        medicine.setCreatedAt(DateTimeValidation.getDate());
-        medicine.setModifiedAt(DateTimeValidation.getDate());
-        return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
+    public MedicineDTO addMedicine(MedicineDTO medicineDTO) throws CustomException {
+        if (medicineRepository
+                .getMedicineByMedicineName(medicineDTO.getMedicineName()).isPresent()) {
+            Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
+            medicine.setCreatedAt(DateTimeValidation.getDate());
+            medicine.setModifiedAt(DateTimeValidation.getDate());
+            return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
+        } else throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.MEDICINE_NAME_EXIST);
     }
 
     /**
@@ -72,8 +75,8 @@ public class MedicineServiceImpl implements MedicineService {
      *{@inheritDoc}
      */
     public MedicineDTO getMedicineByName(String medicineName) throws CustomException {
-        Medicine medicine = medicineRepository.getMedicineByMedicineName(medicineName);
-        if(medicine != null) {
+        Optional<Medicine> medicine = medicineRepository.getMedicineByMedicineName(medicineName);
+        if(medicine.isPresent()) {
             return modelMapper.map(medicine, MedicineDTO.class);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
     }

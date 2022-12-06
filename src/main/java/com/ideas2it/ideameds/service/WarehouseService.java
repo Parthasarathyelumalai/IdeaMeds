@@ -28,8 +28,10 @@ public interface WarehouseService {
      *
      * @param warehouseDTO to add a new warehouse
      * @return added warehouse
+     * @throws CustomException
+     *         throws when the new warehouse name is already exist
      */
-    WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO);
+    WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) throws CustomException;
 
     /**
      * <p>

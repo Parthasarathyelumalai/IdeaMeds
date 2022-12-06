@@ -45,11 +45,14 @@ public class WarehouseServiceImpl implements WarehouseService {
      *{@inheritDoc}
      */
     @Override
-    public WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) {
-        Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
-        warehouse.setCreatedAt(DateTimeValidation.getDate());
-        warehouse.setModifiedAt(DateTimeValidation.getDate());
-        return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
+    public WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) throws CustomException {
+        if (warehouseRepository
+                .findByWarehouseName(warehouseDTO.getWarehouseName()).isPresent()) {
+            Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
+            warehouse.setCreatedAt(DateTimeValidation.getDate());
+            warehouse.setModifiedAt(DateTimeValidation.getDate());
+            return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
+        } else throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.WAREHOUSE_NAME_EXIST);
     }
 
     /**

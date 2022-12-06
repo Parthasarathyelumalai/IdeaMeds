@@ -210,4 +210,24 @@ public class Constants {
      * Share cart add successfully
      */
     public static final String ADDED_TO_CART = "Items added  to cart Successfully";
+
+    /**
+     * Share if the brand item name is already exist
+     */
+    public static final String BRAND_ITEM_NAME_EXIST = "Brand Item name already exist";
+
+    /**
+     * Share if the medicine name already exist
+     */
+    public static final String MEDICINE_NAME_EXIST = "Medicine name already exist";
+
+    /**
+     * Share if the brand name is already exist
+     */
+    public static final String BRAND_NAME_EXIST = "Brand name already exist";
+
+    /**
+     * Share if the warehouse name is already exist
+     */
+    public static final String WAREHOUSE_NAME_EXIST = "Warehouse name already exist";
 }

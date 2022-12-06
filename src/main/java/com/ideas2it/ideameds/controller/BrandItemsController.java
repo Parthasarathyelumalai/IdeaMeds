@@ -65,6 +65,7 @@ public class BrandItemsController {
      * @return added brand item
      * @throws CustomException throws when the brand not found and
      *                         throws when the medicine not found
+     *                         throws when the new brand item name already exist
      */
     @PostMapping("/brandItems/{medicineId}/{brandId}")
     public ResponseEntity<BrandItemsDTO> addBrandItem(@Valid @RequestBody BrandItemsDTO brandItemsDTO,

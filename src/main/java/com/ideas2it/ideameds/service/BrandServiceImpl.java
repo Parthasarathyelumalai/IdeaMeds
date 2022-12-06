@@ -46,11 +46,14 @@ public class BrandServiceImpl implements BrandService {
     /**
      * {@inheritDoc}
      */
-    public BrandDTO addBrand(BrandDTO brandDTO) {
-        Brand brand = modelMapper.map(brandDTO, Brand.class);
-        brand.setCreatedAt(DateTimeValidation.getDate());
-        brand.setModifiedAt(DateTimeValidation.getDate());
-        return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
+    public BrandDTO addBrand(BrandDTO brandDTO) throws CustomException {
+        if (brandRepository
+                .getBrandByBrandName(brandDTO.getBrandName()).isPresent()) {
+            Brand brand = modelMapper.map(brandDTO, Brand.class);
+            brand.setCreatedAt(DateTimeValidation.getDate());
+            brand.setModifiedAt(DateTimeValidation.getDate());
+            return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
+        } else throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.BRAND_NAME_EXIST);
     }
 
     /**
@@ -66,9 +69,9 @@ public class BrandServiceImpl implements BrandService {
      * {@inheritDoc}
      */
     public BrandDTO getBrandByBrandName(String brandName) throws CustomException {
-        Brand brand = brandRepository.getBrandByBrandName(brandName);
-        if (brand != null) {
-            return modelMapper.map(brand, BrandDTO.class);
+        Optional<Brand> brand = brandRepository.getBrandByBrandName(brandName);
+        if (brand.isPresent()) {
+            return modelMapper.map(brand.get(), BrandDTO.class);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
     }
 

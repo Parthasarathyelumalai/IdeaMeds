@@ -27,8 +27,10 @@ public interface MedicineService {
      *
      * @param medicineDTO to add a new medicine
      * @return added medicine
+     * @throws CustomException
+     *         throws when the new medicine name already exist
      */
-    MedicineDTO addMedicine(MedicineDTO medicineDTO);
+    MedicineDTO addMedicine(MedicineDTO medicineDTO) throws CustomException;
 
     /**
      * <p>

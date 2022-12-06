@@ -8,6 +8,8 @@ import com.ideas2it.ideameds.model.Warehouse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * <p>
  * Repository for Warehouse
@@ -19,4 +21,15 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
+
+    /**
+     * <p>
+     *     Gets warehouse by warehouse name
+     * </p>
+     * @param warehouseName
+     *        to get the warehouse
+     * @return gets the warehouse by name if existed
+     *         null when the warehouse doesn't exist
+     */
+    Optional<Warehouse> findByWarehouseName(String warehouseName);
 }
