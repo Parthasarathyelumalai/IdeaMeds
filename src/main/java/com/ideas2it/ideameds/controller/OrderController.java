@@ -53,7 +53,7 @@ public class OrderController {
                     .status(HttpStatus.CREATED)
                     .body(orderSystem.get());
         } else {
-            throw new CustomException(Constants.CAN_NOT_ORDER);
+            throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ORDER);
         }
     }
 
@@ -69,7 +69,7 @@ public class OrderController {
         if (null != orderDTOList) {
             return (ResponseEntity.status(HttpStatus.ACCEPTED).body(orderDTOList));
         } else {
-            throw new CustomException(Constants.ORDER_ITEM_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_ITEM_NOT_FOUND);
         }
     }
 
@@ -88,7 +88,7 @@ public class OrderController {
                     .status(HttpStatus.OK)
                     .body(orderSystem.get());
         } else {
-            throw new CustomException(Constants.ORDER_ITEM_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_ITEM_NOT_FOUND);
         }
     }
 
@@ -108,7 +108,7 @@ public class OrderController {
                     .status(HttpStatus.GONE)
                     .body(Constants.ORDER_CANCELED_SUCCESSFULLY);
         } else {
-            throw new CustomException(Constants.CAN_NOT_CANCEL_THE_ORDER);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_CANCEL_THE_ORDER);
         }
     }
 }

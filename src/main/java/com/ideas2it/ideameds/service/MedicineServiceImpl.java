@@ -12,6 +12,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public class MedicineServiceImpl implements MedicineService {
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
         if(medicine.isPresent()) {
             return modelMapper.map(medicine, MedicineDTO.class);
-        } else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
     }
 
     /**
@@ -74,7 +75,7 @@ public class MedicineServiceImpl implements MedicineService {
         Medicine medicine = medicineRepository.getMedicineByMedicineName(medicineName);
         if(medicine != null) {
             return modelMapper.map(medicine, MedicineDTO.class);
-        } else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
     }
 
     /**
@@ -84,7 +85,7 @@ public class MedicineServiceImpl implements MedicineService {
         Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
         Optional<Medicine> existMedicine = medicineRepository.findById(medicineDTO.getMedicineId());
         if(existMedicine.isEmpty()) {
-            throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
         }
         medicine.setCreatedAt(existMedicine.get().getCreatedAt());
         medicine.setModifiedAt(DateTimeValidation.getDate());
@@ -100,6 +101,6 @@ public class MedicineServiceImpl implements MedicineService {
             medicine.get().setDeletedStatus(true);
             medicine.get().setModifiedAt(DateTimeValidation.getDate());
         return medicineRepository.save(medicine.get()).getMedicineId();
-        } else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
     }
 }

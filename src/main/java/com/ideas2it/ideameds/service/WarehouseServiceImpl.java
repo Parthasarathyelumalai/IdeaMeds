@@ -14,6 +14,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()){
             return modelMapper.map(warehouse, WarehouseDTO.class);
-        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
     }
 
     /**
@@ -83,7 +84,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             warehouseResponseDTO.setBrandItemsDTOList(warehouse.get().getBrandItemsList()
                     .stream().map(brandItems -> modelMapper.map(brandItems, BrandItemsDTO.class)).toList());
             return warehouseResponseDTO;
-        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
     }
 
     /**
@@ -97,7 +98,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             warehouse.setCreatedAt(existWarehouse.get().getCreatedAt());
             warehouse.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
-        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
     }
 
     /**
@@ -109,6 +110,6 @@ public class WarehouseServiceImpl implements WarehouseService {
         if (warehouse.isPresent()) {
             warehouse.get().setDeletedStatus(true);
             return warehouseRepository.save(warehouse.get()).getWarehouseId();
-        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
     }
 }

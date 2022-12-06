@@ -47,7 +47,7 @@ public class DiscountController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(savedDiscount);
-        else throw new CustomException(Constants.CAN_NOT_ADD_DISCOUNT);
+        else throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_DISCOUNT);
     }
 
     /**
@@ -63,7 +63,7 @@ public class DiscountController {
             return ResponseEntity
                     .status(HttpStatus.ACCEPTED)
                     .body(discountService.getAll());
-        else throw new CustomException(Constants.NO_DISCOUNT);
+        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
     }
 
     /**
@@ -80,6 +80,6 @@ public class DiscountController {
             return ResponseEntity
                     .status(HttpStatus.GONE)
                     .body(Constants.DELETED_SUCCESSFULLY);
-        else throw new CustomException(Constants.CAN_NOT_DELETE);
+        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_DELETE);
     }
 }

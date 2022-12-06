@@ -69,7 +69,7 @@ public class MedicineController {
         List<MedicineDTO> medicineDTOList = medicineService.getAllMedicines();
         if (medicineDTOList != null) {
             return ResponseEntity.status(HttpStatus.FOUND).body(medicineDTOList);
-        } else throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
 
     }
 
