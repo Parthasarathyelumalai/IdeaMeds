@@ -49,9 +49,10 @@ public class WarehouseController {
      *
      * @param warehouseDTO new warehouse to add
      * @return warehouse which was added
+     * @throws CustomException throws when the new warehouse name is already exist
      */
     @PostMapping("/warehouse")
-    public ResponseEntity<WarehouseDTO> addWarehouse(@RequestBody WarehouseDTO warehouseDTO) {
+    public ResponseEntity<WarehouseDTO> addWarehouse(@RequestBody WarehouseDTO warehouseDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(warehouseService.addWarehouse(warehouseDTO));
     }
 

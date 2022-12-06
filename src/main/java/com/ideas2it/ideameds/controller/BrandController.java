@@ -43,9 +43,10 @@ public class BrandController {
      *
      * @param brandDTO new brandDTO to add
      * @return brand after added
+     * @throws CustomException throws when the new brand name is already exist
      */
     @PostMapping("/brand")
-    public ResponseEntity<BrandDTO> addBrand(@Valid @RequestBody BrandDTO brandDTO) {
+    public ResponseEntity<BrandDTO> addBrand(@Valid @RequestBody BrandDTO brandDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.addBrand(brandDTO));
     }
 

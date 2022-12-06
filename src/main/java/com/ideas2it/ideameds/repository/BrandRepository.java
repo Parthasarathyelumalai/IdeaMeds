@@ -8,6 +8,8 @@ import com.ideas2it.ideameds.model.Brand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * <p>
  * Repository for Medicine Brand
@@ -28,5 +30,5 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
      *        brand name to get brand
      * @return brand using brand name
      */
-    Brand getBrandByBrandName(String brandName);
+    Optional<Brand> getBrandByBrandName(String brandName);
 }

@@ -50,9 +50,10 @@ public class MedicineController {
      *
      * @param medicineDTO new medicine to add
      * @return medicine which was added
+     * @throws CustomException throws when the new medicine name already exist
      */
     @PostMapping("/medicine")
-    public ResponseEntity<MedicineDTO> addMedicine(@Valid @RequestBody MedicineDTO medicineDTO) {
+    public ResponseEntity<MedicineDTO> addMedicine(@Valid @RequestBody MedicineDTO medicineDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.CREATED).body(medicineService.addMedicine(medicineDTO));
     }
 

@@ -8,6 +8,8 @@ import com.ideas2it.ideameds.model.Medicine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * <p>
  * Repository for Medicine
@@ -28,5 +30,5 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
      *        medicine name to get medicine
      * @return medicine using medicine name
      */
-    Medicine getMedicineByMedicineName(String medicineName);
+    Optional<Medicine> getMedicineByMedicineName(String medicineName);
 }

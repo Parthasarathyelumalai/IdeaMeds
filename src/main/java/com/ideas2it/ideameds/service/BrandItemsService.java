@@ -33,10 +33,12 @@ public interface BrandItemsService {
      * @param medicineDTO   to assign medicine with brand Items
      * @param brandDTO      to assign brand with brand Items
      * @return added Brand Item
+     * @throws CustomException
+     *         throws when the new brand item name already exist
      */
     BrandItemsDTO addBrandItem(BrandItemsDTO brandItemsDTO,
                                MedicineDTO medicineDTO,
-                               BrandDTO brandDTO);
+                               BrandDTO brandDTO) throws CustomException;
 
     /**
      * <p>
