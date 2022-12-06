@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if ( user.isPresent() ) {
             return modelMapper.map(user, UserDTO.class);
         } else {
-            throw new CustomException(Constants.USER_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }
     }
 
