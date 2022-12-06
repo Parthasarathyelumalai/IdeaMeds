@@ -9,8 +9,8 @@ import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
-import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.security.CustomUserDetail;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
@@ -24,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -54,28 +55,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<UserDTO> addUser(UserDTO userDTO) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    public Optional<UserDTO> addUser(UserDTO userDTO) throws CustomException {
+        if ( validUserByEmailId(userDTO.getEmailId()) && validUserByPhoneNumber(userDTO.getPhoneNumber()) ) {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
+        } else if ( validUserByEmailId(userDTO.getEmailId()) ) {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
+        } else if ( validUserByPhoneNumber(userDTO.getPhoneNumber()) ) {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
+        } else {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        User user = modelMapper.map(userDTO, User.class);
-        String testPasswordEncoded = bCryptPasswordEncoder.encode(user.getPhoneNumber());
-        user.setPassword(testPasswordEncoded);
-        List<Address> addresses = user.getAddresses();
-        addresses.removeAll(user.getAddresses());
+            User user = modelMapper.map(userDTO, User.class);
+            String testPasswordEncoded = bCryptPasswordEncoder.encode(user.getPhoneNumber());
+            user.setPassword(testPasswordEncoded);
+            List<Address> addresses = user.getAddresses();
+            addresses.removeAll(user.getAddresses());
 
-        for (AddressDTO addressDTO : userDTO.getAddresses()) {
-            addresses.add(modelMapper.map(addressDTO, Address.class));
+            for (AddressDTO addressDTO : userDTO.getAddresses()) {
+                addresses.add(modelMapper.map(addressDTO, Address.class));
+            }
+
+            user.setCreatedAt(DateTimeValidation.getDate());
+            user.setModifiedAt(DateTimeValidation.getDate());
+
+            for (Address address : user.getAddresses()) {
+                address.setCreatedAt(DateTimeValidation.getDate());
+                address.setModifiedAt(DateTimeValidation.getDate());
+            }
+            return Optional.of(modelMapper.map(userRepository.save(user), UserDTO.class));
         }
 
-        user.setCreatedAt(DateTimeValidation.getDate());
-        user.setModifiedAt(DateTimeValidation.getDate());
-
-        for (Address address : user.getAddresses()) {
-            address.setCreatedAt(DateTimeValidation.getDate());
-            address.setModifiedAt(DateTimeValidation.getDate());
-        }
-
-        return Optional.of(modelMapper.map(userRepository.save(user), UserDTO.class));
     }
 
     /**
@@ -108,29 +117,39 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         User user = modelMapper.map(userDTO, User.class);
         Optional<User> existUser = userRepository.findById(user.getUserId());
-        if ( existUser.isEmpty() ) {
-            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
-        }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
-        user.setCreatedAt(existUser.get().getCreatedAt());
-        user.setModifiedAt(DateTimeValidation.getDate());
+        if ( existUser.isPresent() ) {
+            if( !Objects.equals(existUser.get().getEmailId(), user.getEmailId()) || validUserByEmailId(user.getEmailId())) {
+                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
+            } else if ( !Objects.equals(existUser.get().getPhoneNumber(), user.getPhoneNumber()) || validUserByPhoneNumber(user.getPhoneNumber()) ) {
+                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
+            } else if ((!Objects.equals(existUser.get().getEmailId(), user.getEmailId()) || validUserByEmailId(user.getEmailId()))
+                    && (!Objects.equals(existUser.get().getPhoneNumber(), user.getPhoneNumber()) || validUserByPhoneNumber(user.getPhoneNumber())  )) {
+                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
+            } else {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
+                user.setCreatedAt(existUser.get().getCreatedAt());
+                user.setModifiedAt(DateTimeValidation.getDate());
 
-        for (Address address : user.getAddresses()) {
-            Optional<User> existAddress = userRepository.findById(address.getAddressId());
-            if ( existAddress.isEmpty() ) {
-                throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
+                for (Address address : user.getAddresses()) {
+                    Optional<User> existAddress = userRepository.findById(address.getAddressId());
+                    if ( existAddress.isEmpty() ) {
+                        throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
+                    }
+                    address.setCreatedAt(existUser.get().getCreatedAt());
+                    address.setModifiedAt(DateTimeValidation.getDate());
+                }
+
+                UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
+
+                if ( null != updatedUser ) {
+                    return updatedUser.getName() + Constants.UPDATED_SUCCESSFULLY;
+                } else {
+                    throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+                }
             }
-            address.setCreatedAt(existUser.get().getCreatedAt());
-            address.setModifiedAt(DateTimeValidation.getDate());
         }
+        throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
 
-        UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
-
-        if ( null != updatedUser ) {
-            return updatedUser.getName() + Constants.UPDATED_SUCCESSFULLY;
-        } else {
-            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
-        }
     }
 
     /**
@@ -156,23 +175,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public boolean isUserExist(Long userId) {
         return userRepository.existsById(userId);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getUserPhoneNumber() {
-        return userRepository.findAll().stream().map(User::getPhoneNumber).toList();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getUserEmail() {
-        return userRepository.findAll().stream().map(User::getEmailId).toList();
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -182,4 +185,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return fetchedUser.map(CustomUserDetail::new).orElse(null);
     }
 
+    /**
+     * To valid User By phone number
+     *
+     * @param userPhoneNumber - send a user Email id to validate
+     * @return boolean - true or false
+     */
+    private boolean validUserByPhoneNumber(String userPhoneNumber) {
+        List<String> userPhoneNumbers = userRepository.findAll().stream().map(User::getPhoneNumber).toList();
+        for (String number : userPhoneNumbers) {
+            if ( number.equals(userPhoneNumber) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * To valid User By EmailId
+     *
+     * @param userEmailId - send a user Email id to validate
+     * @return boolean - true or false
+     */
+    private boolean validUserByEmailId(String userEmailId) {
+        List<String> userEmailIds = userRepository.findAll().stream().map(User::getEmailId).toList();
+        for (String emailId : userEmailIds) {
+            if ( userEmailId.equals(emailId) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

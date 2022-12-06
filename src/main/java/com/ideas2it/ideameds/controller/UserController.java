@@ -80,17 +80,10 @@ public class UserController {
      */
     @PostMapping("/user")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
-        Optional<UserDTO> savedUser;
-        if ( validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber()) ) {
-            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
-        } else if ( validUserByEmailId(user.getEmailId()) ) {
-            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
-        } else if ( validUserByPhoneNumber(user.getPhoneNumber()) ) {
-            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
-        } else {
-            savedUser = userService.addUser(user);
-            return savedUser.map(userDTO -> ResponseEntity.status(HttpStatus.OK).body(userDTO)).orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserDTO()));
-        }
+        Optional<UserDTO> savedUser = userService.addUser(user);
+        if(savedUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
+        } throw new CustomException(HttpStatus.NO_CONTENT,Constants.USER_NOT_ADDED);
     }
 
     /**
@@ -197,38 +190,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body(savedOrders.get());
         }
         throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_HISTORY_OF_ORDERS);
-    }
-
-    /**
-     * To valid User By phone number
-     *
-     * @param userPhoneNumber - send a user Email id to validate
-     * @return boolean - true or false
-     */
-    private boolean validUserByPhoneNumber(String userPhoneNumber) {
-        List<String> userPhoneNumbers = userService.getUserPhoneNumber();
-        for (String number : userPhoneNumbers) {
-            if ( number.equals(userPhoneNumber) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * To valid User By EmailId
-     *
-     * @param userEmailId - send a user Email id to validate
-     * @return boolean - true or false
-     */
-    private boolean validUserByEmailId(String userEmailId) {
-        List<String> userEmailIds = userService.getUserEmail();
-        for (String emailId : userEmailIds) {
-            if ( userEmailId.equals(emailId) ) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

@@ -16,66 +16,60 @@ import java.util.Optional;
  * Interface for UserService
  *
  * @author - Parthasarathy Elumalai
- * @since - 2022-11-18
  * @version - 1.0
+ * @since - 2022-11-18
  */
 public interface UserService {
 
     /**
      * Add user in database
+     *
      * @param userDTO - To store the user in databases
      * @return user - To give a response as user details
      */
-    Optional<UserDTO> addUser(UserDTO userDTO);
+    Optional<UserDTO> addUser(UserDTO userDTO) throws CustomException;
 
     /**
      * Get User by id from the database
-     * @param userId  - give a userId to get data
+     *
+     * @param userId - give a userId to get data
      * @return user - give a response as a user details
-     * @throws CustomException - throws error message
+     * @throws CustomException - occur when user mail or phone is exist or occur user is not saved
      */
     UserDTO getUserById(Long userId) throws CustomException;
 
     /**
      * Get Users details from the database
+     *
      * @return user - give a response as a users details
      */
     List<ResponseUserDTO> getAllUser();
 
     /**
      * Updated user details in databases
+     *
      * @param user - send a updated user details to update on database
      * @return String - give a response statement as response
-     * @throws CustomException - throws error message
+     * @throws CustomException - occur when user is not found and occur when user mail or phone is exist
      */
     String updateUser(UserDTO user) throws CustomException;
 
     /**
      * deleted user details in databases
+     *
      * @param userId - set user(Which contains deleted status = true)
      * @return String - give a response statement as response
-     * @throws CustomException - throws error message
+     * @throws CustomException - occur when user is not found
      */
     String deleteUser(Long userId) throws CustomException;
 
     /**
      * Check the user is exists or not
+     *
      * @param userId - pass userId to check
      * @return boolean - true or false
      */
     boolean isUserExist(Long userId);
-
-    /**
-     * get Users PhoneNumber to validate
-     * @return lists - Send the phone numbers.
-     */
-    List<String> getUserPhoneNumber();
-
-    /**
-     * get Users Email  to validate
-     * @return lists - Send user email id.
-     */
-    List<String> getUserEmail();
 
     /**
      * get UserDetails by username(EmailId)
