@@ -14,6 +14,10 @@ public class Constants {
     public static final String USER_NOT_FOUND = "User not found";
 
     /**
+     * Share the user not Add message
+     */
+    public static final String USER_NOT_ADDED = "User not registered";
+    /**
      * Share the Prescription has expired message
      */
     public static final String PRESCRIPTION_EXPIRED = "Prescription has Expired";
