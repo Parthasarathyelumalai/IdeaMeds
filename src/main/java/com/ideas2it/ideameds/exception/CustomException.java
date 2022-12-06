@@ -1,5 +1,6 @@
 package com.ideas2it.ideameds.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -9,15 +10,16 @@ import org.springframework.http.HttpStatus;
  * @version 1.0
  * @since 2022-11-21
  */
+@Getter
 public class CustomException extends Exception {
 
     private HttpStatus httpStatus;
 
-    public CustomException(String message) {
+     public CustomException(String message) {
         super(message);
     }
 
-    public CustomException(String message, HttpStatus httpStatus) {
+    public CustomException(HttpStatus httpStatus, String message) {
         super(message);
         this.httpStatus = httpStatus;
     }

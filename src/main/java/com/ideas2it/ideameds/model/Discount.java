@@ -35,7 +35,6 @@ public class Discount {
     @NotNull
     private float discountPercentage;
     @NotNull
-    @Column(columnDefinition = "BIT default 0" )
     private int deletedStatus;
     @NotNull
     private LocalDateTime createdAt;

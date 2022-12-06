@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.dto;
 
+import com.ideas2it.ideameds.util.MedicineType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,8 +31,8 @@ public class PrescriptionItemsDTO {
     @NotNull(message = "Dosage cannot be empty")
     private int dosage;
 
-    @NotBlank(message = "Medicine Type cannot be empty")
-    private String medicineType;
+    @NotNull(message = "Medicine Type cannot be empty")
+    private MedicineType medicineType;
 
     @NotBlank(message = "Medicine Name cannot be empty")
     private String brandItemName;

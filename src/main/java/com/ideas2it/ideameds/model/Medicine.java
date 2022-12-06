@@ -51,7 +51,6 @@ public class Medicine {
     @NotNull
     private boolean prescriptionRequired;
     @NotNull
-    @Column(columnDefinition = "BIT default 0" )
     private boolean isDeletedStatus;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

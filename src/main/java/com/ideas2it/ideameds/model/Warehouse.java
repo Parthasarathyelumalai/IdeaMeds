@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +35,6 @@ public class Warehouse {
     @NotNull
     private String location;
     @NotNull
-    @Column(columnDefinition = "BIT default 0" )
     private boolean isDeletedStatus;
 
     @ManyToMany(mappedBy = "warehouses")

@@ -4,14 +4,17 @@
  */
 package com.ideas2it.ideameds.model;
 
+import com.ideas2it.ideameds.util.MedicineType;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
  * Simple JavaBean domain object representing Prescription Items
@@ -20,6 +23,7 @@ import java.util.Date;
  * @since - 2022-11-17
  */
 @Entity
+@Setter
 @Getter
 public class PrescriptionItems {
 
@@ -34,7 +38,8 @@ public class PrescriptionItems {
     private int dosage;
 
     @NotNull
-    private String medicineType;
+    @Enumerated(EnumType.STRING)
+    private MedicineType medicineType;
 
     @NotNull
     private String brandItemName;

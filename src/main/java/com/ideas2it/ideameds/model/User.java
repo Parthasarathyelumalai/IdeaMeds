@@ -9,7 +9,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -51,7 +50,6 @@ public class User {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "user_id" ,referencedColumnName = "userId")
     private List<Address> addresses;
-    @Column(columnDefinition = "BIT default 0" )
     @NotNull
     private boolean isDeletedStatus;
     @OneToMany(mappedBy = "user")
