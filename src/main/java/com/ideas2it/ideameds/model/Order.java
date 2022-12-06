@@ -55,6 +55,9 @@ public class Order {
     @JoinColumn(name = "discount_id")
     private Discount discount;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(cascade = CascadeType.ALL)

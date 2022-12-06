@@ -76,6 +76,7 @@ public class OrderServiceImpl implements OrderService {
                 Order order = new Order();
                 List<CartItem> cartItemList = cart.get().getCartItemList();
                 order.setUser(user.get());
+                order.setCart(cart.get());
                 order.setTotalPrice(cart.get().getTotalPrice());
                 order.setDiscountPercentage(cart.get().getDiscountPercentage());
                 order.setDiscountPrice(cart.get().getDiscountPrice());
