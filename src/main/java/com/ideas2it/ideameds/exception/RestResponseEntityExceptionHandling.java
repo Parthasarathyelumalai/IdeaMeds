@@ -33,7 +33,7 @@ public class RestResponseEntityExceptionHandling {
      */
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorMessageDTO> commonException(CustomException customException) {
-        ErrorMessageDTO errorMessage = new ErrorMessageDTO(HttpStatus.NOT_FOUND, customException.getMessage());
+        ErrorMessageDTO errorMessage = new ErrorMessageDTO(customException.getHttpStatus(), customException.getMessage());
         log.error(customException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }

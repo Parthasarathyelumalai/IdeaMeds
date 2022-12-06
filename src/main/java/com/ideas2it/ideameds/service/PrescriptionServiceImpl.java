@@ -15,6 +15,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,7 +61,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             prescription.setCreatedAt(DateTimeValidation.getDate());
             prescription.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(prescriptionRepository.save(prescription), PrescriptionDTO.class);
-        } else throw new CustomException(Constants.USER_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -70,7 +71,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public PrescriptionDTO getPrescriptionByPrescriptionId(Long prescriptionId) throws CustomException {
         Optional<Prescription> prescription = prescriptionRepository.findById(prescriptionId);
         if (prescription.isPresent()) return modelMapper.map(prescription, PrescriptionDTO.class);
-        else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
+        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
     }
 
     /**
@@ -83,7 +84,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             return prescriptionRepository.findByUser(user.get()).stream()
                     .map(prescription -> modelMapper.map(prescription, PrescriptionDTO.class))
                     .toList();
-        else throw new CustomException(Constants.USER_NOT_FOUND);
+        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -96,7 +97,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         if (user.isPresent()) {
             List<Prescription> prescriptions = user.get().getPrescription();
 
-            if (prescriptions.isEmpty()) throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
+            if (prescriptions.isEmpty()) throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
             else {
                 for (Prescription prescription : prescriptions) {
                     if (prescription.getPrescriptionId().equals(prescriptionId)) {
@@ -105,7 +106,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                     }
                 }
             }
-        } else throw new CustomException(Constants.USER_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         return null;
     }
 }

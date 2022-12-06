@@ -5,6 +5,7 @@
 package com.ideas2it.ideameds.util;
 
 import com.ideas2it.ideameds.exception.CustomException;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ public class DateTimeValidation {
         final int MAXIMUM_MONTH = 6;
         LocalDate currentDate = LocalDate.now();
         Period monthDifference = Period.between(currentDate, issuedDate);
-        if (monthDifference.getMonths() >= MAXIMUM_MONTH) throw new CustomException(Constants.PRESCRIPTION_EXPIRED);
+        if (monthDifference.getMonths() >= MAXIMUM_MONTH) throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PRESCRIPTION_EXPIRED);
     }
 
     /**

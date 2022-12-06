@@ -101,7 +101,7 @@ public class PrescriptionController {
     public ResponseEntity<List<PrescriptionDTO>> getPrescriptionByUserId(@PathVariable Long userId) throws CustomException {
         List<PrescriptionDTO> prescriptions = prescriptionService.getPrescriptionByUser(userId);
         if (prescriptions.isEmpty())
-            throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
         return ResponseEntity.status(HttpStatus.OK).body(prescriptions);
     }
 
@@ -146,8 +146,8 @@ public class PrescriptionController {
                 } else
                     return ResponseEntity.status(HttpStatus.CREATED).body("There is no medicines in the prescription");
                 return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
-            } else throw new CustomException(Constants.PRESCRIPTION_NOT_FOUND);
-        } else throw new CustomException(Constants.USER_NOT_FOUND);
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -192,6 +192,6 @@ public class PrescriptionController {
     private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, UserDTO userDTO, CartDTO cartDTO) throws CustomException {
         if (prescriptionItemsDTOs.isEmpty())
             cartService.addCart(userDTO.getUserId(), cartDTO);
-        else throw new CustomException(Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemsDTOs);
+        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemsDTOs);
     }
 }

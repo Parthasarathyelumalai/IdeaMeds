@@ -1,9 +1,16 @@
 package com.ideas2it.ideameds.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,7 +37,6 @@ public class Brand {
     private String location;
     @NotNull
     private String description;
-    @Column(columnDefinition = "BIT default 0" )
     @NotNull
     private boolean isDeletedStatus;
     @NotNull
