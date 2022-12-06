@@ -4,8 +4,8 @@
  */
 package com.ideas2it.ideameds.controller;
 
-import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
+import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
@@ -58,7 +58,7 @@ public class UserController {
      *
      * @param userService           create object for user service
      * @param userMedicineService   create object for user medicine service
-     * @param orderService    create object for order system service
+     * @param orderService          create object for order system service
      * @param authenticationManager create object for authentication manager service
      * @param jwtUtility            create object for jwt utility class
      */
@@ -81,12 +81,12 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> savedUser;
-        if (validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber())) {
-            throw new CustomException(Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
-        } else if (validUserByEmailId(user.getEmailId())) {
-            throw new CustomException(Constants.EMAIL_ID_EXISTS);
-        } else if (validUserByPhoneNumber(user.getPhoneNumber())) {
-            throw new CustomException(Constants.PHONE_NUMBER_EXISTS);
+        if ( validUserByEmailId(user.getEmailId()) && validUserByPhoneNumber(user.getPhoneNumber()) ) {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
+        } else if ( validUserByEmailId(user.getEmailId()) ) {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
+        } else if ( validUserByPhoneNumber(user.getPhoneNumber()) ) {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
         } else {
             savedUser = userService.addUser(user);
             return savedUser.map(userDTO -> ResponseEntity.status(HttpStatus.OK).body(userDTO)).orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserDTO()));
@@ -145,23 +145,24 @@ public class UserController {
 
     /**
      * Get Previous User Medicine
+     *
      * @param userId - pass user id
      * @return List of UserMedicineDTO -  list of user medicine
      * @throws CustomException - Occur when user is not found
      */
     @GetMapping("/user/user-medicine/{id}")
     public ResponseEntity<List<UserMedicineDTO>> getPreviousUserMedicine(@PathVariable("id") Long userId) throws CustomException {
-        if (userService.isUserExist(userId)) {
+        if ( userService.isUserExist(userId) ) {
             return ResponseEntity.status(HttpStatus.OK).body(userMedicineService.getPreviousUserMedicine(userId));
-        }else {
-            throw new CustomException(Constants.USER_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }
     }
 
     /**
      * Add user medicines for specific user
      *
-     * @param userId        - send user id to set medicines
+     * @param userId       - send user id to set medicines
      * @param userMedicine - send user medicine
      * @return String  - gives a response statement
      * @throws CustomException - occur when User is not Found
@@ -170,15 +171,15 @@ public class UserController {
     public ResponseEntity<String> addUserMedicine(@PathVariable("id") Long userId, @Valid @RequestBody UserMedicineDTO userMedicine) throws CustomException {
         boolean isUserExist = userService.isUserExist(userId);
         Long savedCartId;
-        if (isUserExist) {
-            savedCartId = userMedicineService.addUserMedicine(userId,userMedicine);
+        if ( isUserExist ) {
+            savedCartId = userMedicineService.addUserMedicine(userId, userMedicine);
             if ( savedCartId != null ) {
                 return ResponseEntity.status(HttpStatus.OK).body(Constants.ADDED_TO_CART);
             } else {
-                throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
+                throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
             }
         } else {
-            throw new CustomException(Constants.USER_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }
     }
 
@@ -191,11 +192,11 @@ public class UserController {
      */
     @GetMapping("/user/order/{id}")
     public ResponseEntity<List<OrderDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderDTO>> savedOrders =  orderService.getOrderByUserId(userId);
-        if(savedOrders.isPresent()) {
+        Optional<List<OrderDTO>> savedOrders = orderService.getOrderByUserId(userId);
+        if ( savedOrders.isPresent() ) {
             return ResponseEntity.status(HttpStatus.OK).body(savedOrders.get());
         }
-        throw new CustomException(Constants.NO_HISTORY_OF_ORDERS);
+        throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_HISTORY_OF_ORDERS);
     }
 
     /**
@@ -207,7 +208,7 @@ public class UserController {
     private boolean validUserByPhoneNumber(String userPhoneNumber) {
         List<String> userPhoneNumbers = userService.getUserPhoneNumber();
         for (String number : userPhoneNumbers) {
-            if (number.equals(userPhoneNumber)) {
+            if ( number.equals(userPhoneNumber) ) {
                 return true;
             }
         }
@@ -223,7 +224,7 @@ public class UserController {
     private boolean validUserByEmailId(String userEmailId) {
         List<String> userEmailIds = userService.getUserEmail();
         for (String emailId : userEmailIds) {
-            if (userEmailId.equals(emailId)) {
+            if ( userEmailId.equals(emailId) ) {
                 return true;
             }
         }
@@ -245,8 +246,8 @@ public class UserController {
                             jwtRequest.getPassword()
                     )
             );
-        } catch (BadCredentialsException exception) {
-            throw new CustomException(Constants.INVALID_CREDENTIALS);
+        } catch ( BadCredentialsException exception ) {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.INVALID_CREDENTIALS);
         }
         final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUserName());
         final String token = jwtUtility.generateToken(userDetails);

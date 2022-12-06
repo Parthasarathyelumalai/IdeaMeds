@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @param auth the {@link AuthenticationManagerBuilder} to use
      * @throws Exception - occur runtime exception
      */
-/*    @Override*/
+    /*    @Override*/
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
     }
@@ -70,13 +70,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http the {@link HttpSecurity} to modify
      * @throws Exception - occur runtime exception
      */
- /*   @Override*/
+    /*   @Override*/
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST, "/user", "/authenticate","/user/user-medicine/{id}")
+                .antMatchers(HttpMethod.POST, "/user", "/authenticate")
                 .permitAll()
-                .antMatchers(HttpMethod.GET,"/user/user-medicine/{id}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/user/user-medicine/{id}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.POST, "/user/user-medicine/{id}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/user/order/{id}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/user/{id}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
@@ -92,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/brand/getAll").hasAnyRole("CUSTOMER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/brand/{brandId}").hasRole("ADMIN")
                 .antMatchers("/brand/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/medicine/getAll").hasAnyRole("CUSTOMER","ADMIN")
+                .antMatchers(HttpMethod.GET, "/medicine/getAll").hasAnyRole("CUSTOMER", "ADMIN")
                 .antMatchers("/medicine", "/medicine/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/medicine").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/medicine/{medicineName}").hasRole("CUSTOMER")
@@ -102,8 +103,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/brandItems").hasRole("CUSTOMER")
                 .antMatchers("/warehouse", "/warehouse/**").hasRole("ADMIN")
                 .antMatchers("/warehouseAndStocks/{warehouseId}").hasRole("ADMIN")
-                .antMatchers("/cart").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.PUT,"/order").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.PUT, "/cart").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.DELETE, "/cart").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.PUT, "/order").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.DELETE, "/order").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/order", "/allorder").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()

@@ -17,6 +17,7 @@ import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     /**
      * Create instance for the class
+     *
      * @param userRepository create instance for user repository
      */
     @Autowired
@@ -83,7 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO getUserById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
 
-        if (user.isPresent()) {
+        if ( user.isPresent() ) {
             return modelMapper.map(user, UserDTO.class);
         } else {
             throw new CustomException(Constants.USER_NOT_FOUND);
@@ -95,7 +97,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public List<ResponseUserDTO> getAllUser() {
-        return userRepository.findAll().stream().map(user-> modelMapper.map(user, ResponseUserDTO.class)).toList();
+        return userRepository.findAll().stream().map(user -> modelMapper.map(user, ResponseUserDTO.class)).toList();
     }
 
     /**
@@ -106,8 +108,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         User user = modelMapper.map(userDTO, User.class);
         Optional<User> existUser = userRepository.findById(user.getUserId());
-        if(existUser.isEmpty()) {
-            throw new CustomException(Constants.USER_NOT_FOUND);
+        if ( existUser.isEmpty() ) {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
         user.setCreatedAt(existUser.get().getCreatedAt());
@@ -115,8 +117,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         for (Address address : user.getAddresses()) {
             Optional<User> existAddress = userRepository.findById(address.getAddressId());
-            if(existAddress.isEmpty()) {
-                throw new CustomException(Constants.ADDRESS_NOT_FOUND);
+            if ( existAddress.isEmpty() ) {
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
             }
             address.setCreatedAt(existUser.get().getCreatedAt());
             address.setModifiedAt(DateTimeValidation.getDate());
@@ -127,7 +129,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if ( null != updatedUser ) {
             return updatedUser.getName() + Constants.UPDATED_SUCCESSFULLY;
         } else {
-            throw new CustomException(Constants.USER_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }
     }
 
@@ -140,10 +142,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         if ( fetchedUser.isPresent() && !fetchedUser.get().isDeletedStatus() ) {
             fetchedUser.get().setDeletedStatus(true);
-            Optional<UserDTO> deletedUser = Optional.of(modelMapper.map(userRepository.save(fetchedUser.get()), UserDTO.class));
+            Optional<UserDTO> deletedUser = Optional.of(modelMapper
+                    .map(userRepository.save(fetchedUser.get()), UserDTO.class));
             return deletedUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
         }
-        throw new CustomException(Constants.USER_NOT_FOUND);
+        throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**

@@ -20,6 +20,7 @@ import com.ideas2it.ideameds.util.DateTimeValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
             saveUserMedicine(savedUserMedicine, user.get());
             return addMedicineToCart(savedUserMedicine, user.get().getUserId(), brandItems);
         }
-        throw new CustomException(Constants.USER_NOT_FOUND);
+        throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -117,7 +118,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
                     break;
                 }
             }
-        } else throw new CustomException(Constants.MEDICINE_NOT_AVAILABLE);
+        } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.MEDICINE_NOT_AVAILABLE);
         return addCart(cartDTO, userId);
     }
 
@@ -137,7 +138,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
                 return savedCart.get().getCartId();
             }
         }
-        throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+        throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
     }
 
     /**
