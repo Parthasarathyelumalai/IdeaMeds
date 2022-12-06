@@ -25,6 +25,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class CartServiceImpl implements CartService {
                 Cart savedCart = cartRepository.save(getTotalPriceOfCart(cart));
                 return Optional.of(convertToCartDto(savedCart));
             }
-        } else throw new CustomException(Constants.USER_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -117,9 +118,9 @@ public class CartServiceImpl implements CartService {
                     CartItem cartItem = modelMapper.map(cartItemDto, CartItem.class);
                     cartItem.setBrandItems(brandItems.get());
                     cartItems.add(cartItem);
-                } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+                } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
             }
-        } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
         return cartItems;
     }
 
@@ -182,7 +183,7 @@ public class CartServiceImpl implements CartService {
                 cartItemDto.setBrandItemsDTO(brandItemsDTO);
                 cartItemDTOList.add(cartItemDto);
             }
-        } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
         return cartItemDTOList;
     }
 
@@ -201,7 +202,7 @@ public class CartServiceImpl implements CartService {
             brandItemsDTO.setMedicineDTO(medicineDTO);
             return brandItemsDTO;
         } else {
-            throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
         }
     }
 
@@ -215,7 +216,7 @@ public class CartServiceImpl implements CartService {
         if (null != medicine) {
             return modelMapper.map(medicine, MedicineDTO.class);
         } else {
-            throw new CustomException(Constants.MEDICINE_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
         }
     }
 
@@ -229,7 +230,7 @@ public class CartServiceImpl implements CartService {
         if (null != brand) {
             return modelMapper.map(brand, BrandDTO.class);
         } else {
-            throw new CustomException(Constants.BRAND_NOT_FOUND);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
         }
     }
 
@@ -260,8 +261,8 @@ public class CartServiceImpl implements CartService {
                 List<CartItemDTO> cartItemDTOList = convertToCartItemDtoList(cart.get().getCartItemList());
                 cartDTO.setCartItemDTOList(cartItemDTOList);
                 return Optional.of(cartDTO);
-            } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
-        } else throw new CustomException(Constants.USER_NOT_FOUND);
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
@@ -280,7 +281,7 @@ public class CartServiceImpl implements CartService {
                 cart.get().setUser(null);
                 cartRepository.deleteById(cart.get().getCartId());
                 return true;
-            } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
-        } else throw new CustomException(Constants.USER_NOT_FOUND);
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 }

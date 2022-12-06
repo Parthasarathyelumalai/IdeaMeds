@@ -58,7 +58,7 @@ public class CartController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(cartDTO.get());
-        } else throw new CustomException(Constants.CAN_NOT_ADD_ITEMS_IN_CART);
+        } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
     }
 
     /**
@@ -75,7 +75,7 @@ public class CartController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(cartDTO.get());
-        } else throw new CustomException(Constants.CART_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
     }
 
     /**
@@ -92,6 +92,6 @@ public class CartController {
             return ResponseEntity
                     .status(HttpStatus.GONE)
                     .body(Constants.REMOVED_SUCCESSFULLY);
-        } else throw new CustomException(Constants.NOT_DELETED_SUCCESSFULLY);
+        } else throw new CustomException(HttpStatus.NOT_FOUND,Constants.NOT_DELETED_SUCCESSFULLY);
     }
 }

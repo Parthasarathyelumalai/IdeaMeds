@@ -12,6 +12,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Optional;
 /**
  * Service Interface Implementation
  * Performs Create, Read, Update and Delete operations for Brand
+ *
  * @author Dinesh Kumar R
  * @version 1.0
  * @since 2022-11-18
@@ -33,6 +35,7 @@ public class BrandServiceImpl implements BrandService {
 
     /**
      * Create instance for the classes
+     *
      * @param brandRepository create object for brand repository
      */
     @Autowired
@@ -41,7 +44,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public BrandDTO addBrand(BrandDTO brandDTO) {
         Brand brand = modelMapper.map(brandDTO, Brand.class);
@@ -51,7 +54,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public List<BrandDTO> getAllBrands() {
         return brandRepository.findAll().stream()
@@ -60,27 +63,27 @@ public class BrandServiceImpl implements BrandService {
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public BrandDTO getBrandByBrandName(String brandName) throws CustomException {
         Brand brand = brandRepository.getBrandByBrandName(brandName);
         if (brand != null) {
             return modelMapper.map(brand, BrandDTO.class);
-        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public BrandDTO getBrandById(Long brandId) throws CustomException {
         Optional<Brand> brand = brandRepository.findById(brandId);
         if (brand.isPresent()) {
             return modelMapper.map(brand.get(), BrandDTO.class);
-        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public BrandDTO updateBrand(BrandDTO brandDTO) throws CustomException {
         Brand brand = modelMapper.map(brandDTO, Brand.class);
@@ -89,17 +92,17 @@ public class BrandServiceImpl implements BrandService {
             brand.setCreatedAt(existBrand.get().getCreatedAt());
             brand.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
-        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     public Long deleteBrand(Long brandId) throws CustomException {
         Optional<Brand> brand = brandRepository.findById(brandId);
-        if(brand.isPresent()) {
+        if (brand.isPresent()) {
             brand.get().setDeletedStatus(true);
             return brandRepository.save(brand.get()).getBrandId();
-        } else throw new CustomException(Constants.BRAND_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
     }
 }

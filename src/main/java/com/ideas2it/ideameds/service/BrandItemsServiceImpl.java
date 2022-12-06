@@ -19,6 +19,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             brandItemsDTO.setBrandDTO(modelMapper.map(brandItems.get().getBrand(), BrandDTO.class));
             brandItemsDTO.setMedicineDTO(modelMapper.map(brandItems.get().getMedicine(), MedicineDTO.class));
             return brandItemsDTO;
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
@@ -106,8 +107,8 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             Brand brand = brandItems.get().getBrand();
             if (brand != null) {
                 return modelMapper.map(brand, BrandDTO.class);
-            } else throw new CustomException(Constants.BRAND_NOT_FOUND);
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
@@ -120,8 +121,8 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             Medicine medicine = brandItems.get().getMedicine();
             if (medicine != null) {
                 return modelMapper.map(medicine, MedicineDTO.class);
-            } else throw new CustomException(Constants.BRAND_NOT_FOUND);
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
@@ -135,7 +136,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             brandItems.setCreatedAt(existBrandItems.get().getCreatedAt());
             brandItems.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(brandItemsRepository.save(brandItems), BrandItemsDTO.class);
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
@@ -148,7 +149,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             brandItem.get().setDeletedStatus(true);
             brandItem.get().setModifiedAt(DateTimeValidation.getDate());
             return brandItemsRepository.save(brandItem.get()).getBrandItemsId();
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
@@ -160,13 +161,13 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
         if (warehouse.isPresent()) {
             warehouse.get().setModifiedAt(DateTimeValidation.getDate());
-        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
         warehouses.add(warehouse.get());
         Optional<BrandItems> brandItems = brandItemsRepository.findById(brandItemId);
         if (brandItems.isPresent()) {
             brandItems.get().setWarehouses(warehouses);
             return modelMapper.map(brandItemsRepository.save(brandItems.get()), BrandItemsDTO.class);
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
@@ -179,7 +180,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             return brandItemsList.get().stream()
                     .map(brandItems -> modelMapper.map(brandItems, BrandItemsDTO.class))
                     .toList();
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
@@ -191,7 +192,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
             return setBrandAndMedicineDTO(brandItems.get(),
                                           brandItems.get().getBrand(),
                                           brandItems.get().getMedicine());
-        } else throw new CustomException(Constants.BRAND_ITEM_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**

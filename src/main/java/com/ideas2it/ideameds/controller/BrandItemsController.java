@@ -193,7 +193,7 @@ public class BrandItemsController {
         if (warehouseDTO != null) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(brandItemsService.assignToWarehouse(warehouseDTO, brandItemId));
-        } else throw new CustomException(Constants.WAREHOUSE_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
     }
 
     /**

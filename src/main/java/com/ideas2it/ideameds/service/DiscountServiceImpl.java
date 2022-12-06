@@ -12,6 +12,7 @@ import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -85,6 +86,6 @@ public class DiscountServiceImpl implements DiscountService {
         if (discount.isPresent()) {
             discountRepository.deleteById(discount.get().getDiscountId());
             return true;
-        } else throw new CustomException(Constants.NO_DISCOUNT);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
     }
 }

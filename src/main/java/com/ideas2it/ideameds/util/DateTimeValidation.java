@@ -31,7 +31,7 @@ public class DateTimeValidation {
     public static void validateDateOfIssue(LocalDate issuedDate) throws CustomException {
         final int MAXIMUM_MONTH = 6;
         LocalDate currentDate = LocalDate.now();
-        Period monthDifference = Period.between(currentDate, issuedDate);
+        Period monthDifference = Period.between(issuedDate, currentDate);
         if (monthDifference.getMonths() >= MAXIMUM_MONTH) throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PRESCRIPTION_EXPIRED);
     }
 

@@ -13,11 +13,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class CustomException extends Exception {
 
-    private HttpStatus httpStatus;
-
-     public CustomException(String message) {
-        super(message);
-    }
+    private final HttpStatus httpStatus;
 
     public CustomException(HttpStatus httpStatus, String message) {
         super(message);
