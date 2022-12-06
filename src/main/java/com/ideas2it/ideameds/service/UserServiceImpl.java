@@ -24,7 +24,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -56,11 +55,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public Optional<UserDTO> addUser(UserDTO userDTO) throws CustomException {
-        if ( validUserByEmailId(userDTO.getEmailId()) && validUserByPhoneNumber(userDTO.getPhoneNumber()) ) {
+        if (validUserByEmailId(userDTO.getEmailId()) && validUserByPhoneNumber(userDTO.getPhoneNumber())) {
             throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
-        } else if ( validUserByEmailId(userDTO.getEmailId()) ) {
+        } else if (validUserByEmailId(userDTO.getEmailId())) {
             throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
-        } else if ( validUserByPhoneNumber(userDTO.getPhoneNumber()) ) {
+        } else if (validUserByPhoneNumber(userDTO.getPhoneNumber())) {
             throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
         } else {
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO getUserById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
 
-        if ( user.isPresent() ) {
+        if (user.isPresent()) {
             return modelMapper.map(user, UserDTO.class);
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
@@ -117,39 +116,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         User user = modelMapper.map(userDTO, User.class);
         Optional<User> existUser = userRepository.findById(user.getUserId());
-        if ( existUser.isPresent() ) {
-            if( !Objects.equals(existUser.get().getEmailId(), user.getEmailId()) || validUserByEmailId(user.getEmailId())) {
-                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
-            } else if ( !Objects.equals(existUser.get().getPhoneNumber(), user.getPhoneNumber()) || validUserByPhoneNumber(user.getPhoneNumber()) ) {
-                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
-            } else if ((!Objects.equals(existUser.get().getEmailId(), user.getEmailId()) || validUserByEmailId(user.getEmailId()))
-                    && (!Objects.equals(existUser.get().getPhoneNumber(), user.getPhoneNumber()) || validUserByPhoneNumber(user.getPhoneNumber())  )) {
-                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_PHONE_NUMBER_EXISTS);
+        if (existUser.isPresent()) {
+            validByPhoneNumber(user);
+            validByEmailId(user);
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
+            user.setCreatedAt(existUser.get().getCreatedAt());
+            user.setModifiedAt(DateTimeValidation.getDate());
+
+            for (Address address : user.getAddresses()) {
+                Optional<User> existAddress = userRepository.findById(address.getAddressId());
+                if (existAddress.isEmpty()) {
+                    throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
+                }
+                address.setCreatedAt(existUser.get().getCreatedAt());
+                address.setModifiedAt(DateTimeValidation.getDate());
+            }
+
+            UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
+
+            if (null != updatedUser) {
+                return updatedUser.getName() + Constants.UPDATED_SUCCESSFULLY;
             } else {
-                user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
-                user.setCreatedAt(existUser.get().getCreatedAt());
-                user.setModifiedAt(DateTimeValidation.getDate());
-
-                for (Address address : user.getAddresses()) {
-                    Optional<User> existAddress = userRepository.findById(address.getAddressId());
-                    if ( existAddress.isEmpty() ) {
-                        throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
-                    }
-                    address.setCreatedAt(existUser.get().getCreatedAt());
-                    address.setModifiedAt(DateTimeValidation.getDate());
-                }
-
-                UserDTO updatedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
-
-                if ( null != updatedUser ) {
-                    return updatedUser.getName() + Constants.UPDATED_SUCCESSFULLY;
-                } else {
-                    throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
-                }
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
             }
         }
         throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
-
     }
 
     /**
@@ -159,7 +150,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String deleteUser(Long userId) throws CustomException {
         Optional<User> fetchedUser = userRepository.findById(userId);
 
-        if ( fetchedUser.isPresent() && !fetchedUser.get().isDeletedStatus() ) {
+        if (fetchedUser.isPresent() && !fetchedUser.get().isDeletedStatus()) {
             fetchedUser.get().setDeletedStatus(true);
             Optional<UserDTO> deletedUser = Optional.of(modelMapper
                     .map(userRepository.save(fetchedUser.get()), UserDTO.class));
@@ -175,7 +166,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public boolean isUserExist(Long userId) {
         return userRepository.existsById(userId);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -194,7 +185,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private boolean validUserByPhoneNumber(String userPhoneNumber) {
         List<String> userPhoneNumbers = userRepository.findAll().stream().map(User::getPhoneNumber).toList();
         for (String number : userPhoneNumbers) {
-            if ( number.equals(userPhoneNumber) ) {
+            if (number.equals(userPhoneNumber)) {
                 return true;
             }
         }
@@ -210,10 +201,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private boolean validUserByEmailId(String userEmailId) {
         List<String> userEmailIds = userRepository.findAll().stream().map(User::getEmailId).toList();
         for (String emailId : userEmailIds) {
-            if ( userEmailId.equals(emailId) ) {
+            if (userEmailId.equals(emailId)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private void validByEmailId(User user) throws CustomException {
+        if (validUserByEmailId(user.getEmailId())) {
+            User existUser = userRepository.findByEmailId(user.getEmailId());
+            if (!user.getUserId().equals(existUser.getUserId()))
+                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
+        }
+    }
+
+    private void validByPhoneNumber(User user) throws CustomException {
+        if (validUserByPhoneNumber(user.getPhoneNumber())) {
+            User existUser = userRepository.findByPhoneNumber(user.getPhoneNumber());
+            if (!user.getUserId().equals(existUser.getUserId()))
+                throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
+        }
     }
 }
