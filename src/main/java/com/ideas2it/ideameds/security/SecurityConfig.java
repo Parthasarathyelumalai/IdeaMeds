@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -91,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/prescription/{userId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.GET, "/prescription/{prescriptionId}").hasAnyRole("CUSTOMER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/prescription/user/{userId}").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET, "/addToCart/{userId}/{prescriptionId}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/add-to-cart/{userId}/{prescriptionId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.DELETE, "/prescription/{userId}/{prescriptionId}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.POST, "/brand").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/brand/by-name").hasAnyRole("CUSTOMER")
