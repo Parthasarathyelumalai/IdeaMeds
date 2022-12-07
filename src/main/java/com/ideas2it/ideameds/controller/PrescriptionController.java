@@ -133,7 +133,7 @@ public class PrescriptionController {
      * @throws CustomException occurs when user not found
      *                         and occurs when prescription was not found
      */
-    @GetMapping("/addToCart/{userId}/{prescriptionId}")
+    @GetMapping("/add-to-cart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws CustomException {
         ResponseUserDTO userDTO = userService.getUserById(userId);
         PrescriptionDTO prescriptionDTO = prescriptionService.getPrescriptionByPrescriptionId(prescriptionId);
