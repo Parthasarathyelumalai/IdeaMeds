@@ -10,7 +10,7 @@ import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
-import com.ideas2it.ideameds.dto.UserDTO;
+import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Brand;
 import com.ideas2it.ideameds.model.BrandItems;
@@ -179,7 +179,7 @@ public class CartServiceImpl implements CartService {
     private CartDTO convertToCartDto(Cart savedCart) throws CustomException {
         CartDTO cartDTO = modelMapper.map(savedCart, CartDTO.class);
         List<CartItem> cartItemList = savedCart.getCartItemList();
-        cartDTO.setUserDTO(modelMapper.map(savedCart.getUser(), UserDTO.class));
+        cartDTO.setResponseUserDTO(modelMapper.map(savedCart.getUser(), ResponseUserDTO.class));
         cartDTO.setDiscountDTO(convertToDiscountDTO(savedCart.getDiscount()));
         cartDTO.setCartItemDTOList(convertToCartItemDtoList(cartItemList));
         return cartDTO;

@@ -94,8 +94,8 @@ public class UserController {
      * @throws CustomException - occur when User is not Found
      */
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId) throws CustomException {
-        UserDTO fetchedUser = userService.getUserById(userId);
+    public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable("id") Long userId) throws CustomException {
+        ResponseUserDTO fetchedUser = userService.getUserById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(fetchedUser);
     }
 
