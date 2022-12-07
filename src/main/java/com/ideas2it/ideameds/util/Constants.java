@@ -230,4 +230,9 @@ public class Constants {
      * Share if the warehouse name is already exist
      */
     public static final String WAREHOUSE_NAME_EXIST = "Warehouse name already exist";
+
+    /**
+     * Share if order is successful
+     */
+    public static final String ORDER_SUCCESSFUL = "Order successful";
 }

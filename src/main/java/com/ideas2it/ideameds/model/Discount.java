@@ -8,7 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -34,8 +37,6 @@ public class Discount {
     private String couponCode;
     @NotNull
     private float discountPercentage;
-    @NotNull
-    private int deletedStatus;
     @NotNull
     private LocalDateTime createdAt;
     @NotNull

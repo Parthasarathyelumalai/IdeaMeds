@@ -10,7 +10,14 @@ import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,13 +39,6 @@ public class Cart {
     private Long cartId;
     @NotNull
     private float totalPrice;
-    @NotNull
-    private float discountPrice;
-    @NotNull
-    private float discountPercentage;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "discount_id")
-    private Discount discount;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;

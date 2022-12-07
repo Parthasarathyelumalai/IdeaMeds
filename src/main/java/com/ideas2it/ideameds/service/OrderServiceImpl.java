@@ -6,6 +6,7 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.BrandDTO;
 import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.OrderItemDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
@@ -14,11 +15,13 @@ import com.ideas2it.ideameds.model.Brand;
 import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
+import com.ideas2it.ideameds.model.Discount;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.OrderItem;
 import com.ideas2it.ideameds.model.Order;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.CartRepository;
+import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.OrderRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
@@ -49,20 +52,24 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
+    private final DiscountRepository discountRepository;
+
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      * Create instance for the class
      *
-     * @param userRepository  create instance for user repository
-     * @param cartRepository  create instance for cart repository
-     * @param orderRepository create instance for order repository
+     * @param userRepository     create instance for user repository
+     * @param cartRepository     create instance for cart repository
+     * @param orderRepository    create instance for order repository
+     * @param discountRepository create instance for discount repository
      */
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository) {
+    public OrderServiceImpl(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, DiscountRepository discountRepository) {
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
+        this.discountRepository = discountRepository;
     }
 
     /**
@@ -71,17 +78,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Optional<OrderDTO> addOrder(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        if ( user.isPresent() ) {
+        if (user.isPresent()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
-            if ( cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId()) ) {
+            if (cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId())) {
                 Order order = new Order();
                 List<CartItem> cartItemList = cart.get().getCartItemList();
                 order.setUser(user.get());
                 order.setCart(cart.get());
+                order.setOrderDescription(Constants.ORDER_SUCCESSFUL);
                 order.setTotalPrice(cart.get().getTotalPrice());
-                order.setDiscountPercentage(cart.get().getDiscountPercentage());
-                order.setDiscountPrice(cart.get().getDiscountPrice());
-                order.setDiscount(cart.get().getDiscount());
+                order.setAmountPaid(calculateDiscount(order.getTotalPrice(), order));
                 order.setOrderDate(DateTimeValidation.getDate());
                 order.setCreatedAt(DateTimeValidation.getDate());
                 order.setDeliveryDate(DateTimeValidation.getDate().plusDays(5));
@@ -94,6 +100,32 @@ public class OrderServiceImpl implements OrderService {
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
+
+    /**
+     * Calculate discount by total price given by the cart.
+     * Set discount related details in cart - discount, discount percentage, discount price.
+     *
+     * @param totalPrice - To calculate suitable discount.
+     * @param order  - To set discount details in cart.
+     * @return price - after calculate discount.
+     */
+    private float calculateDiscount(float totalPrice, Order order) {
+        List<Discount> discountList = discountRepository.findAll();
+        float afterDiscount = 0;
+
+        for (Discount discount : discountList) {
+            if ((totalPrice > 100 && totalPrice < 10000 && discount.getDiscountPercentage() == 5) || (totalPrice > 10000 && totalPrice < 100000 && discount.getDiscountPercentage() == 10)){
+                order.setDiscount(discount);
+                float discountPrice = (totalPrice * discount.getDiscountPercentage()) / 100;
+                order.setDeductedPrice(discountPrice);
+                afterDiscount = totalPrice - discountPrice;
+            } else {
+                afterDiscount = totalPrice;
+            }
+        }
+        return afterDiscount;
+    }
+
     /**
      * Convert order entity to order dto.
      *
@@ -104,8 +136,28 @@ public class OrderServiceImpl implements OrderService {
     private OrderDTO convertToOrderDto(Order order) throws CustomException {
         OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
         List<OrderItem> orderItemList = order.getOrderItems();
+        orderDTO.setDiscountDTO(convertToDiscountDTO(order.getDiscount()));
         orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
         return orderDTO;
+    }
+
+    /**
+     * Convert discount entity to discount dto.
+     *
+     * @param discount - To convert discount entity to discount dto.
+     * @return discount dto.
+     */
+    private DiscountDTO convertToDiscountDTO(Discount discount) {
+        if (null != discount) {
+            return modelMapper.map(discount, DiscountDTO.class);
+        } else {
+            DiscountDTO discountDTO = new DiscountDTO();
+            discountDTO.setDiscountId(0L);
+            discountDTO.setDiscountPercentage(0);
+            discountDTO.setName("There is no discount available");
+            discountDTO.setCouponCode("No coupon code");
+            return discountDTO;
+        }
     }
 
     /**

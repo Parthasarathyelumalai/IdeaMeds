@@ -8,7 +8,6 @@ import com.ideas2it.ideameds.dto.BrandDTO;
 import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
-import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
@@ -16,12 +15,10 @@ import com.ideas2it.ideameds.model.Brand;
 import com.ideas2it.ideameds.model.BrandItems;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
-import com.ideas2it.ideameds.model.Discount;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.repository.BrandItemsRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
-import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
@@ -46,7 +43,6 @@ import java.util.Optional;
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
-    private final DiscountRepository discountRepository;
     private final BrandItemsRepository brandItemsRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
@@ -55,14 +51,12 @@ public class CartServiceImpl implements CartService {
      *
      * @param cartRepository       create instance for cart repository
      * @param userRepository       create instance for user repository
-     * @param discountRepository   create instance for discount repository
      * @param brandItemsRepository create instance for brand items repository
      */
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, DiscountRepository discountRepository, BrandItemsRepository brandItemsRepository) {
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, BrandItemsRepository brandItemsRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
-        this.discountRepository = discountRepository;
         this.brandItemsRepository = brandItemsRepository;
     }
 
@@ -139,34 +133,7 @@ public class CartServiceImpl implements CartService {
             totalPrice = cartItem.getBrandItems().getPrice() * cartItem.getQuantity() + totalPrice;
         }
         cart.setTotalPrice(totalPrice);
-        float discountPrice = calculateDiscount(totalPrice, cart);
-        cart.setDiscountPrice(discountPrice);
         return cart;
-    }
-
-    /**
-     * Calculate discount by total price of the medicines(cart items).
-     * Set discount related details in cart - discount, discount percentage, discount price.
-     *
-     * @param totalPrice - To calculate suitable discount.
-     * @param cart  - To set discount details in cart.
-     * @return price - after calculate discount.
-     */
-    private float calculateDiscount(float totalPrice, Cart cart) {
-        List<Discount> discountList = discountRepository.findAll();
-        float afterDiscount = 0;
-
-        for (Discount discount : discountList) {
-            if ((totalPrice > 100 && totalPrice < 10000 && discount.getDiscountPercentage() == 5) || (totalPrice > 10000 && totalPrice < 100000 && discount.getDiscountPercentage() == 10)){
-                cart.setDiscount(discount);
-                cart.setDiscountPercentage(discount.getDiscountPercentage());
-                float discountPrice = (totalPrice * discount.getDiscountPercentage()) / 100;
-                afterDiscount = totalPrice - discountPrice;
-            } else {
-                afterDiscount = totalPrice;
-            }
-        }
-        return afterDiscount;
     }
 
     /**
@@ -180,28 +147,8 @@ public class CartServiceImpl implements CartService {
         CartDTO cartDTO = modelMapper.map(savedCart, CartDTO.class);
         List<CartItem> cartItemList = savedCart.getCartItemList();
         cartDTO.setResponseUserDTO(modelMapper.map(savedCart.getUser(), ResponseUserDTO.class));
-        cartDTO.setDiscountDTO(convertToDiscountDTO(savedCart.getDiscount()));
         cartDTO.setCartItemDTOList(convertToCartItemDtoList(cartItemList));
         return cartDTO;
-    }
-
-    /**
-     * Convert discount entity to discount dto.
-     *
-     * @param discount - To convert discount entity to discount dto.
-     * @return discount dto.
-     */
-    private DiscountDTO convertToDiscountDTO(Discount discount) {
-        if (null != discount) {
-            return modelMapper.map(discount, DiscountDTO.class);
-        } else {
-            DiscountDTO discountDTO = new DiscountDTO();
-            discountDTO.setDiscountId(0L);
-            discountDTO.setDiscountPercentage(0);
-            discountDTO.setName("There is no discount available");
-            discountDTO.setCouponCode("No coupon code");
-            return discountDTO;
-        }
     }
 
     /**
