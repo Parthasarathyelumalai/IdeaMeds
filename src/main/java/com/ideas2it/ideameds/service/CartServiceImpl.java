@@ -8,7 +8,9 @@ import com.ideas2it.ideameds.dto.BrandDTO;
 import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
+import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
+import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Brand;
 import com.ideas2it.ideameds.model.BrandItems;
@@ -168,6 +170,41 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
+     * Convert cart entity to cart dto to return to the user after save in repository.
+     *
+     * @param savedCart - To convert cart to cart dto to return.
+     * @return CartDto
+     * @throws CustomException - Brand item not found.
+     */
+    private CartDTO convertToCartDto(Cart savedCart) throws CustomException {
+        CartDTO cartDTO = modelMapper.map(savedCart, CartDTO.class);
+        List<CartItem> cartItemList = savedCart.getCartItemList();
+        cartDTO.setUserDTO(modelMapper.map(savedCart.getUser(), UserDTO.class));
+        cartDTO.setDiscountDTO(convertToDiscountDTO(savedCart.getDiscount()));
+        cartDTO.setCartItemDTOList(convertToCartItemDtoList(cartItemList));
+        return cartDTO;
+    }
+
+    /**
+     * Convert discount entity to discount dto.
+     *
+     * @param discount - To convert discount entity to discount dto.
+     * @return discount dto.
+     */
+    private DiscountDTO convertToDiscountDTO(Discount discount) {
+        if (null != discount) {
+            return modelMapper.map(discount, DiscountDTO.class);
+        } else {
+            DiscountDTO discountDTO = new DiscountDTO();
+            discountDTO.setDiscountId(0L);
+            discountDTO.setDiscountPercentage(0);
+            discountDTO.setName("There is no discount available");
+            discountDTO.setCouponCode("No coupon code");
+            return discountDTO;
+        }
+    }
+
+    /**
      * Convert cart items entity to cart items dto to return.
      *
      * @param cartItemList - To convert cart item list to cart item dto list to return.
@@ -232,20 +269,6 @@ public class CartServiceImpl implements CartService {
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
         }
-    }
-
-    /**
-     * Convert cart entity to cart dto to return to the user after save in repository.
-     *
-     * @param savedCart - To convert cart to cart dto to return.
-     * @return CartDto
-     * @throws CustomException - Brand item not found.
-     */
-    private CartDTO convertToCartDto(Cart savedCart) throws CustomException {
-        CartDTO cartDTO = modelMapper.map(savedCart, CartDTO.class);
-        List<CartItem> cartItemList = savedCart.getCartItemList();
-        cartDTO.setCartItemDTOList(convertToCartItemDtoList(cartItemList));
-        return cartDTO;
     }
 
     /**

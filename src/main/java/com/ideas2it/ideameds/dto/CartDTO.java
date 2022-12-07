@@ -4,8 +4,6 @@
  */
 package com.ideas2it.ideameds.dto;
 
-import com.ideas2it.ideameds.model.Discount;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,10 +22,8 @@ import java.util.List;
 public class CartDTO {
 
     private Long cartId;
-    private String userName;
     private float totalPrice;
-    private float discountPrice;
-    private float discountPercentage;
-    private Discount discount;
+    private DiscountDTO discountDTO;
     private List<CartItemDTO> cartItemDTOList;
+    private UserDTO userDTO;
 }
