@@ -157,7 +157,7 @@ public class BrandItemsController {
      * @throws CustomException throws when brand Item not found and
      *                         throws when medicine not found
      */
-    @GetMapping("/brand-items/getMedicine/{brandItemId}")
+    @GetMapping("/brand-items/get-medicine/{brandItemId}")
     public ResponseEntity<MedicineDTO> getMedicineByBrandItemId(@PathVariable("brandItemId") Long brandItemsId) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getMedicineByBrandItemId(brandItemsId));
     }
