@@ -21,10 +21,12 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderDTO {
     private Long orderId;
+    private String orderDescription;
     private String orderDate;
     private String deliveryDate;
     private float totalPrice;
-    private float discountPrice;
-    private float discountPercentage;
+    private float deductedPrice;
+    private float amountPaid;
+    private DiscountDTO discountDTO;
     private List<OrderItemDTO> orderItemDTOList;
 }

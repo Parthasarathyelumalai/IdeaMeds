@@ -42,15 +42,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     @NotNull
+    private String orderDescription;
+    @NotNull
     private LocalDateTime orderDate;
     @NotNull
     private LocalDateTime deliveryDate;
     @NotNull
     private float totalPrice;
     @NotNull
-    private float discountPrice;
+    private float deductedPrice;
     @NotNull
-    private float discountPercentage;
+    private float amountPaid;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "discount_id")
     private Discount discount;

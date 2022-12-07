@@ -23,7 +23,6 @@ public class CartDTO {
 
     private Long cartId;
     private float totalPrice;
-    private DiscountDTO discountDTO;
     private List<CartItemDTO> cartItemDTOList;
     private ResponseUserDTO responseUserDTO;
 }
