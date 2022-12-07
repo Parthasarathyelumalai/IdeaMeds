@@ -91,7 +91,7 @@ public class WarehouseController {
      * @return warehouse using id
      * @throws CustomException throws when the warehouse not found
      */
-    @GetMapping("/warehouseAndStocks/{warehouseId}")
+    @GetMapping("/warehouse-and-stocks/{warehouseId}")
     public ResponseEntity<WarehouseResponseDTO> getWarehouseAndStocksById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(warehouseService.getWarehouseAndStocksById(warehouseId));
     }

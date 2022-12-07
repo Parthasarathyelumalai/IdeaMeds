@@ -57,7 +57,7 @@ public class BrandController {
      *
      * @return list of all brands
      */
-    @GetMapping("/brand/getAll")
+    @GetMapping("/brand/get-all")
     public ResponseEntity<List<BrandDTO>> getAllBrands() {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.getAllBrands());
     }
@@ -71,7 +71,7 @@ public class BrandController {
      * @return brand by using the brand name
      * @throws CustomException throws when brand is not found
      */
-    @GetMapping("/Brand/byName/{brandName}")
+    @GetMapping("/Brand/by-name/{brandName}")
     public ResponseEntity<BrandDTO> getBrandByBrandName(@PathVariable String brandName) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.getBrandByBrandName(brandName));
     }

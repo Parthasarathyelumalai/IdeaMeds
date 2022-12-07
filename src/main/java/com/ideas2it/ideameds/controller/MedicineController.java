@@ -65,7 +65,7 @@ public class MedicineController {
      * @return list of medicines
      * @throws CustomException throws exception when there is no entry for medicine
      */
-    @GetMapping("/medicine/getAll")
+    @GetMapping("/medicine/get-all")
     public ResponseEntity<List<MedicineDTO>> getAllMedicines() throws CustomException {
         List<MedicineDTO> medicineDTOList = medicineService.getAllMedicines();
         if (medicineDTOList != null) {
@@ -97,7 +97,7 @@ public class MedicineController {
      * @return medicine using the medicine name
      * @throws CustomException throws exception when there is no medicine found
      */
-    @GetMapping("/medicine/getByName/{medicineName}")
+    @GetMapping("/medicine/by-name/{medicineName}")
     public ResponseEntity<MedicineDTO> getMedicineByName(@PathVariable("medicineName") String medicineName) throws CustomException {
         return ResponseEntity.status(HttpStatus.FOUND).body(medicineService.getMedicineByName(medicineName));
     }
