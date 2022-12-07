@@ -4,7 +4,6 @@
  */
 package com.ideas2it.ideameds.dto;
 
-import com.ideas2it.ideameds.util.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,5 +19,4 @@ public class ResponseUserDTO {
     private String phoneNumber;
     private String emailId;
     private List<AddressDTO> addresses;
-    private Role roleType;
 }

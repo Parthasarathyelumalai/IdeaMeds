@@ -9,7 +9,7 @@ import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
 import com.ideas2it.ideameds.dto.PrescriptionItemsDTO;
-import com.ideas2it.ideameds.dto.UserDTO;
+import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.service.BrandItemsService;
 import com.ideas2it.ideameds.service.CartService;
@@ -135,7 +135,7 @@ public class PrescriptionController {
      */
     @GetMapping("/addToCart/{userId}/{prescriptionId}")
     public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws CustomException {
-        UserDTO userDTO = userService.getUserById(userId);
+        ResponseUserDTO userDTO = userService.getUserById(userId);
         PrescriptionDTO prescriptionDTO = prescriptionService.getPrescriptionByPrescriptionId(prescriptionId);
 
         if (null != userDTO) {
@@ -159,7 +159,7 @@ public class PrescriptionController {
      * @throws CustomException occurs when prescription was
      *                         exceeded by 6 months
      */
-    private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO user) throws CustomException {
+    private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, ResponseUserDTO user) throws CustomException {
         CartDTO cart = new CartDTO();
         List<CartItemDTO> cartItems = new ArrayList<>();
         List<PrescriptionItemsDTO> prescriptionItemsDTOs = new ArrayList<>();
@@ -189,7 +189,7 @@ public class PrescriptionController {
      * @throws CustomException occurs when prescription was
      *                         exceeded by 6 months and when prescribed medicine is not available in the database
      */
-    private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, UserDTO userDTO, CartDTO cartDTO) throws CustomException {
+    private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, ResponseUserDTO userDTO, CartDTO cartDTO) throws CustomException {
         if (prescriptionItemsDTOs.isEmpty())
             cartService.addCart(userDTO.getUserId(), cartDTO);
         else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemsDTOs);

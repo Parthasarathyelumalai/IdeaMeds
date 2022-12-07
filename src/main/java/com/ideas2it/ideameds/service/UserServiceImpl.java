@@ -90,11 +90,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * {@inheritDoc}
      */
     @Override
-    public UserDTO getUserById(Long userId) throws CustomException {
+    public ResponseUserDTO getUserById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
 
         if ( user.isPresent() ) {
-            return modelMapper.map(user, UserDTO.class);
+            return modelMapper.map(user, ResponseUserDTO.class);
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }

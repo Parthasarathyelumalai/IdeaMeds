@@ -36,7 +36,7 @@ public interface UserService {
      * @return user - give a response as a user details
      * @throws CustomException - occur when user mail or phone is exist or occur user is not saved
      */
-    UserDTO getUserById(Long userId) throws CustomException;
+    ResponseUserDTO getUserById(Long userId) throws CustomException;
 
     /**
      * Get Users details from the database
