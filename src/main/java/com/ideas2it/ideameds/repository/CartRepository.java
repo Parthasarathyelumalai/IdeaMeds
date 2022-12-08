@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * Cart repository.
+ * A repository for cart.
  *
  * @author - Soundharrajan.S
  * @version - 1.0
@@ -22,9 +22,10 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
     /**
-     * Get Cart by user entity.
-     * @param user - To get cart.
-     * @return - Cart.
+     * Find a cart by user.
+     *
+     * @param user The user whose cart we want to find.
+     * @return Optional<Cart>
      */
     Optional<Cart> findByUser(User user);
 }

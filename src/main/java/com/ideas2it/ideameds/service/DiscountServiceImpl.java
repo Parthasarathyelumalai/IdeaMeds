@@ -17,10 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Service implementation for discount.
+ * It contains the implementation of the discount service interface.
  *
  * @author - Soundharrajan.S
  * @version - 1.0
@@ -45,23 +46,29 @@ public class DiscountServiceImpl implements DiscountService {
      *{@inheritDoc}
      */
     @Override
-    public DiscountDTO addDiscount(DiscountDTO discountDTO) {
+    public Optional<DiscountDTO> addDiscount(DiscountDTO discountDTO) throws CustomException {
         if (discountDTO != null) {
             Discount discount = modelMapper.map(discountDTO, Discount.class);
             discount.setCreatedAt(DateTimeValidation.getDate());
             discount.setModifiedAt(DateTimeValidation.getDate());
-            return convertToDiscountDto(discountRepository.save(discount));
+            return Optional.ofNullable(convertToDiscountDto(discountRepository.save(discount)));
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
-     * Convert to discount entity to discount dto.
-     * @param discount - To convert discount entity  to discount dto.
-     * @return - DiscountDto.
+     * Convert the Discount object to a DiscountDTO object using the modelMapper object.
+     *
+     * @param discount The object to be converted.
+     * @return A DiscountDTO object.
+     * @throws CustomException If discount is empty, throws no discount.
      */
-    private DiscountDTO convertToDiscountDto(Discount discount) {
-        return modelMapper.map(discount, DiscountDTO.class);
+    private DiscountDTO convertToDiscountDto(Discount discount) throws CustomException {
+        if (null != discount) {
+            return modelMapper.map(discount, DiscountDTO.class);
+        } else {
+            throw new CustomException(HttpStatus.NO_CONTENT, Constants.NO_DISCOUNT);
+        }
     }
 
     /**
@@ -81,11 +88,33 @@ public class DiscountServiceImpl implements DiscountService {
      *{@inheritDoc}
      */
     @Override
+    public Optional<DiscountDTO> updateDiscountById(DiscountDTO discountDTO) throws CustomException {
+        if (null != discountDTO.getDiscountId()) {
+            Optional<Discount> existedDiscount = discountRepository.findById(discountDTO.getDiscountId());
+            if (existedDiscount.isPresent() && Objects.equals(existedDiscount.get().getDiscountId(), discountDTO.getDiscountId())) {
+                Discount discount = modelMapper.map(discountDTO, Discount.class);
+                discount.setCreatedAt(DateTimeValidation.getDate());
+                discount.setModifiedAt(DateTimeValidation.getDate());
+                return Optional.ofNullable(convertToDiscountDto(discountRepository.save(discount)));
+            } else {
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.ID_REQUIRED_TO_UPDATE_DISCOUNT);
+        }
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
     public boolean deleteDiscountById(Long discountId) throws CustomException {
         Optional<Discount> discount = discountRepository.findById(discountId);
         if (discount.isPresent()) {
             discountRepository.deleteById(discount.get().getDiscountId());
             return true;
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
+        }
     }
 }

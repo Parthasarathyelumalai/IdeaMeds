@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service implementation for cart.
+ * It contains the implementation of the cart service interface.
  *
  * @author - Soundharrajan.S
  * @version - 1.0
@@ -41,6 +41,7 @@ import java.util.Optional;
 
 @Service
 public class CartServiceImpl implements CartService {
+
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
     private final BrandItemsRepository brandItemsRepository;
@@ -83,10 +84,10 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Convert cartDto into cart.
+     * It converts a CartDTO object to a Cart object
      *
-     * @param cartDto - To convert cart entity to cart dto.
-     * @return - cart
+     * @param cartDto The CartDTO object that is passed to the method.
+     * @return A Cart object
      * @throws CustomException - Brand item not found exception.
      */
     private Cart convertToCart(CartDTO cartDto) throws CustomException {
@@ -99,10 +100,10 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Convert cart item dto list to cart item entity list.
+     * It converts a list of CartItemDTO to a list of CartItem
      *
-     * @param cartItemDTOList - Convert cart item dto list to cart item entity list.
-     * @return - cart item list.
+     * @param cartItemDTOList The list of cart items that we want to convert to CartItem objects.
+     * @return A list of CartItem objects.
      * @throws CustomException - Brand item not found exception, medicine not found exception.
      */
     private List<CartItem> convertToCartItem(List<CartItemDTO> cartItemDTOList) throws CustomException {
@@ -121,10 +122,10 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * This method is used to get total price of cart(Total price of all brand items).
+     * It takes a cart object, iterates through the cart items, and calculates the total price of the cart
      *
-     * @param cart - Get cartItems to calculate total price of the cart.
-     * @return - Cart with total price.
+     * @param cart The cart object that is passed to the method.
+     * @return The total price of the cart is being returned.
      */
     private Cart getTotalPriceOfCart(Cart cart) {
         List<CartItem> cartItems = cart.getCartItemList();
@@ -137,26 +138,26 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Convert cart entity to cart dto to return to the user after save in repository.
+     * It converts a Cart object to a CartDTO object.
      *
-     * @param savedCart - To convert cart to cart dto to return.
-     * @return CartDto
+     * @param cart The cart object that is to be converted to CartDTO.
+     * @return A CartDTO object
      * @throws CustomException - Brand item not found.
      */
-    private CartDTO convertToCartDto(Cart savedCart) throws CustomException {
-        CartDTO cartDTO = modelMapper.map(savedCart, CartDTO.class);
-        List<CartItem> cartItemList = savedCart.getCartItemList();
-        cartDTO.setResponseUserDTO(modelMapper.map(savedCart.getUser(), ResponseUserDTO.class));
+    private CartDTO convertToCartDto(Cart cart) throws CustomException {
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+        List<CartItem> cartItemList = cart.getCartItemList();
+        cartDTO.setResponseUserDTO(modelMapper.map(cart.getUser(), ResponseUserDTO.class));
         cartDTO.setCartItemDTOList(convertToCartItemDtoList(cartItemList));
         return cartDTO;
     }
 
     /**
-     * Convert cart items entity to cart items dto to return.
+     * It converts a list of CartItem objects to a list of CartItemDTO objects
      *
-     * @param cartItemList - To convert cart item list to cart item dto list to return.
-     * @return CartItemDto list.
-     * @throws CustomException - Brand item not found exception.
+     * @param cartItemList The list of cart items that we want to convert to a list of cart item DTOs.
+     * @return A list of CartItemDTO objects.
+     * @throws CustomException - Cart item list not found, Brand item not found exception.
      */
     private List<CartItemDTO> convertToCartItemDtoList(List<CartItem> cartItemList) throws CustomException {
         List<CartItemDTO> cartItemDTOList = new ArrayList<>();
@@ -172,10 +173,11 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Brand item entity convert into brand item dto.
+     * It converts a BrandItems object to a BrandItemsDTO object
      *
-     * @param brandItems - To convert brand item entity to brand item dto.
-     * @return - Brand item dto.
+     * @param brandItems The object that needs to be converted.
+     * @return BrandItemsDTO
+     * @throws CustomException Brand item not found, Medicine not found, Brand not found.
      */
     private BrandItemsDTO convertToBrandItemDto(BrandItems brandItems) throws CustomException {
         BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems, BrandItemsDTO.class);
@@ -191,10 +193,11 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * Convert medicine to medicine dto.
+     * It converts a Medicine object to MedicineDTO object
      *
-     * @param medicine - To convert medicine entity to medicine dto.
-     * @return - medicine dto.
+     * @param medicine The medicine object that needs to be converted to MedicineDTO.
+     * @return A MedicineDTO object is being returned.
+     * @throws CustomException Medicine not found.
      */
     private MedicineDTO convertToMedicineDto(Medicine medicine) throws CustomException {
         if (null != medicine) {
@@ -222,7 +225,7 @@ public class CartServiceImpl implements CartService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<CartDTO> getCartByUserId(Long userId) throws CustomException {
+    public CartDTO getCartByUserId(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
@@ -230,17 +233,13 @@ public class CartServiceImpl implements CartService {
                 CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
                 List<CartItemDTO> cartItemDTOList = convertToCartItemDtoList(cart.get().getCartItemList());
                 cartDTO.setCartItemDTOList(cartItemDTOList);
-                return Optional.of(cartDTO);
+                return cartDTO;
             } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
-     * Delete user cart by user id.
-     *
-     * @param userId - To get user and cart.
-     * @return boolean.
-     * @throws CustomException - Cart item not found, user not found.
+     * {@inheritDoc}
      */
     @Override
     public boolean deleteCartByUserId(Long userId) throws CustomException {

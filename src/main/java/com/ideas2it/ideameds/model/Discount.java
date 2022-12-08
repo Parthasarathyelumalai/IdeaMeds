@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
- * Represents the Cart Item.
+ * It's a class that represents a discount.
  *
  * @author - Soundharrajan S.
  * @version - 1.0

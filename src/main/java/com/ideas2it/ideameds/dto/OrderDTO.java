@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Represents the Order System Dto.
+ * A OrderDTO is a data transfer object that represents a order.
  * @author Soundharrajan S.
  * @version 1.0
  * @since - 2022-11-30

@@ -39,11 +39,11 @@ public class OrderController {
     }
 
     /**
-     * save order details in repository.
+     * It creates an order for a user.
      *
-     * @param userId - To get user and cart details. Then map with order.
-     * @return - Price of the order (total price, discount price, discount percentage).
-     * @throws CustomException - Can not order items.
+     * @param userId The id of the user who wants to order.
+     * @return ResponseEntity<OrderDTO>
+     * @throws CustomException - Can not place order.
      */
     @PutMapping("/order/{id}")
     public ResponseEntity<OrderDTO> addOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
@@ -58,9 +58,9 @@ public class OrderController {
     }
 
     /**
-     * All users order details.
+     * This function is used to get all the orders details from the database.
      *
-     * @return - All users order details.
+     * @return ResponseEntity<List<OrderDTO>>
      * @throws CustomException -Can not get all order.
      */
     @GetMapping("/allOrder")
@@ -74,10 +74,10 @@ public class OrderController {
     }
 
     /**
-     * To get one order details by user id.
+     * It returns a list of orders for a given user id.
      *
-     * @param userId - To get one user order.
-     * @return - One user order details.
+     * @param userId The userId of the user whose order you want to see.
+     * @return A list of OrderDTO objects.
      * @throws CustomException - Order item not found.
      */
     @GetMapping("/order/{id}")
@@ -93,10 +93,11 @@ public class OrderController {
     }
 
     /**
-     * Cancel one order by user and order id.
-     * @param userId - To get user from repository.
-     * @param orderId - To delete order by order id.
-     * @return Deleted message.
+     * It cancels the order of the user with the given userId and orderId
+     *
+     * @param userId The userId of the user who wants to cancel the order.
+     * @param orderId The order ID of the order to be canceled.
+     * @return ResponseEntity<String>
      * @throws CustomException - Can not cancel the order.
      */
     @DeleteMapping("/order/{userId}/{orderId}")

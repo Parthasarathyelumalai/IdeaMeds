@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Controller for discount repository.
+ * Creating a repository for the Discount model.
  *
  * @author - Soundharrajan S.
  * @version - 1.0
