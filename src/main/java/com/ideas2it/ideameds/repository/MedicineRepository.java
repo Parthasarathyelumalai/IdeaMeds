@@ -23,9 +23,7 @@ import java.util.Optional;
 public interface MedicineRepository extends JpaRepository<Medicine, Long> {
 
     /**
-     * <p>
-     *     Gets medicine by medicine Name
-     * </p>
+     * Gets medicine by medicine Name
      * @param medicineName
      *        medicine name to get medicine
      * @return medicine using medicine name

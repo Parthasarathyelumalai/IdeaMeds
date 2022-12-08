@@ -26,10 +26,12 @@ import java.util.Map;
 public class RestResponseEntityExceptionHandling {
 
     /**
-     * method used to handle Custom exception
+     * It takes a CustomException object as an argument, creates an ErrorMessageDTO object with the CustomException's HTTP
+     * status and message, logs the error message, and returns a ResponseEntity with the HTTP status and ErrorMessageDTO
+     * object
      *
-     * @param customException - send exception
-     * @return errorMessage - gives a response as error msg and http status code
+     * @param customException The exception object that is thrown by the application.
+     * @return ResponseEntity<ErrorMessageDTO> - gives a response as error msg and http status code
      */
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorMessageDTO> commonException(CustomException customException) {
@@ -39,10 +41,11 @@ public class RestResponseEntityExceptionHandling {
     }
 
     /**
-     * method used to handle MethodArgumentNotValid exception
+     * It takes a MethodArgumentNotValidException as an argument, and returns a ResponseEntity with a map of field names
+     * and error messages
      *
-     * @param methodArgumentNotValidException - send exception
-     * @return errorMessage - gives a response as error msg and http status code
+     * @param methodArgumentNotValidException This is the exception that is thrown when the validation fails.
+     * @return A map of field names and error messages  - gives a response as error msg and http status code.
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

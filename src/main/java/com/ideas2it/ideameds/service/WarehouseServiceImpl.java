@@ -47,7 +47,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) throws CustomException {
         if (warehouseRepository
-                .findByWarehouseName(warehouseDTO.getWarehouseName()).isPresent()) {
+                .findByWarehouseName(warehouseDTO.getWarehouseName()).isEmpty()) {
             Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
             warehouse.setCreatedAt(DateTimeValidation.getDate());
             warehouse.setModifiedAt(DateTimeValidation.getDate());
@@ -108,7 +108,7 @@ public class WarehouseServiceImpl implements WarehouseService {
      *{@inheritDoc}
      */
     @Override
-    public Long deleteWarehouseByWarehouseId(Long warehouseId) throws CustomException {
+    public Long deleteWarehouseById(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()) {
             warehouse.get().setDeletedStatus(true);

@@ -170,7 +170,7 @@ public class Constants {
      * Share that there is no history of orders message
      */
     public static final String NO_HISTORY_OF_ORDERS = "There Is No History Of Orders";
-    
+
     /**
      * Share that Invalid_credentials message
      */
@@ -252,4 +252,9 @@ public class Constants {
      * Share if discount id is empty
      */
     public static final String ID_REQUIRED_TO_UPDATE_DISCOUNT = "Discount id is required to update discount.";
+    
+     /**   
+     * Share that there is no medicine in the prescription message
+     */
+    public static final String NO_MEDICINE_IN_THE_PRESCRIPTION = "There is no medicines in the prescription";
 }

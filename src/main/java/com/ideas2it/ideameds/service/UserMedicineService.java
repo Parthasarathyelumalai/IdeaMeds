@@ -13,22 +13,28 @@ import java.util.List;
  * Interface for User Medicine Service
  *
  * @author - Parthasarathy Elumalai
- * @since - 2022-11-21
  * @version - 1.0
+ * @since - 2022-11-21
  */
 public interface UserMedicineService {
-    /**
-     * Add user medicine
-     * @param userId - pass user id
-     * @param userMedicine - pass user medicine
-     * @return id - id of cart
-     */
-     Long addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException;
 
     /**
-     * Get Previous User Medicine
-     * @param userId - pass user Id
-     * @return list of medicines - return user medicine list that add-in cart
+     * Add a new medicine to the user's medicine list.
+     * before adding it, it should be validated.
+     * if medicine is not exists,it will show the error message.
+     *
+     * @param userId       The userId of the user who is adding the medicine.
+     * @param userMedicine This is the object that contains the information about the medicine that the user wants to add.
+     * @return id  - id of cart
      */
-     List<UserMedicineDTO> getPreviousUserMedicine(Long userId);
+    Long addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException;
+
+    /**
+     * Get the previous user medicine. if list of medicine is exists, it will show.
+     * otherwise, it will show empty list.
+     *
+     * @param userId The userId of the user whose previous medicines are to be fetched.
+     * @return List of UserMedicineDTO - return user medicine list that add-in cart
+     */
+    List<UserMedicineDTO> getPreviousUserMedicine(Long userId);
 }

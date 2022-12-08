@@ -118,7 +118,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
                     break;
                 }
             }
-        } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.MEDICINE_NOT_AVAILABLE);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE);
         return addCart(cartDTO, userId);
     }
 
