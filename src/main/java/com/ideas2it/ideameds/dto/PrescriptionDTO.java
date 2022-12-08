@@ -9,7 +9,6 @@ import com.ideas2it.ideameds.util.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
