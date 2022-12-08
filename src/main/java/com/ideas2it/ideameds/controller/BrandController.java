@@ -25,11 +25,9 @@ public class BrandController {
     private final BrandService brandService;
 
     /**
-     * <p>
-     * Constructs a new object
-     * </p>
+     * Constructs a new object for the corresponding services
      *
-     * @param brandService creates new instance for brand service
+     * @param brandService creates new instance for the brand service
      */
     @Autowired
     public BrandController(BrandService brandService) {
@@ -37,12 +35,14 @@ public class BrandController {
     }
 
     /**
-     * <p>
-     * Adds a brand
-     * </p>
+     * Adds the new brand record to the database.
+     * Each entry contains validation to ensure the valid brand
+     * multiple brand records cannot have the same name.
+     * Brand contains entries about the medicine brand
+     * A brand can be assigned to many brand Items
      *
-     * @param brandDTO new brandDTO to add
-     * @return brand after added
+     * @param brandDTO new brandDTO which will be converted to brand
+     * @return brand which was added in the database successfully
      * @throws CustomException throws when the new brand name is already exist
      */
     @PostMapping("/brand")
@@ -51,11 +51,12 @@ public class BrandController {
     }
 
     /**
-     * <p>
-     * Gets all the brands
-     * </p>
+     * Gets all the brandDTO available in the database
+     * which will be used for some corresponding scenarios
+     * to show all the brand info.
      *
-     * @return list of all brands
+     * @return list of all brand if it's available in the database
+     *         null if there is no record
      */
     @GetMapping("/brand/get-all")
     public ResponseEntity<List<BrandDTO>> getAllBrands() {
@@ -63,13 +64,15 @@ public class BrandController {
     }
 
     /**
-     * <p>
-     * gets brand by brand name
-     * </p>
+     * gets brand item using brand name got from the request.
+     * A brand name should be exact same compared with brand
+     * name available in the database.
      *
-     * @param brandName contains a name to get the brand
-     * @return brand by using the brand name
-     * @throws CustomException throws when brand is not found
+     * @param brandName contains a brand name from the
+     *                  request to get the brand record
+     * @return brand after getting it using the valid brand name
+     * @throws CustomException throws when the brand not fount using the
+     *                         brand name from the request
      */
     @GetMapping("/Brand/by-name/{brandName}")
     public ResponseEntity<BrandDTO> getBrandByBrandName(@PathVariable String brandName) throws CustomException {
@@ -77,13 +80,13 @@ public class BrandController {
     }
 
     /**
-     * <p>
-     * Gets brand by id
-     * </p>
+     * Gets brand using the requested id
+     * A Brand id should be exact same compared with brand id
+     * from the database
      *
-     * @param brandId brand id to get brand
-     * @return brand using the id
-     * @throws CustomException throws when the brand was not found
+     * @param brandId used to search through and get a valid brand Item
+     * @return brand after the id gets a valid brand available in the database
+     * @throws CustomException throws when the brand not found using the id from the request
      */
     @GetMapping("/brand/{brandId}")
     public ResponseEntity<BrandDTO> getBrandById(@PathVariable("brandId") Long brandId) throws CustomException {
@@ -91,13 +94,15 @@ public class BrandController {
     }
 
     /**
-     * <p>
-     * updates the brand
-     * </p>
+     * Updates the existing brand in the database
+     * The brand will be found by the id of the brand and gets updated
+     * Update process requires a valid brand, to ensure it, each entry
+     * have validation.
      *
-     * @param brandDTO brandDto to be updated
-     * @return updated brandDto
-     * @throws CustomException throws when the brand was not found
+     * @param brandDTO contains an updated brand DTO to update an existing record
+     * @return Brand Dto after it was updated successfully
+     * @throws CustomException throws when the brand was not found, happens when the brandId
+     *                         was changed before updating
      */
     @PutMapping("/brand")
     public ResponseEntity<BrandDTO> updateBrand(@Valid @RequestBody BrandDTO brandDTO) throws CustomException {
@@ -105,13 +110,15 @@ public class BrandController {
     }
 
     /**
-     * <p>
-     * Deletes the brand
-     * </p>
+     * Soft deletes the brand using the corresponding id.
+     * brand id from the request will be used to get the brand
+     * and will be flagged as deleted.
      *
-     * @param brandId corresponding brand Id to delete
-     * @return response for deletion
-     * @throws CustomException throws when brand is not found
+     * @param brandId used to get the brand to update it as deleted
+     * @return response that the brand has deleted successfully
+     *         after the brand has flagged deleted
+     * @throws CustomException throws when brand is not found using the
+     *                         corresponding id from the request
      */
     @PutMapping("/brand/delete/{brandId}")
     public ResponseEntity<String> deleteBrand(@PathVariable("brandId") Long brandId) throws CustomException {

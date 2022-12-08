@@ -48,7 +48,7 @@ public class BrandServiceImpl implements BrandService {
      */
     public BrandDTO addBrand(BrandDTO brandDTO) throws CustomException {
         if (brandRepository
-                .getBrandByBrandName(brandDTO.getBrandName()).isPresent()) {
+                .getBrandByBrandName(brandDTO.getBrandName()).isEmpty()) {
             Brand brand = modelMapper.map(brandDTO, Brand.class);
             brand.setCreatedAt(DateTimeValidation.getDate());
             brand.setModifiedAt(DateTimeValidation.getDate());

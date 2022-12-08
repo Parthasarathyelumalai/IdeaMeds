@@ -24,11 +24,12 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     /**
      * <p>
-     *     gets brand by brand Name
+     *     Gets a brand using brand name.
+     *     Requested brand name should contain a exact match
+     *     to get the brand's name
      * </p>
-     * @param brandName
-     *        brand name to get brand
-     * @return brand using brand name
+     * @param brandName requested brand name to get the brand from the database
+     * @return brand after the brand name successfully matches one of the brand's name
      */
     Optional<Brand> getBrandByBrandName(String brandName);
 }

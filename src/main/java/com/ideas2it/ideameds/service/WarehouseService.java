@@ -22,68 +22,69 @@ import java.util.List;
  */
 public interface WarehouseService {
     /**
-     * <p>
-     * adds a warehouse
-     * </p>
+     * Adds the new warehouse record to the database.
+     * Each entry contains validation to ensure the valid warehouse.
+     * Multiple warehouse records cannot have the same name.
+     * Warehouse contains the information about the warehouse.
+     * Warehouse association contains the medicine availability info
      *
-     * @param warehouseDTO to add a new warehouse
-     * @return added warehouse
-     * @throws CustomException
-     *         throws when the new warehouse name is already exist
+     * @param warehouseDTO new warehouseDTO which will be converted to warehouse
+     * @return warehouse which was added successfully in the database
+     * @throws CustomException throws when the new warehouse name is already exist
      */
     WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) throws CustomException;
 
     /**
-     * <p>
-     * gets all the warehouse
-     * </p>
+     * Gets all the WarehouseDTO available in the database
      *
-     * @return list of warehouses
+     * @return list of all warehouses if it's available in the database
+     *         null if there is no record
      */
     List<WarehouseDTO> getAllWarehouses();
 
     /**
-     * <p>
-     * gets warehouse by id
-     * </p>
+     * Gets warehouse using the requested id
+     * A Warehouse id should be exact same compared with brand id
+     * from the database
      *
-     * @param warehouseId to get the warehouse
-     * @return warehouse using the id
-     * @throws CustomException throws when the warehouse is not found
+     * @param warehouseId warehouse id to get warehouse
+     * @return warehouse after the id gets a valid warehouse available in the database
+     * @throws CustomException throws when the warehouse not found using the id from the request
      */
     WarehouseDTO getWarehouseById(Long warehouseId) throws CustomException;
 
     /**
-     * <p>
-     * gets warehouse and stocks available by id
-     * </p>
+     * Gets warehouse details and available stocks in the warehouse
+     * A Warehouse id should be exact same compared with brand id
+     * from the database
      *
-     * @param warehouseId to get the warehouse
-     * @return warehouse and stocks in warehouse using the id
-     * @throws CustomException throws when the warehouse is not found
+     * @param warehouseId warehouse id to get warehouse
+     * @return warehouse using id and brand items available in the warehouse
+     * @throws CustomException throws when the warehouse not found
      */
     WarehouseResponseDTO getWarehouseAndStocksById(Long warehouseId) throws CustomException;
 
     /**
-     * <p>
-     * updates the warehouse
-     * </p>
+     * Updates the existing warehouse in the database
+     * The warehouse will be found by the id and gets updated
+     * Update process requires a valid warehouse, to ensure it, each entry
+     * have validation.
      *
-     * @param warehouseDTO warehouse to be updated
-     * @return updated warehouse
+     * @param warehouseDTO warehouse to update
+     * @return warehouse Dto after it was updated successfully
      * @throws CustomException throws when the warehouse is not found
      */
     WarehouseDTO updateWarehouse(WarehouseDTO warehouseDTO) throws CustomException;
 
     /**
-     * <p>
-     * Deletes a warehouse
-     * </p>
+     * Soft deletes the warehouse using the corresponding id.
+     * warehouse id from the request will be used to get the brand
+     * and will be flagged as deleted.
      *
-     * @param warehouseId to get the warehouse
-     * @return warehouse id of deleted warehouse
+     * @param warehouseId used to get the warehouse to update it as deleted
+     * @return response for deletion
      * @throws CustomException throws when the warehouse is not found
      */
-    Long deleteWarehouseByWarehouseId(Long warehouseId) throws CustomException;
+    Long deleteWarehouseById(Long warehouseId) throws CustomException;
 
 }
