@@ -89,7 +89,7 @@ public class PrescriptionController {
      */
     @GetMapping("/prescription/{prescriptionId}")
     public ResponseEntity<PrescriptionDTO> getPrescriptionByPrescriptionId(@PathVariable Long prescriptionId) throws CustomException {
-        return ResponseEntity.status(HttpStatus.FOUND).body(prescriptionService.getPrescriptionByPrescriptionId(prescriptionId));
+        return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.getPrescriptionByPrescriptionId(prescriptionId));
     }
 
 
@@ -107,7 +107,7 @@ public class PrescriptionController {
         List<PrescriptionDTO> prescriptions = prescriptionService.getPrescriptionByUser(userId);
         if (prescriptions.isEmpty())
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
-        return ResponseEntity.status(HttpStatus.FOUND).body(prescriptions);
+        return ResponseEntity.status(HttpStatus.OK).body(prescriptions);
     }
 
     /**
@@ -151,8 +151,8 @@ public class PrescriptionController {
                 if (null != prescriptionDTO.getPrescriptionItems()) {
                     getMedicinesForCart(prescriptionDTO.getPrescriptionItems(), userDTO);
                 } else
-                    return ResponseEntity.status(HttpStatus.CREATED).body(Constants.NO_MEDICINE_IN_THE_PRESCRIPTION);
-                return ResponseEntity.status(HttpStatus.CREATED).body(Constants.ADDED_TO_CART);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Constants.NO_MEDICINE_IN_THE_PRESCRIPTION);
+                return ResponseEntity.status(HttpStatus.OK).body(Constants.ADDED_TO_CART);
             } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }

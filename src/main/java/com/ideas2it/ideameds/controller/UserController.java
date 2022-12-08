@@ -85,7 +85,7 @@ public class UserController {
         if ( savedUser.isPresent() ) {
             return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
         }
-        throw new CustomException(HttpStatus.NO_CONTENT, Constants.USER_NOT_ADDED);
+        throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.USER_NOT_ADDED);
     }
 
     /**
@@ -184,7 +184,7 @@ public class UserController {
             if ( savedCartId != null ) {
                 return ResponseEntity.status(HttpStatus.OK).body(Constants.ADDED_TO_CART);
             } else {
-                throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
+                throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
             }
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);

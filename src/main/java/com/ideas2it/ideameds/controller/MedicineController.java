@@ -68,7 +68,7 @@ public class MedicineController {
     public ResponseEntity<List<MedicineDTO>> getAllMedicines() throws CustomException {
         List<MedicineDTO> medicineDTOList = medicineService.getAllMedicines();
         if (medicineDTOList != null) {
-            return ResponseEntity.status(HttpStatus.FOUND).body(medicineDTOList);
+            return ResponseEntity.status(HttpStatus.OK).body(medicineDTOList);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
 
     }
@@ -84,7 +84,7 @@ public class MedicineController {
      */
     @GetMapping("/medicine/{medicineId}")
     public ResponseEntity<MedicineDTO> getMedicineById(@PathVariable("medicineId") Long medicineId) throws CustomException {
-        return ResponseEntity.status(HttpStatus.FOUND).body(medicineService.getMedicineById(medicineId));
+        return ResponseEntity.status(HttpStatus.OK).body(medicineService.getMedicineById(medicineId));
     }
 
     /**
@@ -98,7 +98,7 @@ public class MedicineController {
      */
     @GetMapping("/medicine/by-name/{medicineName}")
     public ResponseEntity<MedicineDTO> getMedicineByName(@PathVariable("medicineName") String medicineName) throws CustomException {
-        return ResponseEntity.status(HttpStatus.FOUND).body(medicineService.getMedicineByName(medicineName));
+        return ResponseEntity.status(HttpStatus.OK).body(medicineService.getMedicineByName(medicineName));
     }
 
     /**
@@ -113,7 +113,7 @@ public class MedicineController {
      */
     @PutMapping("/medicine")
     public ResponseEntity<MedicineDTO> updateMedicine(@Valid @RequestBody MedicineDTO medicineDTO) throws CustomException {
-        return ResponseEntity.status(HttpStatus.FOUND).body(medicineService.updateMedicine(medicineDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(medicineService.updateMedicine(medicineDTO));
     }
 
 
