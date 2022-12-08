@@ -67,7 +67,7 @@ public class DiscountServiceImpl implements DiscountService {
         if (null != discount) {
             return modelMapper.map(discount, DiscountDTO.class);
         } else {
-            throw new CustomException(HttpStatus.NO_CONTENT, Constants.NO_DISCOUNT);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
         }
     }
 

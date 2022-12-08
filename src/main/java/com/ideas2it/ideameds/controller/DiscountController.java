@@ -55,7 +55,7 @@ public class DiscountController {
                     .status(HttpStatus.CREATED)
                     .body(savedDiscount.get());
         } else {
-            throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_DISCOUNT);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_ADD_DISCOUNT);
         }
     }
 
@@ -90,9 +90,10 @@ public class DiscountController {
                     .status(HttpStatus.ACCEPTED)
                     .body(discount.get());
         } else {
-            throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_UPDATE_DISCOUNT);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_UPDATE_DISCOUNT);
         }
     }
+
     /**
      * It deletes a discount by id.
      *

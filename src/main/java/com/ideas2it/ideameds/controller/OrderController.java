@@ -53,7 +53,7 @@ public class OrderController {
                     .status(HttpStatus.CREATED)
                     .body(orderSystem.get());
         } else {
-            throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ORDER);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_ORDER);
         }
     }
 

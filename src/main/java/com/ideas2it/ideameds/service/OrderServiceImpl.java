@@ -144,7 +144,7 @@ public class OrderServiceImpl implements OrderService {
             orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
             return orderDTO;
         } else {
-            throw new CustomException(HttpStatus.NO_CONTENT, Constants.ORDER_IS_EMPTY);
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_IS_EMPTY);
         }
     }
 
@@ -294,8 +294,8 @@ public class OrderServiceImpl implements OrderService {
                 for (Order order : orderSystemList.get()) {
                     orderDTOList.add(convertToOrderDto(order));
                 }
-            } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.NO_HISTORY_OF_ORDERS);
-        } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.USER_NOT_FOUND);
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_HISTORY_OF_ORDERS);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         return Optional.of(orderDTOList);
     }
 
@@ -312,7 +312,7 @@ public class OrderServiceImpl implements OrderService {
                 orderSystem.get().setOrderItems(null);
                 orderRepository.deleteById(orderId);
                 return true;
-            } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.NO_ITEM_TO_CANCEL_THE_ORDER);
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_ITEM_TO_CANCEL_THE_ORDER);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 }
