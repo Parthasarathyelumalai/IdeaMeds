@@ -235,4 +235,9 @@ public class Constants {
      * Share if order is successful
      */
     public static final String ORDER_SUCCESSFUL = "Order successful";
+
+    /**
+     * Share that there is no medicine in the prescription message
+     */
+    public static final String NO_MEDICINE_IN_THE_PRESCRIPTION = "There is no medicines in the prescription";
 }
