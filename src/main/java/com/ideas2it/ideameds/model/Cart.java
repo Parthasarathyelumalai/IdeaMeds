@@ -23,12 +23,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Represents the cart.
+ * A Cart is a collection of CartItems, and a CartItem is a collection of Products.
  *
  * @author - Soundharrajan S.
  * @version - 1.0
  * @since - 2022-11-30
  */
+
 @Entity
 @Getter
 @Setter

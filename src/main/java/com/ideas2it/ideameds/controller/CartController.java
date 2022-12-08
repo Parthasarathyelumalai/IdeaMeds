@@ -43,13 +43,15 @@ public class CartController {
         this.cartService = cartService;
     }
 
+
     /**
-     * Medicines add in cart and save in cart repository.
+     * It adds items to the cart of a user.
      *
-     * @param userId  - To map user with cart.
-     * @param cartDto - To store the data in cart repository.
-     * @return Total price, discount price and discount.
-     * @throws CustomException - Can not add item in cart.
+     * @param userId The id of the user whose cart is to be updated.
+     * @param cartDto This is the object that contains the product id and quantity of the product.
+     * @return ResponseEntity<CartDTO>
+     * @throws CustomException User not found, Cart not found, Brand not found,
+     *                         Brand item not found, Medicine not found.
      */
     @PutMapping("/cart/{id}")
     public ResponseEntity<CartDTO> addCart(@PathVariable("id") Long userId, @RequestBody CartDTO cartDto) throws CustomException {
@@ -61,29 +63,27 @@ public class CartController {
         } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
     }
 
+
     /**
-     * Get cart by user id.
+     * It returns a cart object for a given user id.
      *
-     * @param userId - To get one cart.
-     * @return One cart.
-     * @throws CustomException - Cart item not found.
+     * @param userId The id of the user whose cart is to be retrieved.
+     * @return A cartDTO object.
+     * @throws CustomException User not found, Cart not found.
      */
     @GetMapping("/cart/{id}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
-        Optional<CartDTO> cartDTO = cartService.getCartByUserId(userId);
-        if (cartDTO.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(cartDTO.get());
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
+                    .body(cartService.getCartByUserId(userId));
     }
 
     /**
-     * Delete cart by user id.
+     * It deletes the cart of a user.
      *
-     * @param userId - To delete the cart by user id.
-     * @return Deleted message.
-     * @throws CustomException - Can not delete items in cart.
+     * @param userId The userId of the user whose cart is to be deleted.
+     * @return ResponseEntity<String>
+     * @throws CustomException User not found, Cart not found.
      */
     @DeleteMapping("/cart/{id}")
     public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) throws CustomException {

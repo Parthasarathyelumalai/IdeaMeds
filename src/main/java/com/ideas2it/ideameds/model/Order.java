@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Represents an Order.
+ * Order is a class that represents an order placed by a user.
  *
  * @author - Soundharrajan S.
  * @version - 1.0

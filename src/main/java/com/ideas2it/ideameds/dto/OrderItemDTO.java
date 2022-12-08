@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Represents the Order Item Dto.
+ *  The OrderItemDTO class is a data transfer object that represents a order item.
  * @author Soundharrajan S.
  * @version 1.0
  * @since - 2022-11-30

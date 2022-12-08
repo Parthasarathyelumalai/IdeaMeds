@@ -7,9 +7,16 @@ import com.ideas2it.ideameds.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * controller for discount.
@@ -34,26 +41,28 @@ public class DiscountController {
     }
 
     /**
-     * Add discount and save in discount repository.
+     * It adds a discount to the database.
      *
-     * @param discountDTO - To add discount in repository.
-     * @return Discount.
-     * @throws CustomException - Can not add discount.
+     * @param discountDTO The object that will be sent to the service.
+     * @return ResponseEntity<DiscountDTO>
+     * @throws CustomException No discount, Can not add discount.
      */
     @PostMapping("/discount")
     public ResponseEntity<DiscountDTO> addDiscount(@RequestBody DiscountDTO discountDTO) throws CustomException {
-        DiscountDTO savedDiscount = discountService.addDiscount(discountDTO);
-        if (savedDiscount != null)
+        Optional<DiscountDTO> savedDiscount = discountService.addDiscount(discountDTO);
+        if (savedDiscount.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(savedDiscount);
-        else throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_DISCOUNT);
+                    .body(savedDiscount.get());
+        } else {
+            throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_DISCOUNT);
+        }
     }
 
     /**
-     * Retrieve all discount details from repository.
+     * It returns a list of all discounts from the database
      *
-     * @return All discount details.
+     * @return A list of all discounts
      * @throws CustomException - No discount.
      */
     @GetMapping("/allDiscount")
@@ -67,10 +76,28 @@ public class DiscountController {
     }
 
     /**
-     * To delete discount by discount id.
+     * It updates the discount by discountDto object.
      *
-     * @param discountId - To delete discount by discount id.
-     * @return - Response entity.
+     * @param discountDTO The discountDto object to be updated.
+     * @return DiscountDto Show the discount dto after update.
+     * @throws CustomException  Can not update discount, I'd not found.
+     */
+    @PutMapping("/discount")
+    public ResponseEntity<DiscountDTO> updateDiscountById(@RequestBody DiscountDTO discountDTO) throws CustomException {
+        Optional<DiscountDTO> discount = discountService.updateDiscountById(discountDTO);
+        if (discount.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.ACCEPTED)
+                    .body(discount.get());
+        } else {
+            throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_UPDATE_DISCOUNT);
+        }
+    }
+    /**
+     * It deletes a discount by id.
+     *
+     * @param discountId The id of the discount to be deleted.
+     * @return ResponseEntity<String>
      * @throws CustomException - Can not delete.
      */
     @DeleteMapping("/discount/{id}")

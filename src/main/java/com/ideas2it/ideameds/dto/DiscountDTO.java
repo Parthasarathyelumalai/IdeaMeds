@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Represents the Discount Dto.
+ * A DiscountDTO is a data transfer object that represents a discount.
+ *
  * @author Soundharrajan S.
  * @version 1.0
  * @since - 2022-11-30
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class DiscountDTO {
     private Long discountId;
     private String name;

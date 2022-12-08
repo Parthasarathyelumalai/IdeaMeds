@@ -11,7 +11,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Represents the Cart Dto.
+ * CartDTO is a data transfer object that represents a cart.
+ *
  * @author Soundharrajan S.
  * @version 1.0
  * @since - 2022-11-30.

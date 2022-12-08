@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 /**
- * Represents the cart item.
+ * A CartItem is a relationship between a BrandItems and a Cart.
  *
  * @author - Soundharrajan S.
  * @version - 1.0

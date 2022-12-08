@@ -235,4 +235,21 @@ public class Constants {
      * Share if order is successful
      */
     public static final String ORDER_SUCCESSFUL = "Order successful";
+
+    /**
+     * Share if order is empty
+     */
+    public static final String ORDER_IS_EMPTY = "Order details is empty";
+
+
+    /**
+     * Share if order can not update
+     */
+    public static final String CAN_NOT_UPDATE_DISCOUNT = "Can not able to update discount";
+
+
+    /**
+     * Share if discount id is empty
+     */
+    public static final String ID_REQUIRED_TO_UPDATE_DISCOUNT = "Discount id is required to update discount.";
 }

@@ -37,12 +37,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Service implementation for placing order(order system).
+ * It contains the implementation of the order service interface.
+ * This class is used to add order, get all order, get order by user id, cancel order.
  *
  * @author - Soundharrajan.S
  * @version - 1.0
  * @since - 2022-11-21
  */
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -100,14 +102,15 @@ public class OrderServiceImpl implements OrderService {
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
-
     /**
-     * Calculate discount by total price given by the cart.
-     * Set discount related details in cart - discount, discount percentage, discount price.
+     * It takes the total price of the order and the order itself as parameters, then it finds all the discounts in the
+     * database, then it checks if the total price is between 100 and 10000 or between 10000 and 100000, then it sets the
+     * discount to the order, then it calculates the discount price, then it sets the deducted price to the order, then it
+     * returns the total price after the discount
      *
-     * @param totalPrice - To calculate suitable discount.
-     * @param order  - To set discount details in cart.
-     * @return price - after calculate discount.
+     * @param totalPrice The total price of the order
+     * @param order The order object that is being saved.
+     * @return The total price after discount is being returned.
      */
     private float calculateDiscount(float totalPrice, Order order) {
         List<Discount> discountList = discountRepository.findAll();
@@ -127,25 +130,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * Convert order entity to order dto.
+     * It converts an Order object to an OrderDTO object.
      *
-     * @param order - Convert order entity to order dto to show for user.
-     * @return - Order dto.
+     * @param order The order object that is to be converted to OrderDTO.
+     * @return OrderDTO.
      * @throws CustomException - Brand item not found.
      */
     private OrderDTO convertToOrderDto(Order order) throws CustomException {
-        OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
-        List<OrderItem> orderItemList = order.getOrderItems();
-        orderDTO.setDiscountDTO(convertToDiscountDTO(order.getDiscount()));
-        orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
-        return orderDTO;
+        if (null != order) {
+            OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
+            List<OrderItem> orderItemList = order.getOrderItems();
+            orderDTO.setDiscountDTO(convertToDiscountDTO(order.getDiscount()));
+            orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
+            return orderDTO;
+        } else {
+            throw new CustomException(HttpStatus.NO_CONTENT, Constants.ORDER_IS_EMPTY);
+        }
     }
 
     /**
-     * Convert discount entity to discount dto.
+     * If the discount is not null, then map it to a DiscountDTO object, otherwise create a new DiscountDTO object with
+     * default values
      *
-     * @param discount - To convert discount entity to discount dto.
-     * @return discount dto.
+     * @param discount The discount object that we want to convert to a DTO.
+     * @return A DiscountDTO object is being returned.
      */
     private DiscountDTO convertToDiscountDTO(Discount discount) {
         if (null != discount) {
@@ -161,10 +169,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * Convert order item entity to order item dto.
+     * It converts a list of OrderItem objects to a list of OrderItemDTO objects.
      *
-     * @param orderItemList - To convert order item entity to order item dto.
-     * @return - List of order item dto.
+     * @param orderItemList The list of order items that we want to convert to a list of order item DTOs.
+     * @return A list of OrderItemDTO objects.
      * @throws CustomException - Brand item not found.
      */
     private List<OrderItemDTO> convertToOrderItemDtoList(List<OrderItem> orderItemList) throws CustomException {
@@ -181,10 +189,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * Brand item entity convert into brand item dto.
+     * It converts a BrandItems object to a BrandItemsDTO object
      *
-     * @param brandItems - To convert brand item entity to brand item dto.
-     * @return - Brand item dto.
+     * @param brandItems The object that is to be converted to BrandItemsDTO.
+     * @return BrandItemsDTO.
+     * @throws CustomException Brand item not found.
      */
     private BrandItemsDTO convertToBrandItemDto(BrandItems brandItems) throws CustomException {
         BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems, BrandItemsDTO.class);
@@ -200,10 +209,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * Convert brand entity to brand dto.
+     * It converts a Brand object to a BrandDTO object
      *
-     * @param brand - To convert brand entity to brand dto.
-     * @return Brand dto.
+     * @param brand The brand object to be converted to BrandDTO
+     * @return A BrandDTO object.
      * @throws CustomException - brand not found.
      */
     private BrandDTO convertToBrandDto(Brand brand) throws CustomException {
@@ -215,10 +224,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * Convert medicine entity to medicine dto.
+     * It converts a Medicine object to a MedicineDTO object
      *
-     * @param medicine - Convert medicine entity to medicine dto.
-     * @return - medicine dto.
+     * @param medicine The medicine object that needs to be converted to MedicineDTO.
+     * @return MedicineDTO
      * @throws CustomException -  medicine not found.
      */
     public MedicineDTO convertToMedicineDto(Medicine medicine) throws CustomException {
@@ -230,10 +239,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * Copy cart item to order item.
+     * It takes a list of cart items and returns a list of order items
      *
-     * @param cartItemList - To copy cart item list to order item list.
-     * @return - List of order items.
+     * @param cartItemList The list of cart items that are to be converted to order items.
+     * @return A list of order items.
+     * @throws CustomException Cart item not found.
      */
     public List<OrderItem> cartItemToOrderItem(List<CartItem> cartItemList) throws CustomException {
         List<OrderItem> orderItemList = new ArrayList<>();
@@ -278,9 +288,9 @@ public class OrderServiceImpl implements OrderService {
     public Optional<List<OrderDTO>> getOrderByUserId(Long userId) throws CustomException {
         List<OrderDTO> orderDTOList = new ArrayList<>();
         Optional<User> user = userRepository.findById(userId);
-        if ( user.isPresent() ) {
+        if (user.isPresent()) {
             Optional<List<Order>> orderSystemList = orderRepository.findByUser(user.get());
-            if ( orderSystemList.isPresent() ) {
+            if (orderSystemList.isPresent()) {
                 for (Order order : orderSystemList.get()) {
                     orderDTOList.add(convertToOrderDto(order));
                 }

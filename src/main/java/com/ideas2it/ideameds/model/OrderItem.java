@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
- * Represents the Order Item.
+ * An OrderItem is a class that represents a single item in an order.
  *
  * @author - Soundharrajan.S
  * @version - 1.0

@@ -14,19 +14,21 @@ import java.util.Optional;
 
 
 /**
- * Repository for Order System.
+ * A repository for Order System.
  *
  * @author - Soundharrajan S.
  * @version - 1.0
  * @since - 2022-11-30
  */
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     /**
-     * Get all order by user.
-     * @param user - To get list of order.
-     * @return - List of order system.
+     * Find all orders for a given user.
+     *
+     * @param user The user whose orders we want to find.
+     * @return Optional<List<Order>>
      */
     Optional<List<Order>> findByUser(User user);
 }
