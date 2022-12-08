@@ -60,7 +60,7 @@ public class CartController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(cartDTO.get());
-        } else throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
+        } else throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
     }
 
 
@@ -90,7 +90,7 @@ public class CartController {
         boolean isDelete = cartService.deleteCartByUserId(userId);
         if (isDelete) {
             return ResponseEntity
-                    .status(HttpStatus.GONE)
+                    .status(HttpStatus.OK)
                     .body(Constants.REMOVED_SUCCESSFULLY);
         } else throw new CustomException(HttpStatus.NOT_FOUND,Constants.NOT_DELETED_SUCCESSFULLY);
     }

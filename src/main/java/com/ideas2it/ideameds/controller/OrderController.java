@@ -53,7 +53,7 @@ public class OrderController {
                     .status(HttpStatus.CREATED)
                     .body(orderSystem.get());
         } else {
-            throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_ORDER);
+            throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.CAN_NOT_ORDER);
         }
     }
 
@@ -67,7 +67,7 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> getAllOrder() throws CustomException {
         List<OrderDTO> orderDTOList = orderService.getAllOrder();
         if (null != orderDTOList) {
-            return (ResponseEntity.status(HttpStatus.ACCEPTED).body(orderDTOList));
+            return (ResponseEntity.status(HttpStatus.OK).body(orderDTOList));
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_ITEM_NOT_FOUND);
         }
@@ -106,7 +106,7 @@ public class OrderController {
         
         if (isCancel) {
             return ResponseEntity
-                    .status(HttpStatus.GONE)
+                    .status(HttpStatus.OK)
                     .body(Constants.ORDER_CANCELED_SUCCESSFULLY);
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_CANCEL_THE_ORDER);

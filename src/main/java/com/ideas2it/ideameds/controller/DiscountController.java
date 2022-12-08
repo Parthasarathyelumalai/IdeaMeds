@@ -70,7 +70,7 @@ public class DiscountController {
         List<DiscountDTO> discountDTOList = discountService.getAll();
         if (discountDTOList != null)
             return ResponseEntity
-                    .status(HttpStatus.ACCEPTED)
+                    .status(HttpStatus.OK)
                     .body(discountService.getAll());
         else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
     }
@@ -87,7 +87,7 @@ public class DiscountController {
         Optional<DiscountDTO> discount = discountService.updateDiscountById(discountDTO);
         if (discount.isPresent()) {
             return ResponseEntity
-                    .status(HttpStatus.ACCEPTED)
+                    .status(HttpStatus.OK)
                     .body(discount.get());
         } else {
             throw new CustomException(HttpStatus.NO_CONTENT, Constants.CAN_NOT_UPDATE_DISCOUNT);
@@ -105,7 +105,7 @@ public class DiscountController {
         boolean isDelete = discountService.deleteDiscountById(discountId);
         if (isDelete)
             return ResponseEntity
-                    .status(HttpStatus.GONE)
+                    .status(HttpStatus.OK)
                     .body(Constants.DELETED_SUCCESSFULLY);
         else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_DELETE);
     }
