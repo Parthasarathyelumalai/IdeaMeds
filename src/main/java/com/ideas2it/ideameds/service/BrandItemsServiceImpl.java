@@ -189,13 +189,11 @@ public class BrandItemsServiceImpl implements BrandItemsService {
     /**
      * {@inheritDoc}
      */
-    public BrandItemsDTO getBrandItemByName(String brandItemName) throws CustomException {
+    public BrandItemsDTO getBrandItemByName(String brandItemName) {
         Optional<BrandItems> brandItems = brandItemsRepository.findBrandItemsByBrandItemName(brandItemName);
-        if (brandItems.isPresent()) {
-            return setToBrandItems(brandItems.get(),
-                                   brandItems.get().getBrand(),
-                                   brandItems.get().getMedicine());
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
+        return brandItems.map(items -> setToBrandItems(items,
+                items.getBrand(),
+                items.getMedicine())).orElse(null);
     }
 
 

@@ -118,7 +118,10 @@ public class BrandItemsController {
      */
     @GetMapping("/brand-items/by-name/{brandItemsName}")
     public ResponseEntity<BrandItemsDTO> getBrandItemByName(@PathVariable("brandItemsName") String brandItemName) throws CustomException {
-        return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsService.getBrandItemByName(brandItemName));
+        BrandItemsDTO brandItemsDTO = brandItemsService.getBrandItemByName(brandItemName);
+        if (brandItemsDTO != null) {
+            return ResponseEntity.status(HttpStatus.FOUND).body(brandItemsDTO);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
     /**
