@@ -177,7 +177,7 @@ public class BrandItemsServiceImpl implements BrandItemsService {
      * {@inheritDoc}
      */
     @Override
-    public List<BrandItemsDTO> getByMedicineName(String medicineName) throws CustomException {
+    public List<BrandItemsDTO> getBrandItemsBySearch(String medicineName) throws CustomException {
         Optional<List<BrandItems>> brandItemsList = brandItemsRepository.findAllByBrandItemNameContainingIgnoreCase(medicineName);
         if (brandItemsList.isPresent()) {
             return brandItemsList.get().stream()
@@ -198,13 +198,6 @@ public class BrandItemsServiceImpl implements BrandItemsService {
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public BrandItemsDTO getBrandItemByBrandItemName(String brandItemName) {
-        return modelMapper.map(brandItemsRepository.findBrandItemsByBrandItemName(brandItemName), BrandItemsDTO.class);
-    }
 
     /**
      * <p>
