@@ -23,6 +23,11 @@ import java.util.Collections;
 @EnableSwagger2
 public class SpringFoxConfig {
 
+    /**
+     * The above function is used to configure the swagger documentation.
+     *
+     * @return A Docket object is being returned.
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -32,6 +37,11 @@ public class SpringFoxConfig {
                 .build().apiInfo(apiInfo());
     }
 
+    /**
+     * It provides the information about the API.
+     *
+     * @return ApiInfo object is being returned.
+     */
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "Ideameds",

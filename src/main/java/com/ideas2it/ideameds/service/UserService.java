@@ -22,60 +22,71 @@ import java.util.Optional;
 public interface UserService {
 
     /**
-     * Add user in database
+     * Customer or Admin details store in the database
+     * before that check the user emailId and phone number must be unique in database.
+     * if emailId and phone already exist in table, it will show error message.
      *
-     * @param userDTO - To store the user in databases
-     * @return user - To give a response as user details
+     * @param userDTO - pass user details to store the user in the databases
+     * @return user - after store in database to give a response as user details.
+     * @throws CustomException - occur when user email id and phone is already existed in the database.
      */
     Optional<UserDTO> addUser(UserDTO userDTO) throws CustomException;
 
     /**
-     * Get User by id from the database
+     * Get a details of individual user from databases
+     * if user aren't exist, it will pass user not found message.
      *
-     * @param userId - give a userId to get data
-     * @return user - give a response as a user details
+     * @param userId - gives a userId to get corresponded user details
+     * @return user - gives a response as a user details
      * @throws CustomException - occur when user mail or phone is exist or occur user is not saved
      */
     ResponseUserDTO getUserById(Long userId) throws CustomException;
 
     /**
-     * Get Users details from the database
+     * Get details of all user registration details in databases
+     * before that check deleted status of user table should be false.
      *
-     * @return user - give a response as a users details
+     * @return list of user - gives a response of all user details.
      */
     List<ResponseUserDTO> getAllUser();
 
     /**
-     * Updated user details in databases
+     * Updates the user details in the database. if user update the emailId and phone number,
+     * it is necessary to check emailId and phone number shouldn't already exist.
      *
      * @param user - send a updated user details to update on database
-     * @return String - give a response statement as response
-     * @throws CustomException - occur when user is not found and occur when user mail or phone is exist
+     * @return Statement for updated progress - give a response statement
+     * @throws CustomException - occur when user is not found and
+     *                         occur when user update the email id or phone is already existed.
      */
     String updateUser(UserDTO user) throws CustomException;
 
     /**
-     * deleted user details in databases
+     * delete the  user details in the database. here it will softly delete the user details.
+     * (update deleted status of user : true)
      *
      * @param userId - set user(Which contains deleted status = true)
-     * @return String - give a response statement as response
-     * @throws CustomException - occur when user is not found
+     * @return Statement for deleted progress - give a response statement as response
+     * @throws CustomException - occur when user is not found in the progress of deletion.
      */
     String deleteUser(Long userId) throws CustomException;
 
     /**
-     * Check the user is exists or not
+     * This function returns true if the user with the given userId exists in the database, false otherwise.
      *
-     * @param userId - pass userId to check
-     * @return boolean - true or false
+     * @param userId -  pass userId to check user is exit or not
+     * @return if user exit - true
+     * if not - false
      */
     boolean isUserExist(Long userId);
 
     /**
-     * get UserDetails by username(EmailId)
+     * Given a username, return a UserDetails object that represents the user.
+     * The UserDetails object is a Spring Security interface that represents a user. It has a number of methods that return
+     * information about the user
      *
-     * @param userName - pass username
-     * @return userDetails - Send userDetails
+     * @param userName The username of the user to load user details.
+     * @return A UserDetails object  - Send userDetails to authenticate the user.
      */
     UserDetails loadUserByUsername(String userName);
 }

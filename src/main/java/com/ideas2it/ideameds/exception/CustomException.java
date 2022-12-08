@@ -15,6 +15,11 @@ public class CustomException extends Exception {
 
     private final HttpStatus httpStatus;
 
+    /**
+     * This is a constructor of CustomException class.
+     * @param httpStatus - pass http status
+     * @param message - pass error message
+     */
     public CustomException(HttpStatus httpStatus, String message) {
         super(message);
         this.httpStatus = httpStatus;
