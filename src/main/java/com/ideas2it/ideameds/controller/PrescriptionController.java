@@ -65,12 +65,14 @@ public class PrescriptionController {
 
     /**
      * Add the prescription to the user
+     * Get the input for each field in the prescription DTO from the user as DTO object
+     * Only the validated object will be passed to the service
      *
      * @param userId          To map prescription with the user
      * @param prescriptionDTO To store the prescriptionDTO object {@link PrescriptionDTO}
      * @return returns the httpStatus and message
      * @throws CustomException occurs when user not found
-     *                         amd occurs when prescription was exceeded by 6 months
+     *                         and occurs when prescription was exceeded by 6 months
      */
     @PostMapping("/prescription/{userId}")
     public ResponseEntity<PrescriptionDTO> addPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO, @PathVariable Long userId) throws CustomException {
@@ -79,6 +81,7 @@ public class PrescriptionController {
 
     /**
      * Retrieve the prescription using prescription ID
+     * Get the prescription ID from the path variable
      *
      * @param prescriptionId To get the required prescription
      * @return returns the httpStatus and Prescription DTO
@@ -89,10 +92,12 @@ public class PrescriptionController {
         return ResponseEntity.status(HttpStatus.FOUND).body(prescriptionService.getPrescriptionByPrescriptionId(prescriptionId));
     }
 
+
     /**
      * Retrieve all the prescriptions associated with the user
+     * returns a list of prescriptions for a user with the given userId
      *
-     * @param userId To get the
+     * @param userId The id of the user whose prescriptions are to be fetched.
      * @return returns the httpStatus and list of prescription DTOs
      * @throws CustomException occurs when user not found
      *                         and occurs when prescription was not found
@@ -102,11 +107,13 @@ public class PrescriptionController {
         List<PrescriptionDTO> prescriptions = prescriptionService.getPrescriptionByUser(userId);
         if (prescriptions.isEmpty())
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
-        return ResponseEntity.status(HttpStatus.OK).body(prescriptions);
+        return ResponseEntity.status(HttpStatus.FOUND).body(prescriptions);
     }
 
     /**
      * Delete the prescription of a user
+     * If the prescription deleted it will show successfully message
+     * If the prescription not deleted it will show unsuccessfully message
      *
      * @param userId         To get the required user
      * @param prescriptionId To get the required prescription of the user
@@ -119,16 +126,16 @@ public class PrescriptionController {
         Long prescriptionById = prescriptionService.deletePrescriptionById(prescriptionId, userId);
 
         if (null != prescriptionById)
-            return ResponseEntity.status(HttpStatus.OK).body("Prescription Deleted Successfully");
-        else return ResponseEntity.status(HttpStatus.OK).body("Prescription Not Deleted");
+            return ResponseEntity.status(HttpStatus.OK).body(Constants.DELETED_SUCCESSFULLY);
+        else return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
     }
 
     /**
      * Add the medicines to the cart based on prescription of the user
      * The prescription ID will be given by the user
      *
-     * @param prescriptionId To get the required prescription of the user
-     * @param userId         To get the required User
+     * @param prescriptionId The id of the prescription that you want to add to the cart.
+     * @param userId         The id of the user who is adding the prescription to the cart.
      * @return returns the http status and a message
      * @throws CustomException occurs when user not found
      *                         and occurs when prescription was not found
@@ -144,13 +151,14 @@ public class PrescriptionController {
                 if (null != prescriptionDTO.getPrescriptionItems()) {
                     getMedicinesForCart(prescriptionDTO.getPrescriptionItems(), userDTO);
                 } else
-                    return ResponseEntity.status(HttpStatus.CREATED).body("There is no medicines in the prescription");
-                return ResponseEntity.status(HttpStatus.CREATED).body("Medicines Added to Cart");
+                    return ResponseEntity.status(HttpStatus.CREATED).body(Constants.NO_MEDICINE_IN_THE_PRESCRIPTION);
+                return ResponseEntity.status(HttpStatus.CREATED).body(Constants.ADDED_TO_CART);
             } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
 
     /**
+     * Takes a list of prescription items, and a user, and adds the prescription items to the user's cart
      * Get the medicines from the database and check with the prescribed medicines
      * whether it is available or not
      *
@@ -165,7 +173,7 @@ public class PrescriptionController {
         List<PrescriptionItemsDTO> prescriptionItemsDTOs = new ArrayList<>();
 
         for (PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
-            BrandItemsDTO brandItem = brandItemsService.getBrandItemByBrandItemName(prescriptionItem.getBrandItemName());
+            BrandItemsDTO brandItem = brandItemsService.getBrandItemByName(prescriptionItem.getBrandItemName());
                 if (brandItem != null) {
                     CartItemDTO cartItem = new CartItemDTO();
                     cartItem.setBrandItemsDTO(brandItem);

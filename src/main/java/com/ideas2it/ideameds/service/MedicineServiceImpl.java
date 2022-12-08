@@ -44,7 +44,7 @@ public class MedicineServiceImpl implements MedicineService {
      */
     public MedicineDTO addMedicine(MedicineDTO medicineDTO) throws CustomException {
         if (medicineRepository
-                .getMedicineByMedicineName(medicineDTO.getMedicineName()).isPresent()) {
+                .getMedicineByMedicineName(medicineDTO.getMedicineName()).isEmpty()) {
             Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
             medicine.setCreatedAt(DateTimeValidation.getDate());
             medicine.setModifiedAt(DateTimeValidation.getDate());

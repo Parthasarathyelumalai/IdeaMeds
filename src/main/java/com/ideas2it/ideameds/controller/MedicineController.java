@@ -32,7 +32,7 @@ public class MedicineController {
 
     /**
      * <p>
-     * constructs a new object
+     * Constructs a new object for the corresponding services
      * </p>
      *
      * @param medicineService creates new instance for medicine service
@@ -44,12 +44,14 @@ public class MedicineController {
 
 
     /**
-     * <p>
-     * Adds the medicine
-     * </p>
+     * Adds the new medicine record to the database.
+     * Each entry contains validation to ensure the valid medicine.
+     * Multiple medicine records cannot have the same name.
+     * Medicine contains the formal info about medicine
+     * A medicine can be assigned to many brand Items
      *
      * @param medicineDTO new medicine to add
-     * @return medicine which was added
+     * @return medicine which was added in the database successfully
      * @throws CustomException throws when the new medicine name already exist
      */
     @PostMapping("/medicine")
@@ -58,11 +60,8 @@ public class MedicineController {
     }
 
     /**
-     * <p>
-     * Gets all the medicines
-     * </p>
-     *
-     * @return list of medicines
+     * It returns a list of all medicines in the database
+     * @return list of medicines available
      * @throws CustomException throws exception when there is no entry for medicine
      */
     @GetMapping("/medicine/get-all")
@@ -75,9 +74,9 @@ public class MedicineController {
     }
 
     /**
-     * <p>
-     * Gets medicine by an id
-     * </p>
+     * This function gets medicine using the id
+     * A medicine id should be exact same compared with brand id
+     * from the database
      *
      * @param medicineId medicine id for getting medicine
      * @return medicine using the id
@@ -89,9 +88,9 @@ public class MedicineController {
     }
 
     /**
-     * <p>
-     * Gets medicine by its name
-     * </p>
+     * gets medicine using name got from the request.
+     * A medicine name should be exact same compared with brand
+     * name available in the database.
      *
      * @param medicineName medicine name for getting medicine
      * @return medicine using the medicine name
@@ -103,12 +102,13 @@ public class MedicineController {
     }
 
     /**
-     * <p>
-     * Updates the medicine
-     * </p>
+     * Updates the existing medicine in the database
+     * The medicine will be found by the id and gets updated
+     * Update process requires a valid medicine, to ensure it, each entry
+     * have validation.
      *
-     * @param medicineDTO medicine to update
-     * @return the updated medicine
+     * @param medicineDTO updated medicine DTO to update an existing record
+     * @return medicine Dto after it was updated successfully
      * @throws CustomException throws exception when there is no medicine found
      */
     @PutMapping("/medicine")
@@ -118,9 +118,9 @@ public class MedicineController {
 
 
     /**
-     * <p>
-     * Deletes the medicine
-     * </p>
+     * Soft deletes the medicine using the corresponding id.
+     * medicine id from the request will be used to get the medicine
+     * and will be flagged as deleted.
      *
      * @param medicineId corresponding medicine id to delete
      * @return response for deletion
