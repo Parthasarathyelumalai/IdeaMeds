@@ -2,15 +2,22 @@ package com.ideas2it.ideameds.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Swagger configuration class
@@ -21,7 +28,11 @@ import java.util.Collections;
  */
 @Configuration
 @EnableSwagger2
+@Component
 public class SpringFoxConfig {
+
+    private static final String BASIC_AUTH = "basicAuth";
+    private static final String BEARER_AUTH = "Bearer";
 
     /**
      * The above function is used to configure the swagger documentation.
@@ -34,7 +45,7 @@ public class SpringFoxConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.ideas2it.ideameds"))
                 .paths(PathSelectors.any())
-                .build().apiInfo(apiInfo());
+                .build().apiInfo(apiInfo()).securitySchemes(securitySchemes()).securityContexts(List.of(securityContext()));
     }
 
     /**
@@ -50,5 +61,21 @@ public class SpringFoxConfig {
                 "T&C",
                 new Contact("Parthasarathy", "www.ideas2it.com", "parthasarathy.elumalai@ideas2it.com"),
                 "", "", Collections.emptyList());
+    }
+
+    private List<SecurityScheme> securitySchemes() {
+        return List.of(new ApiKey(BEARER_AUTH, "Authorization", "header"));
+    }
+
+/*    private SecurityReference basicAuthReference() {
+        return new SecurityReference(BASIC_AUTH, new AuthorizationScope[0]);
+    }*/
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder().securityReferences(List.of(bearerAuthReference())).forPaths(PathSelectors.ant("/**")).build();
+    }
+
+    private SecurityReference bearerAuthReference() {
+        return new SecurityReference(BEARER_AUTH, new AuthorizationScope[0]);
     }
 }
