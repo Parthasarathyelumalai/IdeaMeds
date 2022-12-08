@@ -22,9 +22,9 @@ import java.time.format.DateTimeFormatter;
 public class DateTimeValidation {
 
     /**
-     * Validates the prescription date of issue
+     * It checks if the prescription is older than 6 months
      *
-     * @param issuedDate Get the date for validation
+     * @param issuedDate The date on which the prescription was issued.
      * @throws CustomException if prescription's date is exceeded by 6 month
      *                         it will throw custom exception
      */
@@ -32,13 +32,14 @@ public class DateTimeValidation {
         final int MAXIMUM_MONTH = 6;
         LocalDate currentDate = LocalDate.now();
         Period monthDifference = Period.between(issuedDate, currentDate);
-        if (monthDifference.getMonths() >= MAXIMUM_MONTH) throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PRESCRIPTION_EXPIRED);
+        if ( monthDifference.getMonths() >= MAXIMUM_MONTH )
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PRESCRIPTION_EXPIRED);
     }
 
     /**
-     * Get Created and modified date
+     * It returns the current date and time in the format of "yyyy-MM-dd HH:mm:ss"
      *
-     * @return datetime - gives date and time;
+     * @return A LocalDateTime object  - gives date and time;
      */
     public static LocalDateTime getDate() {
         String currentDateAndTime;

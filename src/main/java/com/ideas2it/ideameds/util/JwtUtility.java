@@ -29,32 +29,33 @@ public class JwtUtility implements Serializable {
     private String secretKey;
 
     /**
-     * retrieve username from jwt token
+     * Get the username from the token.
      *
-     * @param token - send token
-     * @return String - get Username from Token
+     * @param token The JWT token - send token
+     * @return The username - get Username from Token
      */
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
     /**
-     * retrieve expiration date from jwt token
+     * Get the expiration date from the token.
      *
-     * @param token - send token
-     * @return Date - get Expiration Date From Token
+     * @param token The JWT token
+     * @return The expiration date of the token.
      */
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
     /**
-     * Get a token from jwt token
+     * Given a token, get all the claims from it, and then apply the claimsResolver function to the claims.
+     * <p>
+     * The claimsResolver function is a lambda expression that takes a Claims object and returns a generic type T
      *
-     * @param token          - send token
-     * @param claimsResolver - pass a claims and type(T)
-     * @param <T>            - pass token type
-     * @return token - get Claim From Token
+     * @param token          The JWT token
+     * @param claimsResolver A function that takes in a Claims object and returns a value of type T.
+     * @return A generic type T is being returned.
      */
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
@@ -62,20 +63,20 @@ public class JwtUtility implements Serializable {
     }
 
     /**
-     * for retrieving any information from token we will need the secret key
+     * It takes a token and returns the claims
      *
-     * @param token - pass token
-     * @return claims - get a claims
+     * @param token The token that needs to be validated.
+     * @return The claims are being returned.
      */
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
     /**
-     * check if the token has expired
+     * If the expiration date of the token is before the current date, then the token is expired
      *
-     * @param token - check token is expired or not
-     * @return boolean - is token is expired or not
+     * @param token The check JWT token is expired or not
+     * @return A boolean value - is token is expired or not.
      */
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
@@ -83,25 +84,22 @@ public class JwtUtility implements Serializable {
     }
 
     /**
-     * generate token for user
+     * The function takes a userDetails object and returns a JWT token
      *
-     * @param userDetails - pass a user details
-     * @return token - get generate Token
+     * @param userDetails This is the user object that contains the user's information.
+     * @return A JWT token - pass a token as String.
      */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
-
     /**
-     * while creating the token -
-     * 1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
-     * 2. Sign the JWT using the HS512 algorithm and secret key.
+     * It takes a map of claims, a subject, and a secret key, and returns a JWT token
      *
-     * @param claims  - pass claims of json signature
-     * @param subject - pass a subject as string
-     * @return String - do Generate Token
+     * @param claims  A map of claims that will be added to the JWT.
+     * @param subject The subject of the token.
+     * @return A JWT token - generate token with signature
      */
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
@@ -110,11 +108,13 @@ public class JwtUtility implements Serializable {
     }
 
     /**
-     * validate token
+     * If the username in the token matches the username in the userDetails object, and the token is not expired, then
+     * return true
      *
-     * @param token       check validate token
-     * @param userDetails - pass user details
-     * @return boolean - true or false
+     * @param token       The JWT token to validate
+     * @param userDetails The user details object that contains the username and password of the user.
+     * @return A boolean value if user exit - true
+     * if not - false.
      */
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);

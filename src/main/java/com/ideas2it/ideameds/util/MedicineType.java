@@ -30,10 +30,10 @@ public enum MedicineType {
     }
 
     /**
-     * get medicine type
+     * It loops through all the values of the enum and returns the one that matches the value passed in
      *
-     * @param value - pass a value of enum
-     * @return medicine type - value of medicine type
+     * @param value The value of the enumeration.
+     * @return The MedicineType enum is being returned.
      */
     public static MedicineType getMedicineType(int value) {
         MedicineType result = null;

@@ -19,6 +19,7 @@ public enum Role {
 
     /**
      * Constructs a new object
+     *
      * @param value - pass a value of enum
      */
     Role(final int value) {
@@ -26,10 +27,10 @@ public enum Role {
     }
 
     /**
-     * get role type
+     * Iterate through the values of the enum and return the one that matches the value passed in.
      *
-     * @param value - pass a value of enum
-     * @return role - value of role
+     * @param value The value of the enum.
+     * @return The Role enum type.
      */
     public static Role getRoleType(int value) {
         Role result = null;

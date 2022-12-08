@@ -30,6 +30,12 @@ public enum IllnessCategories {
         this.value = value;
     }
 
+    /**
+     * This function takes an integer value and returns the corresponding enum value
+     *
+     * @param value The value of the enum.
+     * @return The illness category that matches the value passed in.
+     */
     public static IllnessCategories getIllnessCategories(int value) {
         IllnessCategories result = null;
         IllnessCategories[] type = IllnessCategories.values();

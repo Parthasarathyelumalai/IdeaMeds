@@ -72,25 +72,28 @@ public class UserController {
     }
 
     /**
-     * Add User in database
+     * It takes a UserDTO object as a request body, validates it, and then calls the addUser function in the userService.
+     * If the user is added, it returns the user object, else it throws a custom exception
      *
-     * @param user - send the user to store
-     * @return user - gives a response as user details
+     * @param user The user object that is to be added.
+     * @return ResponseEntity<UserDTO> - gives a response as user details
      * @throws CustomException - occur when user's email and phone number are already registered
      */
     @PostMapping("/user")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> savedUser = userService.addUser(user);
-        if(savedUser.isPresent()) {
+        if ( savedUser.isPresent() ) {
             return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
-        } throw new CustomException(HttpStatus.NO_CONTENT,Constants.USER_NOT_ADDED);
+        }
+        throw new CustomException(HttpStatus.NO_CONTENT, Constants.USER_NOT_ADDED);
     }
 
     /**
-     * Get a user details by id
+     * It fetches a user by id and returns a response entity with the fetched user
+     * if user is not present, it will throw error message (User not found)
      *
-     * @param userId - send the user id
-     * @return user - give response as user details
+     * @param userId The id of the user to be fetched.
+     * @return ResponseEntity<ResponseUserDTO>  - give response as user details
      * @throws CustomException - occur when User is not Found
      */
     @GetMapping("/user/{id}")
@@ -100,9 +103,10 @@ public class UserController {
     }
 
     /**
-     * Get list of user details
+     * It returns a list of all users.
+     * if user table is empty, it will show empty list of user.
      *
-     * @return list of user - gives a response as list of user details
+     * @return A list of ResponseUserDTO objects  - gives a response as list of user details.
      */
     @GetMapping("/user")
     public List<ResponseUserDTO> getAllUser() {
@@ -110,23 +114,29 @@ public class UserController {
     }
 
     /**
-     * Updated a user details
+     * It takes a UserDTO object as a parameter, calls the updateUser function in the userService class, and returns a
+     * ResponseEntity object with the updated user
      *
-     * @param user - to store an updated user details
-     * @return String - give a response statement as a response
-     * @throws CustomException - occur when User is not Found
+     * @param userDTO The user object that needs to be updated.
+     * @return A ResponseEntity object is being returned - gives update response statement.
+     * @throws CustomException - occur when User is not Found and
+     *                         also validate the email id and phone number before update it,
+     *                         if it exists, it will throw the error message.
      */
     @PutMapping("/user")
-    public ResponseEntity<String> updateUser(@RequestBody UserDTO user) throws CustomException {
-        String updatedUser = userService.updateUser(user);
+    public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO) throws CustomException {
+        String updatedUser = userService.updateUser(userDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
     }
 
+
     /**
-     * Delete the user in databases(Soft -delete)
+     * It deletes a user from the database and returns a response entity with a status code of 200 and a body of the
+     * deleted status
+     * Note: In the delete progress, user's deleted status update into true.
      *
-     * @param userId - send a user id to delete
-     * @return String - give a response as
+     * @param userId The id of the user to be deleted.
+     * @return ResponseEntity<String> - give a response as statement for delete user.
      * @throws CustomException - Occur when user is not found
      */
     @DeleteMapping("/user/{id}")
@@ -137,10 +147,12 @@ public class UserController {
     }
 
     /**
-     * Get Previous User Medicine
+     * It returns a list of UserMedicineDTO objects for a given userId
+     * Get usage history of user medicine. if medicines presents, it will show the list of medicine
+     * otherwise it will show empty list.
      *
-     * @param userId - pass user id
-     * @return List of UserMedicineDTO -  list of user medicine
+     * @param userId The id of the user whose previous medicine is to be fetched.
+     * @return A list of UserMedicineDTO objects  -  list of user medicine.
      * @throws CustomException - Occur when user is not found
      */
     @GetMapping("/user/user-medicine/{id}")
@@ -153,12 +165,15 @@ public class UserController {
     }
 
     /**
-     * Add user medicines for specific user
+     * It adds a medicine to the cart of a user
+     * And check if  medicine is exists, it will add to cart.
+     * if not , it will throw error message(medicine not found).
      *
-     * @param userId       - send user id to set medicines
-     * @param userMedicine - send user medicine
-     * @return String  - gives a response statement
+     * @param userId       The id of the user to whom the medicine is to be added.
+     * @param userMedicine This is the object that will be passed in the request body.
+     * @return ResponseEntity<String>  - gives a response statement
      * @throws CustomException - occur when User is not Found
+     *                         occur when User medicine is not added
      */
     @PostMapping("/user/user-medicine/{id}")
     public ResponseEntity<String> addUserMedicine(@PathVariable("id") Long userId, @Valid @RequestBody UserMedicineDTO userMedicine) throws CustomException {
@@ -177,10 +192,10 @@ public class UserController {
     }
 
     /**
-     * Get a user previous order details
+     * It returns a list of orders for a user with the given userId
      *
-     * @param userId - send user id
-     * @return list of order - gives response as list of order by user
+     * @param userId The userId of the user whose order history is to be fetched.
+     * @return A list of OrderDTO objects  - gives response as list of order by user.
      * @throws CustomException - occur when there is no order history
      */
     @GetMapping("/user/order/{id}")
@@ -193,10 +208,11 @@ public class UserController {
     }
 
     /**
-     * Authentication request using jwt token
+     * It takes a JwtRequest object as input, validates it, and returns a JwtResponse object
      *
-     * @param jwtRequest - get a username and password
-     * @return JwtResponse - send a response as token
+     * @param jwtRequest This is the request object that contains the username and password.
+     * @return A JWT token - send a response as token
+     * @throws CustomException - occur when unauthorized user login in
      */
     @PostMapping("/authenticate")
     public JwtResponse authenticate(@Valid @RequestBody JwtRequest jwtRequest) throws CustomException {

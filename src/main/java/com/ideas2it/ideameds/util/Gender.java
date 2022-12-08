@@ -28,16 +28,16 @@ public enum Gender {
     }
 
     /**
-     * get medicine type
+     * It loops through all the values of the enum and returns the one that matches the value passed in
      *
-     * @param value - pass value of enum option
-     * @return gender - return value of gender
+     * @param value The value of the enumeration.
+     * @return The Gender enum is being returned.
      */
     public static Gender getMedicineType(int value) {
         Gender result = null;
         Gender[] type = Gender.values();
         for (Gender gender : type) {
-            if (gender.value == value) {
+            if ( gender.value == value ) {
                 return gender;
             }
         }

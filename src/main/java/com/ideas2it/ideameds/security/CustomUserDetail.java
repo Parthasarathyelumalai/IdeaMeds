@@ -46,8 +46,7 @@ public class CustomUserDetail implements UserDetails {
     }
 
     /**
-     * Get the email ID of the user
-     * @return returns email ID
+     * {@inheritDoc}
      */
     @Override
     public String getUsername() {
