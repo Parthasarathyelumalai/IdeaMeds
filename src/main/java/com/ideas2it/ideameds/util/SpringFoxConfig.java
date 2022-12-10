@@ -63,18 +63,30 @@ public class SpringFoxConfig {
                 "", "", Collections.emptyList());
     }
 
+    /**
+     * It creates a list of security schemes that are to be used.
+     *
+     * @return A list of security schemes.
+     */
     private List<SecurityScheme> securitySchemes() {
         return List.of(new ApiKey(BEARER_AUTH, "Authorization", "header"));
     }
 
-/*    private SecurityReference basicAuthReference() {
-        return new SecurityReference(BASIC_AUTH, new AuthorizationScope[0]);
-    }*/
-
+    /**
+     *  This function creates a security context that uses the bearerAuthReference() function to create a security
+     * reference that is used to secure all paths
+     *
+     * @return A SecurityContext object.
+     */
     private SecurityContext securityContext() {
         return SecurityContext.builder().securityReferences(List.of(bearerAuthReference())).forPaths(PathSelectors.ant("/**")).build();
     }
 
+    /**
+     * It creates a security reference with the name "Bearer" and an empty array of authorization scopes
+     *
+     * @return A SecurityReference object.
+     */
     private SecurityReference bearerAuthReference() {
         return new SecurityReference(BEARER_AUTH, new AuthorizationScope[0]);
     }
