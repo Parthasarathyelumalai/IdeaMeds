@@ -5,11 +5,14 @@
 package com.ideas2it.ideameds.model;
 
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -24,6 +27,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Where(clause = "is_deleted_status = false")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +48,9 @@ public class Address {
     private LocalDateTime createdAt;
     @NotNull
     private LocalDateTime modifiedAt;
+    @NotNull
+    private boolean isDeletedStatus;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

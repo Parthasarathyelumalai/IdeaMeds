@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.controller;
 
+import com.ideas2it.ideameds.dto.AddressDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
@@ -230,5 +231,33 @@ public class UserController {
         final String token = jwtUtility.generateToken(userDetails);
 
         return new JwtResponse(token);
+    }
+
+
+    /**
+     * It adds an address to a user
+     *
+     * @param userId     The id of the user to whom the address is to be added.
+     * @param addressDTO This is the object that will be passed in the request body.
+     * @return ResponseEntity<String> - gives response statement as success
+     * @throws CustomException - occur when user is not found
+     */
+    @PostMapping("/{id}/address/")
+    public ResponseEntity<String> addAddress(@PathVariable("id") Long userId, @Valid @RequestBody AddressDTO addressDTO) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.addUserAddress(userId, addressDTO));
+    }
+
+    /**
+     * This function deletes the address of a user
+     *
+     * @param userId     The id of the user whose address is to be deleted.
+     * @param addressDTO This is the object that contains the address details.
+     * @return ResponseEntity<String> - gives response statement as delete
+     * @throws CustomException - occur when user is not found
+     *                         occur when address is not found in the respective user.
+     */
+    @DeleteMapping("/{id}/address/")
+    public ResponseEntity<String> deleteAddress(@PathVariable("id") Long userId, @Valid @RequestBody AddressDTO addressDTO) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUserAddress(userId, addressDTO));
     }
 }
