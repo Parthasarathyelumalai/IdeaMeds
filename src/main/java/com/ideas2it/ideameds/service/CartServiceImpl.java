@@ -229,10 +229,7 @@ public class CartServiceImpl implements CartService {
         if (user.isPresent()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
             if (cart.isPresent()) {
-                CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-                List<CartItemDTO> cartItemDTOList = convertToCartItemDtoList(cart.get().getCartItemList());
-                cartDTO.setCartItemDTOList(cartItemDTOList);
-                return cartDTO;
+                return convertToCartDto(cart.get());
             } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
