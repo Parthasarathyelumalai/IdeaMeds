@@ -139,7 +139,7 @@ public class BrandItemsController {
      * @return list of brand items using user input
      * @throws CustomException throws when brand item not found
      */
-    @GetMapping("/search-brand-items/{medicineName}")
+    @GetMapping("/brand-items/by-search/{medicineName}")
     public ResponseEntity<List<BrandItemsDTO>> getBrandItemsBySearch(@PathVariable String medicineName) throws CustomException {
         List<BrandItemsDTO> brandItemsDTOs = brandItemsService.getBrandItemsBySearch(medicineName);
         return ResponseEntity.status(HttpStatus.OK).body(brandItemsDTOs);
