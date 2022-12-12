@@ -51,12 +51,13 @@ public class PrescriptionController {
      * Constructs object for the classes
      *
      * @param prescriptionService create instance for prescription service
-     * @param userService        create instance for user service
+     * @param userService         create instance for user service
      * @param brandItemsService   create instance for brand items service
      * @param cartService         create instance for cart service
      */
     @Autowired
-    public PrescriptionController(PrescriptionService prescriptionService, UserService userService, BrandItemsService brandItemsService, CartServiceImpl cartService) {
+    public PrescriptionController(PrescriptionService prescriptionService, UserService userService,
+                                  BrandItemsService brandItemsService, CartServiceImpl cartService) {
         this.prescriptionService = prescriptionService;
         this.userService = userService;
         this.brandItemsService = brandItemsService;
@@ -75,7 +76,8 @@ public class PrescriptionController {
      *                         and occurs when prescription was exceeded by 6 months
      */
     @PostMapping("/prescription/{userId}")
-    public ResponseEntity<PrescriptionDTO> addPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO, @PathVariable Long userId) throws CustomException {
+    public ResponseEntity<PrescriptionDTO> addPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO,
+                                                           @PathVariable Long userId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.addPrescription(prescriptionDTO, userId));
     }
 
@@ -88,10 +90,10 @@ public class PrescriptionController {
      * @throws CustomException occurs when prescription was not found
      */
     @GetMapping("/prescription/{prescriptionId}")
-    public ResponseEntity<PrescriptionDTO> getPrescriptionByPrescriptionId(@PathVariable Long prescriptionId) throws CustomException {
+    public ResponseEntity<PrescriptionDTO> getPrescriptionByPrescriptionId(@PathVariable Long prescriptionId)
+            throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.getPrescriptionByPrescriptionId(prescriptionId));
     }
-
 
     /**
      * Retrieve all the prescriptions associated with the user
@@ -122,7 +124,8 @@ public class PrescriptionController {
      *                         and occurs when prescription was not found
      */
     @DeleteMapping("/prescription/{userId}/{prescriptionId}")
-    public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId, @PathVariable Long prescriptionId) throws CustomException {
+    public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId,
+                                                         @PathVariable Long prescriptionId) throws CustomException {
         Long prescriptionById = prescriptionService.deletePrescriptionById(prescriptionId, userId);
 
         if (null != prescriptionById)
@@ -141,7 +144,8 @@ public class PrescriptionController {
      *                         and occurs when prescription was not found
      */
     @GetMapping("/add-to-cart/{userId}/{prescriptionId}")
-    public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId, @PathVariable Long userId) throws CustomException {
+    public ResponseEntity<String> addPrescriptionToCart(@PathVariable Long prescriptionId,
+                                                        @PathVariable Long userId) throws CustomException {
         ResponseUserDTO userDTO = userService.getUserById(userId);
         PrescriptionDTO prescriptionDTO = prescriptionService.getPrescriptionByPrescriptionId(prescriptionId);
 
@@ -167,22 +171,23 @@ public class PrescriptionController {
      * @throws CustomException occurs when prescription was
      *                         exceeded by 6 months
      */
-    private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, ResponseUserDTO user) throws CustomException {
+    private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, ResponseUserDTO user)
+            throws CustomException {
         CartDTO cart = new CartDTO();
         List<CartItemDTO> cartItems = new ArrayList<>();
         List<PrescriptionItemsDTO> prescriptionItemsDTOs = new ArrayList<>();
 
         for (PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
             BrandItemsDTO brandItem = brandItemsService.getBrandItemByName(prescriptionItem.getBrandItemName());
-                if (brandItem != null) {
-                    CartItemDTO cartItem = new CartItemDTO();
-                    cartItem.setBrandItemsDTO(brandItem);
-                    cartItem.setQuantity(prescriptionItem.getQuantity());
-                    cartItems.add(cartItem);
-                    cart.setCartItemDTOList(cartItems);
-                } else {
-                    prescriptionItemsDTOs.add(prescriptionItem);
-                }
+            if (brandItem != null) {
+                CartItemDTO cartItem = new CartItemDTO();
+                cartItem.setBrandItemsDTO(brandItem);
+                cartItem.setQuantity(prescriptionItem.getQuantity());
+                cartItems.add(cartItem);
+                cart.setCartItemDTOList(cartItems);
+            } else {
+                prescriptionItemsDTOs.add(prescriptionItem);
+            }
         }
         addToCart(prescriptionItemsDTOs, user, cart);
     }
@@ -197,7 +202,8 @@ public class PrescriptionController {
      * @throws CustomException occurs when prescription was
      *                         exceeded by 6 months and when prescribed medicine is not available in the database
      */
-    private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, ResponseUserDTO userDTO, CartDTO cartDTO) throws CustomException {
+    private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, ResponseUserDTO userDTO, CartDTO cartDTO)
+            throws CustomException {
         if (prescriptionItemsDTOs.isEmpty())
             cartService.addCart(userDTO.getUserId(), cartDTO);
         else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemsDTOs);

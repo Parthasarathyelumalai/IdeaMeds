@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
  * @version - 1.0
  * @since - 2022-11-30
  */
-
 @Entity
 @Getter
 @Setter

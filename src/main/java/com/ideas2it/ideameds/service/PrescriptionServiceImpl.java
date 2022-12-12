@@ -13,7 +13,9 @@ import com.ideas2it.ideameds.repository.PrescriptionRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
+
 import java.util.Collections;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -87,7 +89,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                 return prescriptionList.get().stream()
                         .map(prescription -> modelMapper.map(prescription, PrescriptionDTO.class))
                         .toList();
-        }else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         return Collections.emptyList();
     }
 
@@ -101,7 +103,8 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         if (user.isPresent()) {
             List<Prescription> prescriptions = user.get().getPrescription();
 
-            if (prescriptions.isEmpty()) throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
+            if (prescriptions.isEmpty())
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
             else {
                 for (Prescription prescription : prescriptions) {
                     if (prescription.getPrescriptionId().equals(prescriptionId)) {
