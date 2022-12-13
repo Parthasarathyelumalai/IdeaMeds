@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             List<Address> addresses = user.getAddresses();
             addresses.removeAll(user.getAddresses());
 
-            for (AddressDTO addressDTO : userDTO.getAddressDTOs()) {
+            for (AddressDTO addressDTO : userDTO.getAddresses()) {
                 addresses.add(modelMapper.map(addressDTO, Address.class));
             }
 
