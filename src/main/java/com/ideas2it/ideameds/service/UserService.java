@@ -4,6 +4,7 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.AddressDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
@@ -89,4 +90,25 @@ public interface UserService {
      * @return A UserDetails object  - Send userDetails to authenticate the user.
      */
     UserDetails loadUserByUsername(String userName);
+
+    /**
+     * It adds an address to a user
+     *
+     * @param userId     The userId of the user who is adding the address.
+     * @param addressDTO This is the object that contains the address details.
+     * @return String - gives a response statement as success
+     * @throws CustomException - occur when user is not found
+     */
+    String addUserAddress(Long userId, AddressDTO addressDTO) throws CustomException;
+
+    /**
+     * Delete an address for a user
+     *
+     * @param userId     The userId of the user whose address is to be deleted.
+     * @param addressDTO This is the address object that you want to delete.
+     * @return String - gives a response statement as deleted
+     * @throws CustomException - occur when user is not found,
+     *                         occur when user's address is not found
+     */
+    String deleteUserAddress(Long userId, AddressDTO addressDTO) throws CustomException;
 }

@@ -40,15 +40,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
+    private final AddressService addressService;
+
     /**
      * Create instance for the class
      *
      * @param userRepository create instance for user repository
+     * @param addressService create instance for userAddress repository
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, AddressService addressService) {
         this.userRepository = userRepository;
+        this.addressService = addressService;
     }
+
 
     /**
      * {@inheritDoc}
@@ -174,6 +179,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         Optional<User> fetchedUser = Optional.of(userRepository.findByEmailId(username));
         return fetchedUser.map(CustomUserDetail::new).orElse(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String addUserAddress(Long userId, AddressDTO addressDTO) throws CustomException {
+        User user = modelMapper.map(getUserById(userId), User.class);
+        return addressService.addAddress(user, addressDTO);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String deleteUserAddress(Long userId, AddressDTO addressDTO) throws CustomException {
+        User user = modelMapper.map(getUserById(userId), User.class);
+        return addressService.deleteAddress(user, addressDTO);
     }
 
     /**
