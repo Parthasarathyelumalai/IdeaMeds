@@ -34,8 +34,6 @@ import java.util.List;
 @EnableSwagger2
 @Component
 public class SpringFoxConfig {
-
-    private static final String BASIC_AUTH = "basicAuth";
     private static final String BEARER_AUTH = "Bearer";
 
     /**
