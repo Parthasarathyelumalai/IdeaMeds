@@ -39,7 +39,7 @@ public class UserDTO {
     @NotBlank(message = "Email should be mentioned")
     @Email(regexp = Constants.REGEX_FOR_EMAIL_ID, message = "Invalid format e.g. john@xyz.com")
     private String emailId;
-    private List<@Valid AddressDTO> addresses;
-    private List<Prescription> prescription;
+    private List<@Valid AddressDTO> addressDTOs;
+    private List<Prescription> prescriptions;
     private Role roleType;
 }

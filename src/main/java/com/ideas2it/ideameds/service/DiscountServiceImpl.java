@@ -76,12 +76,12 @@ public class DiscountServiceImpl implements DiscountService {
      */
     @Override
     public List<DiscountDTO> getAll() {
-        List<Discount> discountList = discountRepository.findAll();
-        List<DiscountDTO> discountDTOList = new ArrayList<>();
-        for (Discount discount : discountList) {
-            discountDTOList.add(modelMapper.map(discount, DiscountDTO.class));
+        List<Discount> discounts = discountRepository.findAll();
+        List<DiscountDTO> discountDTOs = new ArrayList<>();
+        for (Discount discount : discounts) {
+            discountDTOs.add(modelMapper.map(discount, DiscountDTO.class));
         }
-        return discountDTOList;
+        return discountDTOs;
     }
 
     /**
@@ -90,8 +90,8 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public Optional<DiscountDTO> updateDiscountById(DiscountDTO discountDTO) throws CustomException {
         if (null != discountDTO.getDiscountId()) {
-            Optional<Discount> existedDiscount = discountRepository.findById(discountDTO.getDiscountId());
-            if (existedDiscount.isPresent() && Objects.equals(existedDiscount.get().getDiscountId(), discountDTO.getDiscountId())) {
+            Optional<Discount> existingDiscount = discountRepository.findById(discountDTO.getDiscountId());
+            if (existingDiscount.isPresent() && Objects.equals(existingDiscount.get().getDiscountId(), discountDTO.getDiscountId())) {
                 Discount discount = modelMapper.map(discountDTO, Discount.class);
                 discount.setCreatedAt(DateTimeValidation.getDate());
                 discount.setModifiedAt(DateTimeValidation.getDate());

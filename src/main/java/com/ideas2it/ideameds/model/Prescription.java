@@ -36,7 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "deleted_status = false")
+@Where(clause = "is_deleted = false")
 public class Prescription {
 
     @Id
@@ -66,7 +66,7 @@ public class Prescription {
     private LocalDate dateOfIssue;
 
     @NotNull
-    private boolean deletedStatus;
+    private boolean isDeleted;
 
     @JsonIgnore
     @ManyToOne
@@ -76,7 +76,7 @@ public class Prescription {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "prescription_id")
     @NotNull
-    private List<PrescriptionItems> prescriptionItems;
+    private List<PrescriptionItem> prescriptionItems;
 
     @NotNull
     private LocalDateTime createdAt;

@@ -24,6 +24,6 @@ public class CartDTO {
 
     private Long cartId;
     private float totalPrice;
-    private List<CartItemDTO> cartItemDTOList;
+    private List<CartItemDTO> cartItemDTOs;
     private ResponseUserDTO responseUserDTO;
 }

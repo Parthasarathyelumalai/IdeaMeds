@@ -46,7 +46,7 @@ public class Cart {
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "cart_id")
-    private List<CartItem> cartItemList;
+    private List<CartItem> cartItems;
     @NotNull
     private LocalDateTime createdAt;
     @NotNull

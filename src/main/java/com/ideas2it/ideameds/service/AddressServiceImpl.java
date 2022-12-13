@@ -67,7 +67,7 @@ public class AddressServiceImpl implements AddressService {
                 Optional<Address> address = addressRepository.findById(addressId);
                 if ( address.isPresent() ) {
                     address.get().setModifiedAt(DateTimeValidation.getDate());
-                    address.get().setDeletedStatus(true);
+                    address.get().setDeleted(true);
                     addressRepository.save(address.get());
                     return user.getName() + Constants.ADDRESS_DELETED_SUCCESSFULLY;
                 }

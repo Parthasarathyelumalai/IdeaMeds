@@ -4,15 +4,15 @@
  */
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.BrandItemDTO;
 import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.BrandItem;
 import com.ideas2it.ideameds.model.User;
 import com.ideas2it.ideameds.model.UserMedicine;
-import com.ideas2it.ideameds.repository.BrandItemsRepository;
+import com.ideas2it.ideameds.repository.BrandItemRepository;
 import com.ideas2it.ideameds.repository.UserMedicineRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
@@ -41,7 +41,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
     private final UserMedicineRepository userMedicineRepository;
 
     private final UserRepository userRepository;
-    private final BrandItemsRepository brandItemsRepository;
+    private final BrandItemRepository brandItemRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
 
@@ -51,15 +51,15 @@ public class UserMedicineServiceImpl implements UserMedicineService {
      * Create instance for the class
      *
      * @param userMedicineRepository create instance for user medicine repository
-     * @param brandItemsRepository   create instance for brand item repository
+     * @param brandItemRepository   create instance for brand item repository
      * @param cartService            create instance for cart service
      * @param userRepository         create instance for user repository
      */
     @Autowired
-    public UserMedicineServiceImpl(UserMedicineRepository userMedicineRepository, UserRepository userRepository, BrandItemsRepository brandItemsRepository, CartService cartService) {
+    public UserMedicineServiceImpl(UserMedicineRepository userMedicineRepository, UserRepository userRepository, BrandItemRepository brandItemRepository, CartService cartService) {
         this.userMedicineRepository = userMedicineRepository;
         this.userRepository = userRepository;
-        this.brandItemsRepository = brandItemsRepository;
+        this.brandItemRepository = brandItemRepository;
         this.cartService = cartService;
     }
 
@@ -69,12 +69,12 @@ public class UserMedicineServiceImpl implements UserMedicineService {
      */
     @Override
     public Long addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException {
-        UserMedicine savedUserMedicine = modelMapper.map(userMedicine, UserMedicine.class);
+        UserMedicine existingUserMedicine = modelMapper.map(userMedicine, UserMedicine.class);
         Optional<User> user = userRepository.findById(userId);
-        List<BrandItems> brandItems = brandItemsRepository.findAll();
+        List<BrandItem> brandItems = brandItemRepository.findAll();
         if ( user.isPresent() ) {
-            saveUserMedicine(savedUserMedicine, user.get());
-            return addMedicineToCart(savedUserMedicine, user.get().getUserId(), brandItems);
+            saveUserMedicine(existingUserMedicine, user.get());
+            return addMedicineToCart(existingUserMedicine, user.get().getUserId(), brandItems);
         }
         throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
     }
@@ -101,20 +101,20 @@ public class UserMedicineServiceImpl implements UserMedicineService {
      * @return cartId - return id
      * @throws CustomException - occur when medicine not found
      */
-    private Long addMedicineToCart(UserMedicine savedUserMedicine, Long userId, List<BrandItems> brandItems) throws CustomException {
+    private Long addMedicineToCart(UserMedicine savedUserMedicine, Long userId, List<BrandItem> brandItems) throws CustomException {
         CartDTO cartDTO = null;
         List<CartItemDTO> cartItemDTOS = new ArrayList<>();
 
         CartItemDTO cartItemDTO = new CartItemDTO();
 
         if ( !brandItems.isEmpty() ) {
-            for (BrandItems brandItem : brandItems) {
+            for (BrandItem brandItem : brandItems) {
                 if ( savedUserMedicine.getMedicineName().equals(brandItem.getBrandItemName()) || savedUserMedicine.getMedicineName().equals(brandItem.getMedicine().getMedicineName()) ) {
                     cartDTO = new CartDTO();
-                    cartItemDTO.setBrandItemsDTO(modelMapper.map(brandItem, BrandItemsDTO.class));
+                    cartItemDTO.setBrandItemDTO(modelMapper.map(brandItem, BrandItemDTO.class));
                     cartItemDTO.setQuantity(savedUserMedicine.getQuantity());
                     cartItemDTOS.add(cartItemDTO);
-                    cartDTO.setCartItemDTOList(cartItemDTOS);
+                    cartDTO.setCartItemDTOs(cartItemDTOS);
                     break;
                 }
             }
@@ -131,11 +131,11 @@ public class UserMedicineServiceImpl implements UserMedicineService {
      * @throws CustomException - occur when medicine not found
      */
     private Long addCart(CartDTO cartDTO, Long userId) throws CustomException {
-        Optional<CartDTO> savedCart;
+        Optional<CartDTO> existingCart;
         if ( cartDTO != null ) {
-            savedCart = cartService.addCart(userId, cartDTO);
-            if ( savedCart.isPresent() ) {
-                return savedCart.get().getCartId();
+            existingCart = cartService.addCart(userId, cartDTO);
+            if ( existingCart.isPresent() ) {
+                return existingCart.get().getCartId();
             }
         }
         throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);

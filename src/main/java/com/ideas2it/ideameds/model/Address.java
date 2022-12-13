@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
+@Where(clause = "is_deleted = false")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +49,7 @@ public class Address {
     @NotNull
     private LocalDateTime modifiedAt;
     @NotNull
-    private boolean isDeletedStatus;
+    private boolean isDeleted;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
