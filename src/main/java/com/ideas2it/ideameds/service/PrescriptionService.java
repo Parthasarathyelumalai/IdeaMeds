@@ -73,4 +73,22 @@ public interface PrescriptionService {
      *                         and occurs when prescription was not found
      */
     Long deletePrescriptionById(Long prescriptionId, Long userId) throws CustomException;
+
+    /**
+     * Add the medicines to the cart based on prescription of the user
+     * If the user exists, the prescription will be validated and
+     * the prescribed medicines will be added to user's cart after validation the brand item
+     * If brand items mentioned in the prescription are not available in the database
+     * it will throw product not found exception
+     * If the user doesn't exist it will throw custom exception
+     * The prescription ID will be given by the user
+     *
+     * @param prescriptionId The id of the prescription that you want to add to the cart.
+     * @param userId         The id of the user who is adding the prescription to the cart.
+     * @return returns a message
+     * @throws CustomException occurs when user not found
+     *                         and occurs when prescription was not found
+     *                         and occurs when no medicine found in the prescription
+     */
+    String addPrescriptionToCart(Long prescriptionId, Long userId) throws CustomException;
 }

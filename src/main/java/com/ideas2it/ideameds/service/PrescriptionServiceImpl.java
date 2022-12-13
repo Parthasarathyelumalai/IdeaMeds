@@ -4,16 +4,23 @@
  */
 package com.ideas2it.ideameds.service;
 
+import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.CartDTO;
+import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.PrescriptionDTO;
+import com.ideas2it.ideameds.dto.PrescriptionItemsDTO;
+import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.PrescriptionItems;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.BrandItemsRepository;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import org.modelmapper.ModelMapper;
@@ -35,7 +42,9 @@ import java.util.Optional;
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
+    private final BrandItemsRepository brandItemsRepository;
     private final UserRepository userRepository;
+    private final CartService cartService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -43,11 +52,16 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      *
      * @param prescriptionRepository create new instance for prescription repository
      * @param userRepository         create new instance for user repository
+     * @param brandItemsRepository   create instance for brand items service
+     * @param cartService            create instance for cart service
      */
     @Autowired
-    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository) {
+    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository,
+                                   CartService cartService, BrandItemsRepository brandItemsRepository) {
         this.prescriptionRepository = prescriptionRepository;
+        this.brandItemsRepository = brandItemsRepository;
         this.userRepository = userRepository;
+        this.cartService = cartService;
     }
 
     /**
@@ -115,5 +129,69 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             }
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String addPrescriptionToCart(Long prescriptionId,
+                                        Long userId) throws CustomException {
+        UserDTO userDTO = modelMapper.map(userRepository.findById(userId),UserDTO.class);
+        if (null != userDTO) {
+        PrescriptionDTO prescriptionDTO = getPrescriptionByPrescriptionId(prescriptionId);
+            if (null != prescriptionDTO) {
+                DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
+                if (null != prescriptionDTO.getPrescriptionItems()) {
+                    getMedicinesForCart(prescriptionDTO.getPrescriptionItems(), userDTO);
+                } else throw new CustomException(HttpStatus.NOT_FOUND,Constants.NO_MEDICINE_IN_THE_PRESCRIPTION);
+                return Constants.ADDED_TO_CART;
+            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
+        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+    }
+
+    /**
+     * Takes a list of prescription items, and a user, and adds the prescription items to the user's cart
+     * Get the medicines from the database and check with the prescribed medicines
+     * whether it is available or not
+     *
+     * @param prescriptionItems    To map the prescribed medicines
+     * @param userDTO              To add the medicines to required user's cart
+     * @throws CustomException     prescribed medicine is not available in the database
+     */
+    private void getMedicinesForCart(List<PrescriptionItemsDTO> prescriptionItems, UserDTO userDTO)
+            throws CustomException {
+        CartDTO cart = new CartDTO();
+        List<CartItemDTO> cartItems = new ArrayList<>();
+        List<PrescriptionItemsDTO> prescriptionItemsDTOs = new ArrayList<>();
+
+        for (PrescriptionItemsDTO prescriptionItem : prescriptionItems) {
+            BrandItemsDTO brandItem = modelMapper.map(brandItemsRepository.findBrandItemsByBrandItemName(prescriptionItem.getBrandItemName()),BrandItemsDTO.class);
+            if (brandItem != null) {
+                CartItemDTO cartItem = new CartItemDTO();
+                cartItem.setBrandItemsDTO(brandItem);
+                cartItem.setQuantity(prescriptionItem.getQuantity());
+                cartItems.add(cartItem);
+                cart.setCartItemDTOList(cartItems);
+            } else {
+                prescriptionItemsDTOs.add(prescriptionItem);
+            }
+        }
+        addToCart(prescriptionItemsDTOs, userDTO, cart);
+    }
+
+    /**
+     * Add the prescribed medicines to the cart
+     * whether it is available or not
+     *
+     * @param prescriptionItemsDTOs To map the prescribed medicines
+     * @param userDTO               To add the medicines to required user's cart
+     * @param cartDTO               TO add the medicines in the cart
+     * @throws CustomException      prescribed medicine is not available in the database
+     */
+    private void addToCart(List<PrescriptionItemsDTO> prescriptionItemsDTOs, UserDTO userDTO, CartDTO cartDTO)
+            throws CustomException {
+        if (prescriptionItemsDTOs.isEmpty())
+            cartService.addCart(userDTO.getUserId(), cartDTO);
+        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemsDTOs);
     }
 }
