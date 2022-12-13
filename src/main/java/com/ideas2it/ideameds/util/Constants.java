@@ -256,9 +256,17 @@ public class Constants {
      * Share if discount id is empty
      */
     public static final String ID_REQUIRED_TO_UPDATE_DISCOUNT = "Discount id is required to update discount.";
-    
-     /**   
+
+    /**
      * Share that there is no medicine in the prescription message
      */
     public static final String NO_MEDICINE_IN_THE_PRESCRIPTION = "There is no medicines in the prescription";
+    /**
+     * Share that Address deleted successfully
+     */
+    public static final String ADDRESS_DELETED_SUCCESSFULLY = "'s address is deleted";
+    /**
+     * Share that Address added successfully
+     */
+    public static final String ADDRESS_ADDED_SUCCESSFULLY = "'s address is added";
 }

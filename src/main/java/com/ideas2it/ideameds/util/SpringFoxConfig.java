@@ -35,7 +35,6 @@ import java.util.List;
 @Component
 public class SpringFoxConfig {
 
-    private static final String BASIC_AUTH = "basicAuth";
     private static final String BEARER_AUTH = "Bearer";
 
     /**
@@ -77,7 +76,7 @@ public class SpringFoxConfig {
     }
 
     /**
-     *  This function creates a security context that uses the bearerAuthReference() function to create a security
+     * This function creates a security context that uses the bearerAuthReference() function to create a security
      * reference that is used to secure all paths
      *
      * @return A SecurityContext object.
