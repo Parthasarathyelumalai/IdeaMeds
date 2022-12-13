@@ -45,5 +45,5 @@ public class MedicineDTO {
     @NotNull(message = "medicine type should be mentioned")
     private MedicineType medicineType;
 
-    private boolean prescriptionRequired;
+    private boolean isPrescriptionRequired;
 }

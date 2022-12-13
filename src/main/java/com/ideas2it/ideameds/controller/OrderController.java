@@ -47,11 +47,11 @@ public class OrderController {
      */
     @PutMapping("/order/{id}")
     public ResponseEntity<OrderDTO> addOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
-        Optional<OrderDTO> orderSystem = orderService.addOrder(userId);
-        if (orderSystem.isPresent()) {
+        Optional<OrderDTO> orderDTO= orderService.addOrder(userId);
+        if (orderDTO.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(orderSystem.get());
+                    .body(orderDTO.get());
         } else {
             throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.CAN_NOT_ORDER);
         }
@@ -65,9 +65,9 @@ public class OrderController {
      */
     @GetMapping("/allOrder")
     public ResponseEntity<List<OrderDTO>> getAllOrder() throws CustomException {
-        List<OrderDTO> orderDTOList = orderService.getAllOrder();
-        if (null != orderDTOList) {
-            return (ResponseEntity.status(HttpStatus.OK).body(orderDTOList));
+        List<OrderDTO> orderDTOs = orderService.getAllOrder();
+        if (null != orderDTOs) {
+            return (ResponseEntity.status(HttpStatus.OK).body(orderDTOs));
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_ITEM_NOT_FOUND);
         }
@@ -82,11 +82,11 @@ public class OrderController {
      */
     @GetMapping("/order/{id}")
     public ResponseEntity<List<OrderDTO>> getOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderDTO>> orderSystem = orderService.getOrderByUserId(userId);
-        if (orderSystem.isPresent()) {
+        Optional<List<OrderDTO>> orderDTOs = orderService.getOrderByUserId(userId);
+        if (orderDTOs.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(orderSystem.get());
+                    .body(orderDTOs.get());
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_ITEM_NOT_FOUND);
         }
@@ -102,9 +102,9 @@ public class OrderController {
      */
     @DeleteMapping("/order/{userId}/{orderId}")
     public ResponseEntity<String> cancelOrder(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId) throws CustomException {
-        boolean isCancel = orderService.cancelOrder(userId, orderId);
+        boolean isCancelled = orderService.cancelOrder(userId, orderId);
         
-        if (isCancel) {
+        if (isCancelled) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(Constants.ORDER_CANCELED_SUCCESSFULLY);

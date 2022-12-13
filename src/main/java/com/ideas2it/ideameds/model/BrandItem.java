@@ -33,12 +33,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
-public class BrandItems {
-
+@Where(clause = "is_deleted = false")
+public class BrandItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long brandItemsId;
+    private Long brandItemId;
     @NotNull
     private String brandItemName;
     @NotNull
@@ -83,5 +82,5 @@ public class BrandItems {
     private List<Warehouse> warehouses;
 
     @NotNull
-    private boolean isDeletedStatus;
+    private boolean isDeleted;
 }

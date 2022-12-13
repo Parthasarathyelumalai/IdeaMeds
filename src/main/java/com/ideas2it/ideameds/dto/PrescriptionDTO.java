@@ -58,5 +58,5 @@ public class PrescriptionDTO {
     private LocalDate dateOfIssue;
 
     @NotNull(message = "Prescribed Medicines cannot be empty")
-    private List<@Valid PrescriptionItemsDTO> prescriptionItems;
+    private List<@Valid PrescriptionItemDTO> prescriptionItemDTOs;
 }

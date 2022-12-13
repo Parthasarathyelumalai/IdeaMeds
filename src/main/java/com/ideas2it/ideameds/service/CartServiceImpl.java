@@ -5,19 +5,19 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.BrandDTO;
-import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.BrandItemDTO;
 import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.dto.CartItemDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Brand;
-import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.BrandItem;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.repository.BrandItemsRepository;
+import com.ideas2it.ideameds.repository.BrandItemRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
@@ -43,7 +43,7 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
-    private final BrandItemsRepository brandItemsRepository;
+    private final BrandItemRepository brandItemRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
@@ -51,13 +51,13 @@ public class CartServiceImpl implements CartService {
      *
      * @param cartRepository       create instance for cart repository
      * @param userRepository       create instance for user repository
-     * @param brandItemsRepository create instance for brand items repository
+     * @param brandItemRepository create instance for brand items repository
      */
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, BrandItemsRepository brandItemsRepository) {
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, BrandItemRepository brandItemRepository) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
-        this.brandItemsRepository = brandItemsRepository;
+        this.brandItemRepository = brandItemRepository;
     }
 
     /**
@@ -69,11 +69,11 @@ public class CartServiceImpl implements CartService {
         if (user.isPresent()) {
             Cart cart = convertToCart(cartDto);
             cart.setUser(user.get());
-            Optional<Cart> existedCart = cartRepository.findByUser(user.get());
-            if (existedCart.isPresent()) {
-                cart.setCartId(existedCart.get().getCartId());
-                existedCart = Optional.of(cart);
-                Cart savedCart = cartRepository.save(getTotalPriceOfCart(existedCart.get()));
+            Optional<Cart> existingCart = cartRepository.findByUser(user.get());
+            if (existingCart.isPresent()) {
+                cart.setCartId(existingCart.get().getCartId());
+                existingCart = Optional.of(cart);
+                Cart savedCart = cartRepository.save(getTotalPriceOfCart(existingCart.get()));
                 return Optional.of(convertToCartDto(savedCart));
             } else {
                 Cart savedCart = cartRepository.save(getTotalPriceOfCart(cart));
@@ -93,26 +93,26 @@ public class CartServiceImpl implements CartService {
         Cart cart = modelMapper.map(cartDto, Cart.class);
         cart.setCreatedAt(DateTimeValidation.getDate());
         cart.setModifiedAt(DateTimeValidation.getDate());
-        List<CartItem> cartItems = convertToCartItem(cartDto.getCartItemDTOList());
-        cart.setCartItemList(cartItems);
+        List<CartItem> cartItems = convertToCartItem(cartDto.getCartItemDTOs());
+        cart.setCartItems(cartItems);
         return cart;
     }
 
     /**
      * It converts a list of CartItemDTO to a list of CartItem
      *
-     * @param cartItemDTOList The list of cart items that we want to convert to CartItem objects.
+     * @param cartItemDTOs The list of cart items that we want to convert to CartItem objects.
      * @return A list of CartItem objects.
      * @throws CustomException - Brand item not found exception, medicine not found exception.
      */
-    private List<CartItem> convertToCartItem(List<CartItemDTO> cartItemDTOList) throws CustomException {
+    private List<CartItem> convertToCartItem(List<CartItemDTO> cartItemDTOs) throws CustomException {
         List<CartItem> cartItems = new ArrayList<>();
-        if (null != cartItemDTOList) {
-            for (CartItemDTO cartItemDto : cartItemDTOList) {
-                Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemDto.getBrandItemsDTO().getBrandItemsId());
-                if (brandItems.isPresent()) {
+        if (null != cartItemDTOs) {
+            for (CartItemDTO cartItemDto : cartItemDTOs) {
+                Optional<BrandItem> brandItem = brandItemRepository.findById(cartItemDto.getBrandItemDTO().getBrandItemId());
+                if (brandItem.isPresent()) {
                     CartItem cartItem = modelMapper.map(cartItemDto, CartItem.class);
-                    cartItem.setBrandItems(brandItems.get());
+                    cartItem.setBrandItem(brandItem.get());
                     cartItems.add(cartItem);
                 } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
             }
@@ -127,10 +127,10 @@ public class CartServiceImpl implements CartService {
      * @return The total price of the cart is being returned.
      */
     private Cart getTotalPriceOfCart(Cart cart) {
-        List<CartItem> cartItems = cart.getCartItemList();
+        List<CartItem> cartItems = cart.getCartItems();
         float totalPrice = 0;
         for (CartItem cartItem : cartItems) {
-            totalPrice = cartItem.getBrandItems().getPrice() * cartItem.getQuantity() + totalPrice;
+            totalPrice = cartItem.getBrandItem().getPrice() * cartItem.getQuantity() + totalPrice;
         }
         cart.setTotalPrice(totalPrice);
         return cart;
@@ -145,47 +145,47 @@ public class CartServiceImpl implements CartService {
      */
     private CartDTO convertToCartDto(Cart cart) throws CustomException {
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
-        List<CartItem> cartItemList = cart.getCartItemList();
+        List<CartItem> cartItems = cart.getCartItems();
         cartDTO.setResponseUserDTO(modelMapper.map(cart.getUser(), ResponseUserDTO.class));
-        cartDTO.setCartItemDTOList(convertToCartItemDtoList(cartItemList));
+        cartDTO.setCartItemDTOs(convertToCartItemDtoList(cartItems));
         return cartDTO;
     }
 
     /**
      * It converts a list of CartItem objects to a list of CartItemDTO objects
      *
-     * @param cartItemList The list of cart items that we want to convert to a list of cart item DTOs.
+     * @param cartItems The list of cart items that we want to convert to a list of cart item DTOs.
      * @return A list of CartItemDTO objects.
      * @throws CustomException - Cart item list not found, Brand item not found exception.
      */
-    private List<CartItemDTO> convertToCartItemDtoList(List<CartItem> cartItemList) throws CustomException {
-        List<CartItemDTO> cartItemDTOList = new ArrayList<>();
-        if (!cartItemList.isEmpty()) {
-            for (CartItem cartItem : cartItemList) {
-                BrandItemsDTO brandItemsDTO = convertToBrandItemDto(cartItem.getBrandItems());
-                CartItemDTO cartItemDto = modelMapper.map(cartItem, CartItemDTO.class);
-                cartItemDto.setBrandItemsDTO(brandItemsDTO);
-                cartItemDTOList.add(cartItemDto);
+    private List<CartItemDTO> convertToCartItemDtoList(List<CartItem> cartItems) throws CustomException {
+        List<CartItemDTO> cartItemDTOs = new ArrayList<>();
+        if (!cartItems.isEmpty()) {
+            for (CartItem cartItem : cartItems) {
+                BrandItemDTO brandItemDTO = convertToBrandItemDto(cartItem.getBrandItem());
+                CartItemDTO cartItemDTO = modelMapper.map(cartItem, CartItemDTO.class);
+                cartItemDTO.setBrandItemDTO(brandItemDTO);
+                cartItemDTOs.add(cartItemDTO);
             }
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
-        return cartItemDTOList;
+        return cartItemDTOs;
     }
 
     /**
      * It converts a BrandItems object to a BrandItemsDTO object
      *
-     * @param brandItems The object that needs to be converted.
+     * @param brandItem The object that needs to be converted.
      * @return BrandItemsDTO
      * @throws CustomException Brand item not found, Medicine not found, Brand not found.
      */
-    private BrandItemsDTO convertToBrandItemDto(BrandItems brandItems) throws CustomException {
-        BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems, BrandItemsDTO.class);
-        if (null != brandItemsDTO) {
-            MedicineDTO medicineDTO = convertToMedicineDto(brandItems.getMedicine());
-            BrandDTO brandDTO = convertToBrandDto(brandItems.getBrand());
-            brandItemsDTO.setBrandDTO(brandDTO);
-            brandItemsDTO.setMedicineDTO(medicineDTO);
-            return brandItemsDTO;
+    private BrandItemDTO convertToBrandItemDto(BrandItem brandItem) throws CustomException {
+        BrandItemDTO brandItemDTO = modelMapper.map(brandItem, BrandItemDTO.class);
+        if (null != brandItemDTO) {
+            MedicineDTO medicineDTO = convertToMedicineDto(brandItem.getMedicine());
+            BrandDTO brandDTO = convertToBrandDto(brandItem.getBrand());
+            brandItemDTO.setBrandDTO(brandDTO);
+            brandItemDTO.setMedicineDTO(medicineDTO);
+            return brandItemDTO;
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
         }
@@ -240,7 +240,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public boolean deleteCartByUserId(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent() && !user.get().isDeletedStatus()) {
+        if (user.isPresent() && !user.get().isDeleted()) {
             Optional<Cart> cart = cartRepository.findByUser(user.get());
             if (cart.isPresent()) {
                 cart.get().setUser(null);

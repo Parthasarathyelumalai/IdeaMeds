@@ -36,5 +36,5 @@ public class CartItem {
     private int quantity;
     @OneToOne
     @JoinColumn(name = "brand_items_id")
-    private BrandItems brandItems;
+    private BrandItem brandItem;
 }

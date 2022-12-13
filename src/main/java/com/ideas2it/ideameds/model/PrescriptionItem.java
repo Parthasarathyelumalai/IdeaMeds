@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Setter
 @Getter
-public class PrescriptionItems {
+public class PrescriptionItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

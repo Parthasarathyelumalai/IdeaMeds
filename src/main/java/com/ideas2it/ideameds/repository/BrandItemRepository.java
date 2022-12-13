@@ -4,7 +4,7 @@
  */
 package com.ideas2it.ideameds.repository;
 
-import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.BrandItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +22,7 @@ import java.util.Optional;
  * @since - 2022-11-21
  */
 @Repository
-public interface BrandItemsRepository extends JpaRepository<BrandItems, Long> {
+public interface BrandItemRepository extends JpaRepository<BrandItem, Long> {
 
     /**
      * <p>
@@ -34,7 +34,7 @@ public interface BrandItemsRepository extends JpaRepository<BrandItems, Long> {
      * @return list of brand items using search
      * null if not related
      */
-    Optional<List<BrandItems>> findAllByBrandItemNameContainingIgnoreCase(String medicineName);
+    Optional<List<BrandItem>> findAllByBrandItemNameContainingIgnoreCase(String medicineName);
 
     /**
      * <p>
@@ -45,5 +45,5 @@ public interface BrandItemsRepository extends JpaRepository<BrandItems, Long> {
      * @return single brand item using brand Item name
      * null if not found
      */
-    Optional<BrandItems> findBrandItemsByBrandItemName(String brandItemName);
+    Optional<BrandItem> findBrandItemByBrandItemName(String brandItemName);
 }

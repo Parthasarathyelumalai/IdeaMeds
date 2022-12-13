@@ -36,7 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
+@Where(clause = "is_deleted = false")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,9 +55,9 @@ public class User {
     @JoinColumn(name = "user_id" ,referencedColumnName = "userId")
     private List<Address> addresses;
     @NotNull
-    private boolean isDeletedStatus;
+    private boolean isDeleted;
     @OneToMany(mappedBy = "user")
-    private List<Prescription> prescription;
+    private List<Prescription> prescriptions;
     @OneToMany(mappedBy = "user")
     private  List<UserMedicine> userMedicines;
     @Enumerated(EnumType.STRING)

@@ -29,5 +29,5 @@ public class WarehouseResponseDTO {
 
     private String location;
 
-    private List<BrandItemsDTO> brandItemsDTOList;
+    private List<BrandItemDTO> brandItemsDTOs;
 }

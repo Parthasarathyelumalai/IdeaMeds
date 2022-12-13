@@ -18,5 +18,5 @@ public class ResponseUserDTO {
     private String name;
     private String phoneNumber;
     private String emailId;
-    private List<AddressDTO> addresses;
+    private List<AddressDTO> addressDTOs;
 }

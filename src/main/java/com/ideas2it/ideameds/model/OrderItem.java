@@ -37,7 +37,7 @@ public class OrderItem {
     private int quantity;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "brand_items_id")
-    private BrandItems brandItems;
+    private BrandItem brandItem;
     @NotNull
     private LocalDateTime createdAt;
     @NotNull

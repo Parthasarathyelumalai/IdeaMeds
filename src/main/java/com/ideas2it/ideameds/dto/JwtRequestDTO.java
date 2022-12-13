@@ -2,7 +2,7 @@
  * Copyright 2022 Ideas2IT Technologies. All rights reserved.
  * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
  */
-package com.ideas2it.ideameds.model;
+package com.ideas2it.ideameds.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +23,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtRequest {
+public class JwtRequestDTO {
     @NotBlank(message = "Username should be mentioned eg.Your email Id")
     @Email(regexp = "^[a-z]{1}[a-z0-9._]+@[a-z0-9]+[.][a-z]*$", message = "Invalid format e.g. john@xyz.com")
     private String userName;
