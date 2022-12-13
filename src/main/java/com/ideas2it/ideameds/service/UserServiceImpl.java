@@ -10,6 +10,7 @@ import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.AddressRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.security.CustomUserDetail;
 import com.ideas2it.ideameds.util.Constants;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper = new ModelMapper();
-
+    private final AddressRepository addressRepository;
     private final AddressService addressService;
 
     /**
@@ -47,11 +48,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      *
      * @param userRepository create instance for user repository
      * @param addressService create instance for userAddress repository
+     * @param addressRepository create instance for address repository
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, AddressService addressService) {
+    public UserServiceImpl(UserRepository userRepository, AddressService addressService, AddressRepository addressRepository) {
         this.userRepository = userRepository;
         this.addressService = addressService;
+        this.addressRepository = addressRepository;
     }
 
 
@@ -129,8 +132,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setModifiedAt(DateTimeValidation.getDate());
 
             for (Address address : user.getAddresses()) {
-                Optional<User> existAddress = userRepository.findById(address.getAddressId());
-                if ( existAddress.isEmpty() ) {
+                Optional<Address> existAddress = addressRepository.findById(address.getAddressId());
+                if (existAddress.isEmpty()) {
                     throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
                 }
                 address.setCreatedAt(existUser.get().getCreatedAt());
