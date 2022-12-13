@@ -34,6 +34,8 @@ public interface AddressService {
      * @param user       The user object that is returned from the database.
      * @param addressDTO This is the object that contains the address details.
      * @return A string - deleted message as response statement
+     * @throws CustomException - occur when user is not found
+     *                           occur when user's address is not found
      */
     String deleteAddress(User user, AddressDTO addressDTO) throws CustomException;
 }
