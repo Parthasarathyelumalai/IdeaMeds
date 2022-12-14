@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/brand-item")
-public class BrandItemsController {
+public class BrandItemController {
 
     private final BrandItemService brandItemService;
     private final WarehouseService warehouseService;
@@ -47,7 +47,7 @@ public class BrandItemsController {
      * @param medicineService   creates new instance for medicine service
      */
     @Autowired
-    public BrandItemsController(BrandItemService brandItemService,
+    public BrandItemController(BrandItemService brandItemService,
                                 WarehouseService warehouseService,
                                 BrandService brandService,
                                 MedicineService medicineService) {
