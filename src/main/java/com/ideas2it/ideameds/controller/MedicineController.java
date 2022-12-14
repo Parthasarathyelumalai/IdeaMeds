@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ import java.util.List;
  * @since 2022-11-18
  */
 @RestController
+@RequestMapping("/medicine")
 public class MedicineController {
     private final MedicineService medicineService;
 
@@ -58,7 +60,7 @@ public class MedicineController {
      * @return medicine which was added in the database successfully
      * @throws CustomException throws when the new medicine name already exist
      */
-    @PostMapping("/medicine")
+    @PostMapping
     public ResponseEntity<MedicineDTO> addMedicine(@Valid @RequestBody MedicineDTO medicineDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.CREATED).body(medicineService.addMedicine(medicineDTO));
     }
@@ -68,12 +70,15 @@ public class MedicineController {
      * @return list of medicines available
      * @throws CustomException throws exception when there is no entry for medicine
      */
-    @GetMapping("/medicine/get-all")
+    @GetMapping("/get-all")
     public ResponseEntity<List<MedicineDTO>> getAllMedicines() throws CustomException {
         List<MedicineDTO> medicineDTOs = medicineService.getAllMedicines();
+
         if (medicineDTOs != null) {
             return ResponseEntity.status(HttpStatus.OK).body(medicineDTOs);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        }
 
     }
 
@@ -86,7 +91,7 @@ public class MedicineController {
      * @return medicine using the id
      * @throws CustomException throws exception when there is no medicine found
      */
-    @GetMapping("/medicine/{medicineId}")
+    @GetMapping("/{medicineId}")
     public ResponseEntity<MedicineDTO> getMedicineById(@PathVariable("medicineId") Long medicineId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(medicineService.getMedicineById(medicineId));
     }
@@ -100,7 +105,7 @@ public class MedicineController {
      * @return medicine using the medicine name
      * @throws CustomException throws exception when there is no medicine found
      */
-    @GetMapping("/medicine/by-name/{medicineName}")
+    @GetMapping("/by-name/{medicineName}")
     public ResponseEntity<MedicineDTO> getMedicineByName(@PathVariable("medicineName") String medicineName) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(medicineService.getMedicineByName(medicineName));
     }
@@ -115,7 +120,7 @@ public class MedicineController {
      * @return medicine Dto after it was updated successfully
      * @throws CustomException throws exception when there is no medicine found
      */
-    @PutMapping("/medicine")
+    @PutMapping
     public ResponseEntity<MedicineDTO> updateMedicine(@Valid @RequestBody MedicineDTO medicineDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(medicineService.updateMedicine(medicineDTO));
     }
@@ -130,12 +135,14 @@ public class MedicineController {
      * @return response for deletion
      * @throws CustomException throws exception when occurs when medicine was not found
      */
-    @PutMapping("/medicine/delete/{medicineId}")
+    @PutMapping("/delete/{medicineId}")
     public ResponseEntity<String> deleteMedicine(@PathVariable("medicineId") Long medicineId) throws CustomException {
         Long medicineById = medicineService.deleteMedicine(medicineId);
+
         if (medicineById != null) {
             return ResponseEntity.status(HttpStatus.OK).body(medicineById + Constants.DELETED_SUCCESSFULLY);
-        } else
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
+        }
     }
 }

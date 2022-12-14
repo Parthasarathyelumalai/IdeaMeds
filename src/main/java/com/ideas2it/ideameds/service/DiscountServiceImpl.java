@@ -47,6 +47,7 @@ public class DiscountServiceImpl implements DiscountService {
      */
     @Override
     public Optional<DiscountDTO> addDiscount(DiscountDTO discountDTO) throws CustomException {
+
         if (discountDTO != null) {
             Discount discount = modelMapper.map(discountDTO, Discount.class);
             discount.setCreatedAt(DateTimeValidation.getDate());
@@ -64,6 +65,7 @@ public class DiscountServiceImpl implements DiscountService {
      * @throws CustomException If discount is empty, throws no discount.
      */
     private DiscountDTO convertToDiscountDto(Discount discount) throws CustomException {
+
         if (null != discount) {
             return modelMapper.map(discount, DiscountDTO.class);
         } else {
@@ -78,6 +80,7 @@ public class DiscountServiceImpl implements DiscountService {
     public List<DiscountDTO> getAll() {
         List<Discount> discounts = discountRepository.findAll();
         List<DiscountDTO> discountDTOs = new ArrayList<>();
+
         for (Discount discount : discounts) {
             discountDTOs.add(modelMapper.map(discount, DiscountDTO.class));
         }
@@ -89,8 +92,10 @@ public class DiscountServiceImpl implements DiscountService {
      */
     @Override
     public Optional<DiscountDTO> updateDiscountById(DiscountDTO discountDTO) throws CustomException {
+
         if (null != discountDTO.getDiscountId()) {
             Optional<Discount> existingDiscount = discountRepository.findById(discountDTO.getDiscountId());
+
             if (existingDiscount.isPresent() && Objects.equals(existingDiscount.get().getDiscountId(), discountDTO.getDiscountId())) {
                 Discount discount = modelMapper.map(discountDTO, Discount.class);
                 discount.setCreatedAt(DateTimeValidation.getDate());
@@ -110,6 +115,7 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public boolean deleteDiscountById(Long discountId) throws CustomException {
         Optional<Discount> discount = discountRepository.findById(discountId);
+
         if (discount.isPresent()) {
             discountRepository.deleteById(discount.get().getDiscountId());
             return true;

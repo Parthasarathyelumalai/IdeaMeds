@@ -25,6 +25,7 @@ import java.util.Optional;
  */
 
 @RestController
+@RequestMapping("/order")
 public class OrderController {
     private final OrderService orderService;
 
@@ -45,9 +46,10 @@ public class OrderController {
      * @return ResponseEntity<OrderDTO>
      * @throws CustomException - Can not place order.
      */
-    @PutMapping("/order/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<OrderDTO> addOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
         Optional<OrderDTO> orderDTO= orderService.addOrder(userId);
+
         if (orderDTO.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -66,6 +68,7 @@ public class OrderController {
     @GetMapping("/allOrder")
     public ResponseEntity<List<OrderDTO>> getAllOrder() throws CustomException {
         List<OrderDTO> orderDTOs = orderService.getAllOrder();
+
         if (null != orderDTOs) {
             return (ResponseEntity.status(HttpStatus.OK).body(orderDTOs));
         } else {
@@ -80,9 +83,10 @@ public class OrderController {
      * @return A list of OrderDTO objects.
      * @throws CustomException - Order item not found.
      */
-    @GetMapping("/order/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<List<OrderDTO>> getOrderByUserId(@PathVariable("id") Long userId) throws CustomException {
         Optional<List<OrderDTO>> orderDTOs = orderService.getOrderByUserId(userId);
+
         if (orderDTOs.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -100,7 +104,7 @@ public class OrderController {
      * @return ResponseEntity<String>
      * @throws CustomException - Can not cancel the order.
      */
-    @DeleteMapping("/order/{userId}/{orderId}")
+    @DeleteMapping("/{userId}/{orderId}")
     public ResponseEntity<String> cancelOrder(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId) throws CustomException {
         boolean isCancelled = orderService.cancelOrder(userId, orderId);
         
