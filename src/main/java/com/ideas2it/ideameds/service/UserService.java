@@ -122,4 +122,13 @@ public interface UserService {
      *                         occur when user's address is not found
      */
     String deleteUserAddress(Long userId, AddressDTO addressDTO) throws CustomException;
+
+    /**
+     * This function returns true if the emailId is a valid user name, and false otherwise.
+     *
+     * @param emailId The email id of the user.
+     * @return boolean true or false - if user is exit, it will return true
+     *                                 or else return false.
+     */
+    boolean isValidUserName(String emailId);
 }

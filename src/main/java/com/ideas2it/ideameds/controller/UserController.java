@@ -220,20 +220,24 @@ public class UserController {
      */
     @PostMapping("/authenticate")
     public JwtResponseDTO authenticate(@Valid @RequestBody JwtRequestDTO jwtRequest) throws CustomException {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            jwtRequest.getUserName(),
-                            jwtRequest.getPassword()
-                    )
-            );
-        } catch ( BadCredentialsException exception ) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, Constants.INVALID_CREDENTIALS);
-        }
-        final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUserName());
-        final String token = jwtUtility.generateToken(userDetails);
+        boolean isValidUserName = userService.isValidUserName(jwtRequest.getUserName());
+        if ( isValidUserName ) {
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                jwtRequest.getUserName(),
+                                jwtRequest.getPassword()
+                        )
+                );
 
-        return new JwtResponseDTO(token);
+            } catch ( BadCredentialsException exception ) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, Constants.INVALID_CREDENTIALS);
+            }
+            final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUserName());
+            final String token = jwtUtility.generateToken(userDetails);
+            return new JwtResponseDTO(token);
+        }
+        throw new CustomException(HttpStatus.BAD_REQUEST, Constants.INVALID_CREDENTIALS);
     }
 
 

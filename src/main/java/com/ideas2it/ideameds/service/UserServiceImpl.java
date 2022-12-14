@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     /**
      * Create instance for the class
      *
-     * @param userRepository create instance for user repository
-     * @param addressService create instance for userAddress repository
+     * @param userRepository    create instance for user repository
+     * @param addressService    create instance for userAddress repository
      * @param addressRepository create instance for address repository
      */
     @Autowired
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
             for (Address address : user.getAddresses()) {
                 Optional<Address> existingAddress = addressRepository.findById(address.getAddressId());
-                if (existingAddress.isEmpty()) {
+                if ( existingAddress.isEmpty() ) {
                     throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
                 }
                 address.setCreatedAt(existingUser.get().getCreatedAt());
@@ -275,5 +275,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if ( !user.getUserId().equals(existingUser.getUserId()) )
                 throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isValidUserName(String emailId) {
+        return userRepository.existsByEmailId(emailId);
     }
 }
