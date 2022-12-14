@@ -8,6 +8,7 @@ import com.ideas2it.ideameds.dto.AddressDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -38,10 +39,20 @@ public interface UserService {
      * if user aren't exist, it will pass user not found message.
      *
      * @param userId - gives a userId to get corresponded user details
-     * @return user - gives a response as a user details
-     * @throws CustomException - occur when user mail or phone is exist or occur user is not saved
+     * @return userDTO - gives a response as a user DTO details
+     * @throws CustomException - occur when user is not found
      */
-    ResponseUserDTO getUserById(Long userId) throws CustomException;
+    ResponseUserDTO getUserDTOById(Long userId) throws CustomException;
+
+    /**
+     * Get a details of individual user from databases
+     * if user aren't exist, it will pass user not found message.
+     *
+     * @param userId - gives a userId to get corresponded user details
+     * @return user - gives a response as a user details
+     * @throws CustomException - occur when user is not found
+     */
+    User getUserById(Long userId) throws CustomException;
 
     /**
      * Get details of all user registration details in databases

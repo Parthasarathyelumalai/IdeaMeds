@@ -20,10 +20,7 @@ import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.OrderItem;
 import com.ideas2it.ideameds.model.Order;
 import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.repository.CartRepository;
-import com.ideas2it.ideameds.repository.DiscountRepository;
 import com.ideas2it.ideameds.repository.OrderRepository;
-import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
@@ -48,30 +45,30 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    private final CartRepository cartRepository;
+    private final CartService cartService;
+
+    private final DiscountService discountService;
 
     private final OrderRepository orderRepository;
-
-    private final DiscountRepository discountRepository;
 
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      * Create instance for the class
      *
-     * @param userRepository     create instance for user repository
-     * @param cartRepository     create instance for cart repository
-     * @param orderRepository    create instance for order repository
-     * @param discountRepository create instance for discount repository
+     * @param userService        create instance for user service.
+     * @param cartService        create instance for cart repository.
+     * @param orderRepository    create instance for order repository.
+     * @param discountService    create instance for order repository.
      */
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, DiscountRepository discountRepository) {
-        this.userRepository = userRepository;
-        this.cartRepository = cartRepository;
+    public OrderServiceImpl(UserService userService, CartService cartService, OrderRepository orderRepository, DiscountService discountService) {
+        this.userService = userService;
+        this.cartService = cartService;
         this.orderRepository = orderRepository;
-        this.discountRepository = discountRepository;
+        this.discountService = discountService;
     }
 
     /**
@@ -79,17 +76,18 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Optional<OrderDTO> addOrder(Long userId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-
-        if (user.isPresent()) {
-            Optional<Cart> cart = cartRepository.findByUser(user.get());
-            if (cart.isPresent() && Objects.equals(user.get().getUserId(), cart.get().getUser().getUserId())) {
+        User user = userService.getUserById(userId);
+        
+        if (null != user) {
+            Cart cart = cartService.getCartByUser(user);
+            
+            if (null != cart && Objects.equals(user.getUserId(), cart.getUser().getUserId())) {
                 Order order = new Order();
-                List<CartItem> cartItems = cart.get().getCartItems();
-                order.setUser(user.get());
-                order.setCart(cart.get());
+                List<CartItem> cartItems = cart.getCartItems();
+                order.setUser(user);
+                order.setCart(cart);
                 order.setOrderDescription(Constants.ORDER_SUCCESSFUL);
-                order.setTotalPrice(cart.get().getTotalPrice());
+                order.setTotalPrice(cart.getTotalPrice());
                 order.setAmountPaid(calculateDiscount(order.getTotalPrice(), order));
                 order.setOrderDate(DateTimeValidation.getDate());
                 order.setCreatedAt(DateTimeValidation.getDate());
@@ -118,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
      * @return The total price after discount is being returned.
      */
     private float calculateDiscount(float totalPrice, Order order) {
-        List<Discount> discounts = discountRepository.findAll();
+        List<Discount> discounts = discountService.getAllDiscount();
         float afterDiscount = 0;
 
         for (Discount discount : discounts) {
@@ -297,11 +295,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Optional<List<OrderDTO>> getOrderByUserId(Long userId) throws CustomException {
         List<OrderDTO> orderDTOs = new ArrayList<>();
-        Optional<User> user = userRepository.findById(userId);
-
-        if (user.isPresent()) {
-            Optional<List<Order>> orders = orderRepository.findByUser(user.get());
-
+        User user = userService.getUserById(userId);
+        
+        if (null != user) {
+            Optional<List<Order>> orders = orderRepository.findByUser(user);
             if (orders.isPresent()) {
                 for (Order order : orders.get()) {
                     orderDTOs.add(convertToOrderDto(order));
@@ -320,9 +317,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public boolean cancelOrder(Long userId, Long orderId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-
-        if ( user.isPresent() ) {
+        User user = userService.getUserById(userId);
+        
+        if (null != user) {
             Optional<Order> orders = orderRepository.findById(orderId);
 
             if ( orders.isPresent() ) {

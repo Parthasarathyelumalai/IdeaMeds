@@ -93,7 +93,7 @@ public class BrandItemServiceImpl implements BrandItemService {
      * {@inheritDoc}
      */
     @Override
-    public BrandItemDTO getBrandItemById(Long brandItemId) throws CustomException {
+    public BrandItemDTO getBrandItemDTOById(Long brandItemId) throws CustomException {
         Optional<BrandItem> brandItem = brandItemRepository.findById(brandItemId);
 
         if (brandItem.isPresent()) {
@@ -110,7 +110,7 @@ public class BrandItemServiceImpl implements BrandItemService {
      * {@inheritDoc}
      */
     @Override
-    public BrandDTO getBrandByBrandItemId(Long brandItemId) throws CustomException {
+    public BrandDTO getBrandDTOByBrandItemId(Long brandItemId) throws CustomException {
         Optional<BrandItem> brandItem = brandItemRepository.findById(brandItemId);
 
         if (brandItem.isPresent()) {
@@ -129,8 +129,20 @@ public class BrandItemServiceImpl implements BrandItemService {
     /**
      * {@inheritDoc}
      */
+    public BrandItem getBrandItemById(Long brandItemId) throws CustomException {
+        Optional<BrandItem> brandItem = brandItemRepository.findById(brandItemId);
+        if (brandItem.isPresent()) {
+            return brandItem.get();
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND + " At Id : " + brandItemId);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MedicineDTO getMedicineByBrandItemId(Long brandItemId) throws CustomException {
+    public MedicineDTO getMedicineDTOByBrandItemId(Long brandItemId) throws CustomException {
         Optional<BrandItem> brandItem = brandItemRepository.findById(brandItemId);
 
         if (brandItem.isPresent()) {

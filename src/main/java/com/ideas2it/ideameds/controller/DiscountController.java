@@ -74,12 +74,11 @@ public class DiscountController {
      */
     @GetMapping("/allDiscount")
     public ResponseEntity<List<DiscountDTO>> getAllDiscounts() throws CustomException {
-        List<DiscountDTO> discountDTOs = discountService.getAll();
-
+        List<DiscountDTO> discountDTOs = discountService.getAllDiscountDTO();
         if (discountDTOs != null) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(discountService.getAll());
+                    .body(discountService.getAllDiscountDTO());
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_DISCOUNT);
         }

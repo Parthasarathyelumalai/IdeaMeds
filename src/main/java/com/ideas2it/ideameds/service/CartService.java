@@ -6,6 +6,8 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.CartDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.Cart;
+import com.ideas2it.ideameds.model.User;
 
 import java.util.Optional;
 
@@ -38,6 +40,15 @@ public interface CartService {
      * @throws CustomException User not found, Cart not found.
      */
     CartDTO getCartByUserId(Long userId) throws CustomException;
+
+
+    /**
+     * Get the cart of a user.
+     *
+     * @param user The user for whom the cart is to be fetched.
+     * @return A Cart object
+     */
+    Cart getCartByUser(User user) throws CustomException;
 
     /**
      * Delete a cart by user id
