@@ -218,7 +218,7 @@ public class UserController {
      * @return A JWT token - send a response as token
      * @throws CustomException - occur when unauthorized user login in
      */
-    @PostMapping("/user/authenticate")
+    @PostMapping("/authenticate")
     public JwtResponseDTO authenticate(@Valid @RequestBody JwtRequestDTO jwtRequest) throws CustomException {
         try {
             authenticationManager.authenticate(
