@@ -32,4 +32,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return User - return a user
      */
     User findByPhoneNumber(String phoneNumber);
+
+    /**
+     * Check if a user exists with the given emailId.
+     *
+     * @param emailId The emailId of the user.
+     * @return A boolean value if user is exit, it will return true
+     *                         or else return false.
+     */
+    boolean existsByEmailId(String emailId);
 }

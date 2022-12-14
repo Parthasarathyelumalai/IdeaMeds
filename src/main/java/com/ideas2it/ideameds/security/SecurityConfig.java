@@ -41,7 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @param auth the {@link AuthenticationManagerBuilder} to use
      * @throws Exception - occur runtime exception
      */
-    /*    @Override*/
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
     }
