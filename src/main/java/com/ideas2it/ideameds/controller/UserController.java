@@ -218,7 +218,7 @@ public class UserController {
      * @return A JWT token - send a response as token
      * @throws CustomException - occur when unauthorized user login in
      */
-    @PostMapping("/authenticate")
+    @PostMapping("/user/authenticate")
     public JwtResponseDTO authenticate(@Valid @RequestBody JwtRequestDTO jwtRequest) throws CustomException {
         try {
             authenticationManager.authenticate(
@@ -228,7 +228,7 @@ public class UserController {
                     )
             );
         } catch ( BadCredentialsException exception ) {
-            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.INVALID_CREDENTIALS);
+            throw new CustomException(HttpStatus.BAD_REQUEST, Constants.INVALID_CREDENTIALS);
         }
         final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUserName());
         final String token = jwtUtility.generateToken(userDetails);

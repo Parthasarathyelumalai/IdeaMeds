@@ -41,7 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * @param auth the {@link AuthenticationManagerBuilder} to use
      * @throws Exception - occur runtime exception
      */
-    /*    @Override*/
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
     }
@@ -82,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources",
                         "/swagger-resources/configuration/ui",
                         "/swagger-resources/configuration/security","/swagger-ui/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user", "/authenticate")
+                .antMatchers(HttpMethod.POST, "/user", "/user/authenticate")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/user/user-medicine/{id}").hasRole("CUSTOMER")
                 .antMatchers(HttpMethod.POST, "/user/user-medicine/{id}").hasRole("CUSTOMER")
