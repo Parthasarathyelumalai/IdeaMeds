@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,20 +75,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             User user = modelMapper.map(userDTO, User.class);
             String testPasswordEncoded = bCryptPasswordEncoder.encode(user.getPhoneNumber());
             user.setPassword(testPasswordEncoded);
-            List<Address> addresses = user.getAddresses();
-            addresses.removeAll(user.getAddresses());
+            user.setCreatedAt(DateTimeValidation.getDate());
+            user.setModifiedAt(DateTimeValidation.getDate());
+            List<Address> addresses = new ArrayList<>();
 
             for (AddressDTO addressDTO : userDTO.getAddresses()) {
                 addresses.add(modelMapper.map(addressDTO, Address.class));
             }
 
-            user.setCreatedAt(DateTimeValidation.getDate());
-            user.setModifiedAt(DateTimeValidation.getDate());
-
-            for (Address address : user.getAddresses()) {
+            for (Address address : addresses) {
                 address.setCreatedAt(DateTimeValidation.getDate());
                 address.setModifiedAt(DateTimeValidation.getDate());
             }
+            user.setAddresses(addresses);
             return Optional.of(modelMapper.map(userRepository.save(user), UserDTO.class));
         }
 
@@ -240,6 +240,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * @throws CustomException - occur when email id already exit
      */
     private void validByEmailId(User user) throws CustomException {
+
         if ( validUserByEmailId(user.getEmailId()) ) {
             User existingUser = userRepository.findByEmailId(user.getEmailId());
             if ( !user.getUserId().equals(existingUser.getUserId()) )
@@ -254,6 +255,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * @throws CustomException - occur when email id already exit
      */
     private void validByPhoneNumber(User user) throws CustomException {
+
         if ( validUserByPhoneNumber(user.getPhoneNumber()) ) {
             User existingUser = userRepository.findByPhoneNumber(user.getPhoneNumber());
             if ( !user.getUserId().equals(existingUser.getUserId()) )

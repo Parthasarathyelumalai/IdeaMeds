@@ -49,7 +49,6 @@ public class User {
     private String password;
     @NotNull
     private String emailId;
-    @NotNull
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "user_id" ,referencedColumnName = "userId")

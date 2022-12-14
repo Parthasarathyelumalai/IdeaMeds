@@ -24,6 +24,7 @@ import java.util.List;
  * @since 2022-11-18
  */
 @RestController
+@RequestMapping("/brand")
 public class BrandController {
 
     private final BrandService brandService;
@@ -49,7 +50,7 @@ public class BrandController {
      * @return brand which was added in the database successfully
      * @throws CustomException throws when the new brand name is already exist
      */
-    @PostMapping("/brand")
+    @PostMapping
     public ResponseEntity<BrandDTO> addBrand(@Valid @RequestBody BrandDTO brandDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.addBrand(brandDTO));
     }
@@ -62,7 +63,7 @@ public class BrandController {
      * @return list of all brand if it's available in the database
      *         null if there is no record
      */
-    @GetMapping("/brand/get-all")
+    @GetMapping("/get-all")
     public ResponseEntity<List<BrandDTO>> getAllBrands() {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.getAllBrands());
     }
@@ -78,7 +79,7 @@ public class BrandController {
      * @throws CustomException throws when the brand not fount using the
      *                         brand name from the request
      */
-    @GetMapping("/Brand/by-name/{brandName}")
+    @GetMapping("/by-name/{brandName}")
     public ResponseEntity<BrandDTO> getBrandByBrandName(@PathVariable String brandName) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.getBrandByBrandName(brandName));
     }
@@ -92,7 +93,7 @@ public class BrandController {
      * @return brand after the id gets a valid brand available in the database
      * @throws CustomException throws when the brand not found using the id from the request
      */
-    @GetMapping("/brand/{brandId}")
+    @GetMapping("/{brandId}")
     public ResponseEntity<BrandDTO> getBrandById(@PathVariable("brandId") Long brandId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.getBrandById(brandId));
     }
@@ -108,7 +109,7 @@ public class BrandController {
      * @throws CustomException throws when the brand was not found, happens when the brandId
      *                         was changed before updating
      */
-    @PutMapping("/brand")
+    @PutMapping
     public ResponseEntity<BrandDTO> updateBrand(@Valid @RequestBody BrandDTO brandDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandService.updateBrand(brandDTO));
     }
@@ -124,13 +125,14 @@ public class BrandController {
      * @throws CustomException throws when brand is not found using the
      *                         corresponding id from the request
      */
-    @PutMapping("/brand/delete/{brandId}")
+    @PutMapping("/delete/{brandId}")
     public ResponseEntity<String> deleteBrand(@PathVariable("brandId") Long brandId) throws CustomException {
         Long brandById = brandService.deleteBrand(brandId);
         if (brandById != null) {
             return ResponseEntity.status(HttpStatus.OK).body(brandById + Constants.DELETED_SUCCESSFULLY);
-        } else
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
+        }
     }
 
 }

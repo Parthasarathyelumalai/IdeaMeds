@@ -72,7 +72,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
-            prescription.setPrescriptionItems(prescriptionDTO.getPrescriptionItemDTOs().stream().map(prescriptionItemDTO -> modelMapper.map(prescriptionItemDTO, PrescriptionItem.class)).toList());
+            prescription.setPrescriptionItems(prescriptionDTO.getPrescriptionItems().stream().map(prescriptionItemDTO -> modelMapper.map(prescriptionItemDTO, PrescriptionItem.class)).toList());
             prescription.setUser(user.get());
             DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
             prescription.setCreatedAt(DateTimeValidation.getDate());
@@ -135,7 +135,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
                     }
                 }
             }
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
         return null;
     }
 
@@ -145,16 +147,25 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public String addPrescriptionToCart(Long prescriptionId,
                                         Long userId) throws CustomException {
         UserDTO userDTO = modelMapper.map(userRepository.findById(userId),UserDTO.class);
+
         if (null != userDTO) {
         PrescriptionDTO prescriptionDTO = getPrescriptionByPrescriptionId(prescriptionId);
+
             if (null != prescriptionDTO) {
                 DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
-                if (null != prescriptionDTO.getPrescriptionItemDTOs()) {
-                    getMedicinesForCart(prescriptionDTO.getPrescriptionItemDTOs(), userDTO);
-                } else throw new CustomException(HttpStatus.NOT_FOUND,Constants.NO_MEDICINE_IN_THE_PRESCRIPTION);
+
+                if (null != prescriptionDTO.getPrescriptionItems()) {
+                    getMedicinesForCart(prescriptionDTO.getPrescriptionItems(), userDTO);
+                } else {
+                    throw new CustomException(HttpStatus.NOT_FOUND,Constants.NO_MEDICINE_IN_THE_PRESCRIPTION);
+                }
                 return Constants.ADDED_TO_CART;
-            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+            } else {
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
     }
 
     /**
@@ -174,6 +185,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         for (PrescriptionItemDTO prescriptionItemDTO : prescriptionItemDTOs) {
             BrandItemDTO brandItem = modelMapper.map(brandItemRepository.findBrandItemByBrandItemName(prescriptionItemDTO.getBrandItemName()),BrandItemDTO.class);
+
             if (brandItem != null) {
                 CartItemDTO cartItem = new CartItemDTO();
                 cartItem.setBrandItemDTO(brandItem);
@@ -198,8 +210,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      */
     private void addToCart(List<PrescriptionItemDTO> prescriptionItemDTOS, UserDTO userDTO, CartDTO cartDTO)
             throws CustomException {
-        if (prescriptionItemDTOS.isEmpty())
+
+        if (prescriptionItemDTOS.isEmpty()) {
             cartService.addCart(userDTO.getUserId(), cartDTO);
-        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemDTOS);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE + prescriptionItemDTOS);
+        }
     }
 }

@@ -46,13 +46,16 @@ public class WarehouseServiceImpl implements WarehouseService {
      */
     @Override
     public WarehouseDTO addWarehouse(WarehouseDTO warehouseDTO) throws CustomException {
+
         if (warehouseRepository
                 .findByWarehouseName(warehouseDTO.getWarehouseName()).isEmpty()) {
             Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
             warehouse.setCreatedAt(DateTimeValidation.getDate());
             warehouse.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.WAREHOUSE_NAME_EXIST);
+        } else {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.WAREHOUSE_NAME_EXIST);
+        }
     }
 
     /**
@@ -71,9 +74,12 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public WarehouseDTO getWarehouseById(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
+
         if (warehouse.isPresent()){
             return modelMapper.map(warehouse, WarehouseDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        }
     }
 
     /**
@@ -82,12 +88,15 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public WarehouseResponseDTO getWarehouseAndStocksById(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
+
         if (warehouse.isPresent()){
             WarehouseResponseDTO warehouseResponseDTO = modelMapper.map(warehouse, WarehouseResponseDTO.class);
             warehouseResponseDTO.setBrandItemsDTOs(warehouse.get().getBrandItems()
                     .stream().map(brandItems -> modelMapper.map(brandItems, BrandItemDTO.class)).toList());
             return warehouseResponseDTO;
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        }
     }
 
     /**
@@ -97,11 +106,14 @@ public class WarehouseServiceImpl implements WarehouseService {
     public WarehouseDTO updateWarehouse(WarehouseDTO warehouseDTO) throws CustomException {
         Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
         Optional<Warehouse> existingWarehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
+
         if(existingWarehouse.isPresent()) {
             warehouse.setCreatedAt(existingWarehouse.get().getCreatedAt());
             warehouse.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        }
     }
 
     /**
@@ -110,9 +122,12 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public Long deleteWarehouseById(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
+
         if (warehouse.isPresent()) {
             warehouse.get().setDeleted(true);
             return warehouseRepository.save(warehouse.get()).getWarehouseId();
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        }
     }
 }

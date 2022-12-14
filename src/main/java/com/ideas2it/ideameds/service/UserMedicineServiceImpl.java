@@ -72,6 +72,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
         UserMedicine existingUserMedicine = modelMapper.map(userMedicine, UserMedicine.class);
         Optional<User> user = userRepository.findById(userId);
         List<BrandItem> brandItems = brandItemRepository.findAll();
+
         if ( user.isPresent() ) {
             saveUserMedicine(existingUserMedicine, user.get());
             return addMedicineToCart(existingUserMedicine, user.get().getUserId(), brandItems);
@@ -118,7 +119,9 @@ public class UserMedicineServiceImpl implements UserMedicineService {
                     break;
                 }
             }
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_AVAILABLE);
+        }
         return addCart(cartDTO, userId);
     }
 
@@ -132,6 +135,7 @@ public class UserMedicineServiceImpl implements UserMedicineService {
      */
     private Long addCart(CartDTO cartDTO, Long userId) throws CustomException {
         Optional<CartDTO> existingCart;
+
         if ( cartDTO != null ) {
             existingCart = cartService.addCart(userId, cartDTO);
             if ( existingCart.isPresent() ) {

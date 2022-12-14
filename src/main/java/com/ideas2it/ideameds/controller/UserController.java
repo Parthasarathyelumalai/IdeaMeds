@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,6 +48,7 @@ import java.util.Optional;
  */
 @RestController
 @Slf4j
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
     private final UserMedicineService userMedicineService;
@@ -80,9 +82,10 @@ public class UserController {
      * @return ResponseEntity<UserDTO> - gives a response as user details
      * @throws CustomException - occur when user's email and phone number are already registered
      */
-    @PostMapping("/user")
+    @PostMapping
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
         Optional<UserDTO> existingUser = userService.addUser(user);
+
         if ( existingUser.isPresent() ) {
             return ResponseEntity.status(HttpStatus.OK).body(existingUser.get());
         }
@@ -97,7 +100,7 @@ public class UserController {
      * @return ResponseEntity<ResponseUserDTO>  - give response as user details
      * @throws CustomException - occur when User is not Found
      */
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable("id") Long userId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(userId));
     }
@@ -108,7 +111,7 @@ public class UserController {
      *
      * @return A list of ResponseUserDTO objects  - gives a response as list of user details.
      */
-    @GetMapping("/user")
+    @GetMapping
     public List<ResponseUserDTO> getAllUser() {
         return userService.getAllUser();
     }
@@ -123,7 +126,7 @@ public class UserController {
      *                         also validate the email id and phone number before update it,
      *                         if it exists, it will throw the error message.
      */
-    @PutMapping("/user")
+    @PutMapping
     public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDTO));
     }
@@ -138,7 +141,7 @@ public class UserController {
      * @return ResponseEntity<String> - give a response as statement for delete user.
      * @throws CustomException - Occur when user is not found
      */
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(userId));
@@ -153,8 +156,9 @@ public class UserController {
      * @return A list of UserMedicineDTO objects  -  list of user medicine.
      * @throws CustomException - Occur when user is not found
      */
-    @GetMapping("/user/user-medicine/{id}")
+    @GetMapping("/user-medicine/{id}")
     public ResponseEntity<List<UserMedicineDTO>> getPreviousUserMedicine(@PathVariable("id") Long userId) throws CustomException {
+
         if ( userService.isUserExist(userId) ) {
             return ResponseEntity.status(HttpStatus.OK).body(userMedicineService.getPreviousUserMedicine(userId));
         } else {
@@ -173,7 +177,7 @@ public class UserController {
      * @throws CustomException - occur when User is not Found
      *                         occur when User medicine is not added
      */
-    @PostMapping("/user/user-medicine/{id}")
+    @PostMapping("/user-medicine/{id}")
     public ResponseEntity<String> addUserMedicine(@PathVariable("id") Long userId, @Valid @RequestBody UserMedicineDTO userMedicine) throws CustomException {
         boolean isUserExist = userService.isUserExist(userId);
         Long savedCartId;
@@ -196,9 +200,10 @@ public class UserController {
      * @return A list of OrderDTO objects  - gives response as list of order by user.
      * @throws CustomException - occur when there is no order history
      */
-    @GetMapping("/user/order/{id}")
+    @GetMapping("/order/{id}")
     public ResponseEntity<List<OrderDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
         Optional<List<OrderDTO>> savedOrderDTOs = orderService.getOrderByUserId(userId);
+
         if ( savedOrderDTOs.isPresent() ) {
             return ResponseEntity.status(HttpStatus.OK).body(savedOrderDTOs.get());
         }
