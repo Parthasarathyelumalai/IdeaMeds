@@ -14,9 +14,7 @@ import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Prescription;
 import com.ideas2it.ideameds.model.PrescriptionItem;
 import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.repository.BrandItemRepository;
 import com.ideas2it.ideameds.repository.PrescriptionRepository;
-import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 
@@ -42,8 +40,8 @@ import java.util.Optional;
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
-    private final BrandItemRepository brandItemRepository;
-    private final UserRepository userRepository;
+    private final BrandItemService brandItemService;
+    private final UserService userService;
     private final CartService cartService;
     private final ModelMapper modelMapper = new ModelMapper();
 
@@ -51,16 +49,16 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      * Constructs a new object
      *
      * @param prescriptionRepository create new instance for prescription repository
-     * @param userRepository         create new instance for user repository
-     * @param brandItemRepository   create instance for brand items service
+     * @param userService        create new instance for user repository
+     * @param brandItemService   create instance for brand items service
      * @param cartService            create instance for cart service
      */
     @Autowired
-    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository,
-                                   CartService cartService, BrandItemRepository brandItemRepository) {
+    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserService userService,
+                                   CartService cartService, BrandItemService brandItemService) {
         this.prescriptionRepository = prescriptionRepository;
-        this.brandItemRepository = brandItemRepository;
-        this.userRepository = userRepository;
+        this.brandItemService = brandItemService;
+        this.userService = userService;
         this.cartService = cartService;
     }
 
@@ -69,11 +67,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      */
     @Override
     public PrescriptionDTO addPrescription(PrescriptionDTO prescriptionDTO, Long userId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
+        User user = userService.getUserById(userId);
+        if (null != user) {
             Prescription prescription = modelMapper.map(prescriptionDTO, Prescription.class);
             prescription.setPrescriptionItems(prescriptionDTO.getPrescriptionItems().stream().map(prescriptionItemDTO -> modelMapper.map(prescriptionItemDTO, PrescriptionItem.class)).toList());
-            prescription.setUser(user.get());
+            prescription.setUser(user);
             DateTimeValidation.validateDateOfIssue(prescriptionDTO.getDateOfIssue());
             prescription.setCreatedAt(DateTimeValidation.getDate());
             prescription.setModifiedAt(DateTimeValidation.getDate());
@@ -101,9 +99,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      */
     @Override
     public List<PrescriptionDTO> getPrescriptionByUser(Long userId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            Optional<List<Prescription>> prescriptions = prescriptionRepository.findByUser(user.get());
+        User user = userService.getUserById(userId);
+        if (null != user) {
+            Optional<List<Prescription>> prescriptions = prescriptionRepository.findByUser(user);
             if (prescriptions.isPresent()) {
                 return prescriptions.get().stream()
                         .map(prescription -> modelMapper.map(prescription, PrescriptionDTO.class))
@@ -120,10 +118,10 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      */
     @Override
     public Long deletePrescriptionById(Long prescriptionId, Long userId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
+        User user = userService.getUserById(userId);
 
-        if (user.isPresent()) {
-            List<Prescription> prescriptions = user.get().getPrescriptions();
+        if (null != user) {
+            List<Prescription> prescriptions = user.getPrescriptions();
 
             if (prescriptions.isEmpty()) {
                 throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
@@ -146,7 +144,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
      */
     public String addPrescriptionToCart(Long prescriptionId,
                                         Long userId) throws CustomException {
-        UserDTO userDTO = modelMapper.map(userRepository.findById(userId),UserDTO.class);
+        UserDTO userDTO = modelMapper.map(userService.getUserById(userId),UserDTO.class);
 
         if (null != userDTO) {
         PrescriptionDTO prescriptionDTO = getPrescriptionByPrescriptionId(prescriptionId);
@@ -184,7 +182,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         List<PrescriptionItemDTO> prescriptionItemDTOS = new ArrayList<>();
 
         for (PrescriptionItemDTO prescriptionItemDTO : prescriptionItemDTOs) {
-            BrandItemDTO brandItem = modelMapper.map(brandItemRepository.findBrandItemByBrandItemName(prescriptionItemDTO.getBrandItemName()),BrandItemDTO.class);
+            BrandItemDTO brandItem = modelMapper.map(brandItemService.getBrandItemByName(prescriptionItemDTO.getBrandItemName()),BrandItemDTO.class);
 
             if (brandItem != null) {
                 CartItemDTO cartItem = new CartItemDTO();
