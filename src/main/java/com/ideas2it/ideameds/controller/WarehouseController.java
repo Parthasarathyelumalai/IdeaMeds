@@ -84,7 +84,7 @@ public class WarehouseController {
      */
     @GetMapping("/{warehouseId}")
     public ResponseEntity<WarehouseDTO> getWarehouseById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
-        return ResponseEntity.status(HttpStatus.OK).body(warehouseService.getWarehouseById(warehouseId));
+        return ResponseEntity.status(HttpStatus.OK).body(warehouseService.getWarehouseDTOById(warehouseId));
     }
 
     /**
