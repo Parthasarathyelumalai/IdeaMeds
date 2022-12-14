@@ -5,14 +5,14 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.BrandDTO;
-import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.BrandItemDTO;
 import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.OrderItemDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Brand;
-import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.BrandItem;
 import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.Discount;
@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
             Cart cart = cartService.getCartByUser(user);
             if (null != cart && Objects.equals(user.getUserId(), cart.getUser().getUserId())) {
                 Order order = new Order();
-                List<CartItem> cartItemList = cart.getCartItemList();
+                List<CartItem> cartItems = cart.getCartItems();
                 order.setUser(user);
                 order.setCart(cart);
                 order.setOrderDescription(Constants.ORDER_SUCCESSFUL);
@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
                 order.setCreatedAt(DateTimeValidation.getDate());
                 order.setDeliveryDate(DateTimeValidation.getDate().plusDays(5));
                 order.setModifiedAt(DateTimeValidation.getDate());
-                order.setOrderItems(cartItemToOrderItem(cartItemList));
+                order.setOrderItems(cartItemToOrderItem(cartItems));
                 Order savedOrder = orderRepository.save(order);
                 OrderDTO orderDto = convertToOrderDto(savedOrder);
                 return Optional.of(orderDto);
@@ -114,10 +114,10 @@ public class OrderServiceImpl implements OrderService {
      * @return The total price after discount is being returned.
      */
     private float calculateDiscount(float totalPrice, Order order) {
-        List<Discount> discountList = discountService.getAllDiscount();
+        List<Discount> discounts = discountService.getAllDiscount();
         float afterDiscount = 0;
 
-        for (Discount discount : discountList) {
+        for (Discount discount : discounts) {
             if ((totalPrice > 100 && totalPrice < 10000 && discount.getDiscountPercentage() == 5) || (totalPrice > 10000 && totalPrice < 100000 && discount.getDiscountPercentage() == 10)){
                 order.setDiscount(discount);
                 float discountPrice = (totalPrice * discount.getDiscountPercentage()) / 100;
@@ -140,9 +140,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderDTO convertToOrderDto(Order order) throws CustomException {
         if (null != order) {
             OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
-            List<OrderItem> orderItemList = order.getOrderItems();
+            List<OrderItem> orderItems = order.getOrderItems();
             orderDTO.setDiscountDTO(convertToDiscountDTO(order.getDiscount()));
-            orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(orderItemList));
+            orderDTO.setOrderItemDTOs(convertToOrderItemDtoList(orderItems));
             return orderDTO;
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_IS_EMPTY);
@@ -172,38 +172,38 @@ public class OrderServiceImpl implements OrderService {
     /**
      * It converts a list of OrderItem objects to a list of OrderItemDTO objects.
      *
-     * @param orderItemList The list of order items that we want to convert to a list of order item DTOs.
+     * @param orderItems The list of order items that we want to convert to a list of order item DTOs.
      * @return A list of OrderItemDTO objects.
      * @throws CustomException - Brand item not found.
      */
-    private List<OrderItemDTO> convertToOrderItemDtoList(List<OrderItem> orderItemList) throws CustomException {
-        List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
-        if ( null != orderItemList ) {
-            for (OrderItem orderItem : orderItemList) {
-                BrandItemsDTO brandItemsDTO = convertToBrandItemDto(orderItem.getBrandItems());
+    private List<OrderItemDTO> convertToOrderItemDtoList(List<OrderItem> orderItems) throws CustomException {
+        List<OrderItemDTO> orderItemDTOs = new ArrayList<>();
+        if ( null != orderItems ) {
+            for (OrderItem orderItem : orderItems) {
+                BrandItemDTO brandItemDTO = convertToBrandItemDto(orderItem.getBrandItem());
                 OrderItemDTO orderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
-                orderItemDTO.setBrandItemsDTO(brandItemsDTO);
-                orderItemDTOList.add(orderItemDTO);
+                orderItemDTO.setBrandItemDTO(brandItemDTO);
+                orderItemDTOs.add(orderItemDTO);
             }
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_ITEM_NOT_FOUND);
-        return orderItemDTOList;
+        return orderItemDTOs;
     }
 
     /**
      * It converts a BrandItems object to a BrandItemsDTO object
      *
-     * @param brandItems The object that is to be converted to BrandItemsDTO.
-     * @return BrandItemsDTO.
+     * @param brandItem The object that is to be converted to BrandItemsDTO.
+     * @return BrandItemDTO.
      * @throws CustomException Brand item not found.
      */
-    private BrandItemsDTO convertToBrandItemDto(BrandItems brandItems) throws CustomException {
-        BrandItemsDTO brandItemsDTO = modelMapper.map(brandItems, BrandItemsDTO.class);
-        if ( null != brandItemsDTO ) {
-            MedicineDTO medicineDTO = convertToMedicineDto(brandItems.getMedicine());
-            BrandDTO brandDTO = convertToBrandDto(brandItems.getBrand());
-            brandItemsDTO.setBrandDTO(brandDTO);
-            brandItemsDTO.setMedicineDTO(medicineDTO);
-            return brandItemsDTO;
+    private BrandItemDTO convertToBrandItemDto(BrandItem brandItem) throws CustomException {
+        BrandItemDTO brandItemDTO = modelMapper.map(brandItem, BrandItemDTO.class);
+        if ( null != brandItemDTO ) {
+            MedicineDTO medicineDTO = convertToMedicineDto(brandItem.getMedicine());
+            BrandDTO brandDTO = convertToBrandDto(brandItem.getBrand());
+            brandItemDTO.setBrandDTO(brandDTO);
+            brandItemDTO.setMedicineDTO(medicineDTO);
+            return brandItemDTO;
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
         }
@@ -242,25 +242,25 @@ public class OrderServiceImpl implements OrderService {
     /**
      * It takes a list of cart items and returns a list of order items
      *
-     * @param cartItemList The list of cart items that are to be converted to order items.
+     * @param cartItems The list of cart items that are to be converted to order items.
      * @return A list of order items.
      * @throws CustomException Cart item not found.
      */
-    public List<OrderItem> cartItemToOrderItem(List<CartItem> cartItemList) throws CustomException {
-        List<OrderItem> orderItemList = new ArrayList<>();
-        if ( cartItemList != null ) {
-            for (CartItem cartItem : cartItemList) {
+    public List<OrderItem> cartItemToOrderItem(List<CartItem> cartItems) throws CustomException {
+        List<OrderItem> orderItems = new ArrayList<>();
+        if ( cartItems != null ) {
+            for (CartItem cartItem : cartItems) {
                 OrderItem orderItem = new OrderItem();
                 orderItem.setCreatedAt(DateTimeValidation.getDate());
                 orderItem.setModifiedAt(DateTimeValidation.getDate());
                 orderItem.setQuantity(cartItem.getQuantity());
-                orderItem.setBrandItems(cartItem.getBrandItems());
-                orderItemList.add(orderItem);
+                orderItem.setBrandItem(cartItem.getBrandItem());
+                orderItems.add(orderItem);
             }
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
         }
-        return orderItemList;
+        return orderItems;
     }
 
     /**
@@ -268,18 +268,18 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<OrderDTO> getAllOrder() throws CustomException {
-        List<Order> orderList = orderRepository.findAll();
-        List<OrderDTO> orderDTOList = new ArrayList<>();
-        if ( !orderList.isEmpty() ) {
-            for (Order order : orderList) {
+        List<Order> orders = orderRepository.findAll();
+        List<OrderDTO> orderDTOs = new ArrayList<>();
+        if ( !orders.isEmpty() ) {
+            for (Order order : orders) {
                 OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
-                orderDTO.setOrderItemDTOList(convertToOrderItemDtoList(order.getOrderItems()));
-                orderDTOList.add(orderDTO);
+                orderDTO.setOrderItemDTOs(convertToOrderItemDtoList(order.getOrderItems()));
+                orderDTOs.add(orderDTO);
             }
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.ORDER_ITEM_NOT_FOUND);
         }
-        return orderDTOList;
+        return orderDTOs;
     }
 
     /**
@@ -287,13 +287,13 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Optional<List<OrderDTO>> getOrderByUserId(Long userId) throws CustomException {
-        List<OrderDTO> orderDTOList = new ArrayList<>();
+        List<OrderDTO> orderDTOs = new ArrayList<>();
         User user = userService.getUserById(userId);
         if (null != user) {
             Optional<List<Order>> orderSystemList = orderRepository.findByUser(user);
             if (orderSystemList.isPresent()) {
                 for (Order order : orderSystemList.get()) {
-                    orderDTOList.add(convertToOrderDto(order));
+                    orderDTOs.add(convertToOrderDto(order));
                 }
             } else {
                 throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_HISTORY_OF_ORDERS);
@@ -301,7 +301,7 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }
-        return Optional.of(orderDTOList);
+        return Optional.of(orderDTOs);
     }
 
     /**
@@ -311,10 +311,10 @@ public class OrderServiceImpl implements OrderService {
     public boolean cancelOrder(Long userId, Long orderId) throws CustomException {
         User user = userService.getUserById(userId);
         if (null != user) {
-            Optional<Order> orderSystem = orderRepository.findById(orderId);
-            if ( orderSystem.isPresent() ) {
-                orderSystem.get().setUser(null);
-                orderSystem.get().setOrderItems(null);
+            Optional<Order> orders = orderRepository.findById(orderId);
+            if ( orders.isPresent() ) {
+                orders.get().setUser(null);
+                orders.get().setOrderItems(null);
                 orderRepository.deleteById(orderId);
                 return true;
             } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_ITEM_TO_CANCEL_THE_ORDER);

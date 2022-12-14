@@ -86,11 +86,11 @@ public class MedicineServiceImpl implements MedicineService {
      */
     public MedicineDTO updateMedicine(MedicineDTO medicineDTO) throws CustomException {
         Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
-        Optional<Medicine> existMedicine = medicineRepository.findById(medicineDTO.getMedicineId());
-        if(existMedicine.isEmpty()) {
+        Optional<Medicine> existingMedicine = medicineRepository.findById(medicineDTO.getMedicineId());
+        if(existingMedicine.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
         }
-        medicine.setCreatedAt(existMedicine.get().getCreatedAt());
+        medicine.setCreatedAt(existingMedicine.get().getCreatedAt());
         medicine.setModifiedAt(DateTimeValidation.getDate());
         return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
     }
@@ -101,7 +101,7 @@ public class MedicineServiceImpl implements MedicineService {
     public Long deleteMedicine(Long medicineId) throws CustomException {
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
         if (medicine.isPresent()) {
-            medicine.get().setDeletedStatus(true);
+            medicine.get().setDeleted(true);
             medicine.get().setModifiedAt(DateTimeValidation.getDate());
         return medicineRepository.save(medicine.get()).getMedicineId();
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);

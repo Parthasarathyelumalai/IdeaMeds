@@ -70,9 +70,9 @@ public class MedicineController {
      */
     @GetMapping("/medicine/get-all")
     public ResponseEntity<List<MedicineDTO>> getAllMedicines() throws CustomException {
-        List<MedicineDTO> medicineDTOList = medicineService.getAllMedicines();
-        if (medicineDTOList != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(medicineDTOList);
+        List<MedicineDTO> medicineDTOs = medicineService.getAllMedicines();
+        if (medicineDTOs != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(medicineDTOs);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
 
     }

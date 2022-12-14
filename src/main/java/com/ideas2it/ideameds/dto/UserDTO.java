@@ -5,13 +5,12 @@
 package com.ideas2it.ideameds.dto;
 
 import com.ideas2it.ideameds.model.Prescription;
-import com.ideas2it.ideameds.model.UserMedicine;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.Role;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -40,6 +39,6 @@ public class UserDTO {
     @Email(regexp = Constants.REGEX_FOR_EMAIL_ID, message = "Invalid format e.g. john@xyz.com")
     private String emailId;
     private List<@Valid AddressDTO> addresses;
-    private List<Prescription> prescription;
+    private List<Prescription> prescriptions;
     private Role roleType;
 }

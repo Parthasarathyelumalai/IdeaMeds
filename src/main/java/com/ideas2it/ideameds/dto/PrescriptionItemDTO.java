@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
-public class PrescriptionItemsDTO {
+public class PrescriptionItemDTO {
     private Long prescriptionItemsId;
 
     @NotNull(message = "Quantity cannot be empty")

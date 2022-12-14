@@ -25,8 +25,8 @@ import javax.validation.constraints.*;
 @Setter
 @NoArgsConstructor
 @ToString
-public class BrandItemsDTO {
-    private Long brandItemsId;
+public class BrandItemDTO {
+    private Long brandItemId;
 
     @NotBlank(message = "Brand Item name should be mentioned")
     @Pattern(regexp = Constants.REGEX_FOR_MEDICINE_NAME, message = "Invalid format - Enter a valid brand item name")
@@ -37,7 +37,7 @@ public class BrandItemsDTO {
 
     @NotBlank(message = "Side effect should be mentioned")
     @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid side effect")
-    private String sideEffect;
+    private String sideEffects;
 
     @NotBlank(message = "Key Ingredients should be mentioned")
     @Pattern(regexp = Constants.REGEX_FOR_PARAGRAPHS, message = "Invalid format - Enter a valid key Ingredients")

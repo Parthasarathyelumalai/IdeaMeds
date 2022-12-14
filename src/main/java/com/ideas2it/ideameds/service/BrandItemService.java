@@ -5,11 +5,11 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.BrandDTO;
-import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.BrandItemDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.WarehouseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.BrandItems;
+import com.ideas2it.ideameds.model.BrandItem;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
  * @version 1.0
  * @since 2022-11-21
  */
-public interface BrandItemsService {
+public interface BrandItemService {
 
     /**
      * Adds the new brand items record to the database.
@@ -31,16 +31,16 @@ public interface BrandItemsService {
      * Brand items is a singular record for a unit in medicine
      * A brand item has association with both medicine and brand
      *
-     * @param brandItemsDTO Brand Item to add
+     * @param brandItemDTO Brand Item to add
      * @param medicineDTO   to assign medicine with brand Items
      * @param brandDTO      to assign brand with brand Items
      * @return added Brand Item
      * @throws CustomException
      *         throws when the new brand item name already exist
      */
-    BrandItemsDTO addBrandItem(BrandItemsDTO brandItemsDTO,
-                               MedicineDTO medicineDTO,
-                               BrandDTO brandDTO) throws CustomException;
+    BrandItemDTO addBrandItem(BrandItemDTO brandItemDTO,
+                              MedicineDTO medicineDTO,
+                              BrandDTO brandDTO) throws CustomException;
 
     /**
      * Gets all the brandItemsDTOs available in the database
@@ -48,7 +48,7 @@ public interface BrandItemsService {
      * @return list of all brand items if it's available in the database
      *         null if there is no record
      */
-    List<BrandItemsDTO> getAllBrandItems();
+    List<BrandItemDTO> getAllBrandItems();
 
     /**
      * Gets brand Item Dto using the requested id
@@ -59,7 +59,7 @@ public interface BrandItemsService {
      * @return brand Item after the id gets a valid brand item available in the database
      * @throws CustomException throws when the brand item not found using the id from the controller
      */
-    BrandItemsDTO getBrandItemDTOById(Long brandItemId) throws CustomException;
+    BrandItemDTO getBrandItemDTOById(Long brandItemId) throws CustomException;
 
     /**
      * Gets brand Items using the requested id
@@ -70,7 +70,7 @@ public interface BrandItemsService {
      * @return brand Item after the id gets a valid brand item available in the database
      * @throws CustomException throws when the brand item not found using the id from the controller
      */
-    BrandItems getBrandItemById(Long brandItemId) throws CustomException;
+    BrandItem getBrandItemById(Long brandItemId) throws CustomException;
 
     /**
      * Gets a brand item DTO by name
@@ -83,7 +83,7 @@ public interface BrandItemsService {
      * @throws CustomException throws when brand item not found
      *                         using the brand Item name from the request
      */
-    BrandItemsDTO getBrandItemDTOByName(String brandItemName) throws CustomException;
+    BrandItemDTO getBrandItemByName(String brandItemName) throws CustomException;
 
     /**
      * Gets list of brand items related with medicine name
@@ -95,8 +95,7 @@ public interface BrandItemsService {
      * @return list of brand items using medicineName
      * @throws CustomException throws when there is no brand item found
      */
-    List<BrandItemsDTO> getBrandItemsDTOsBySearch(String medicineName) throws CustomException;
-
+    List<BrandItemDTO> getBrandItemBySearch(String medicineName) throws CustomException;
 
     /**
      * This function is used to get the brand of a brand item by its id
@@ -129,12 +128,12 @@ public interface BrandItemsService {
      * have validation.
      * Changing a brand items ID to invalid format throws exception
      *
-     * @param brandItemsDTO The validated Updated Brand Item to be updated
-     * @return Brand Items Dto after it was updated successfully
+     * @param brandItemDTO The validated Updated Brand Item to be updated
+     * @return Brand Item Dto after it was updated successfully
      * @throws CustomException throws when the brand was not found, happens when the brand Items ID
      *                         was changed before updating
      */
-    BrandItemsDTO updateBrandItem(BrandItemsDTO brandItemsDTO) throws CustomException;
+    BrandItemDTO updateBrandItem(BrandItemDTO brandItemDTO) throws CustomException;
 
     /**
      * Assigns brand Item to the corresponding warehouse,
@@ -148,7 +147,7 @@ public interface BrandItemsService {
      * @return Brand Items After successfully Assigning
      * @throws CustomException throws when there is no brand item found
      */
-    BrandItemsDTO assignToWarehouse(WarehouseDTO warehouseDTO, Long brandItemId) throws CustomException;
+    BrandItemDTO assignToWarehouse(WarehouseDTO warehouseDTO, Long brandItemId) throws CustomException;
 
     /**
      * Soft deletes the brand Items using the corresponding id.

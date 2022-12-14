@@ -5,13 +5,13 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.AddressDTO;
+import com.ideas2it.ideameds.dto.JwtResponseDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.model.JwtRequest;
-import com.ideas2it.ideameds.model.JwtResponse;
+import com.ideas2it.ideameds.dto.JwtRequestDTO;
 import com.ideas2it.ideameds.service.OrderService;
 import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
@@ -82,9 +82,9 @@ public class UserController {
      */
     @PostMapping("/user")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO user) throws CustomException {
-        Optional<UserDTO> savedUser = userService.addUser(user);
-        if ( savedUser.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(savedUser.get());
+        Optional<UserDTO> existingUser = userService.addUser(user);
+        if ( existingUser.isPresent() ) {
+            return ResponseEntity.status(HttpStatus.OK).body(existingUser.get());
         }
         throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.USER_NOT_ADDED);
     }
@@ -126,8 +126,7 @@ public class UserController {
      */
     @PutMapping("/user")
     public ResponseEntity<String> updateUser(@RequestBody UserDTO userDTO) throws CustomException {
-        String updatedUser = userService.updateUser(userDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDTO));
     }
 
 
@@ -143,8 +142,7 @@ public class UserController {
     @DeleteMapping("/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) throws CustomException {
-        String deletedStatus = userService.deleteUser(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(deletedStatus);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(userId));
     }
 
     /**
@@ -201,22 +199,22 @@ public class UserController {
      */
     @GetMapping("/user/order/{id}")
     public ResponseEntity<List<OrderDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderDTO>> savedOrders = orderService.getOrderByUserId(userId);
-        if ( savedOrders.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(savedOrders.get());
+        Optional<List<OrderDTO>> savedOrderDTOs = orderService.getOrderByUserId(userId);
+        if ( savedOrderDTOs.isPresent() ) {
+            return ResponseEntity.status(HttpStatus.OK).body(savedOrderDTOs.get());
         }
         throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_HISTORY_OF_ORDERS);
     }
 
     /**
-     * It takes a JwtRequest object as input, validates it, and returns a JwtResponse object
+     * It takes a JwtRequest object as input, validates it, and returns a JwtResponseDTO object
      *
      * @param jwtRequest This is the request object that contains the username and password.
      * @return A JWT token - send a response as token
      * @throws CustomException - occur when unauthorized user login in
      */
     @PostMapping("/authenticate")
-    public JwtResponse authenticate(@Valid @RequestBody JwtRequest jwtRequest) throws CustomException {
+    public JwtResponseDTO authenticate(@Valid @RequestBody JwtRequestDTO jwtRequest) throws CustomException {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -230,7 +228,7 @@ public class UserController {
         final UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUserName());
         final String token = jwtUtility.generateToken(userDetails);
 
-        return new JwtResponse(token);
+        return new JwtResponseDTO(token);
     }
 
 

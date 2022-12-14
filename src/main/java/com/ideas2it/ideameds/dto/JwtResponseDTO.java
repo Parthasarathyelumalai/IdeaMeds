@@ -2,7 +2,7 @@
  * Copyright 2022 Ideas2IT Technologies. All rights reserved.
  * IDEAS2IT PROPRIETARY/CONFIDENTIAL.
  */
-package com.ideas2it.ideameds.model;
+package com.ideas2it.ideameds.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +20,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtResponse {
+public class JwtResponseDTO {
     private String token;
 }

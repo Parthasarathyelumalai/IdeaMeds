@@ -28,5 +28,5 @@ public class OrderDTO {
     private float deductedPrice;
     private float amountPaid;
     private DiscountDTO discountDTO;
-    private List<OrderItemDTO> orderItemDTOList;
+    private List<OrderItemDTO> orderItemDTOs;
 }

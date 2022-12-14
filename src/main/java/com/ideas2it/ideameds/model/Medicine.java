@@ -36,7 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
+@Where(clause = "is_deleted = false")
 public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,9 +55,9 @@ public class Medicine {
     @NotNull
     private boolean prescriptionRequired;
     @NotNull
-    private boolean isDeletedStatus;
+    private boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicine")
-    private List<BrandItems> brandItems;
+    private List<BrandItem> brandItems;
 }

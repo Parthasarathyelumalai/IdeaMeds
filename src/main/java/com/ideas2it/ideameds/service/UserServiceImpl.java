@@ -10,6 +10,7 @@ import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.model.User;
+import com.ideas2it.ideameds.repository.AddressRepository;
 import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.security.CustomUserDetail;
 import com.ideas2it.ideameds.util.Constants;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper = new ModelMapper();
-
+    private final AddressRepository addressRepository;
     private final AddressService addressService;
 
     /**
@@ -47,13 +48,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      *
      * @param userRepository create instance for user repository
      * @param addressService create instance for userAddress repository
+     * @param addressRepository create instance for address repository
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, AddressService addressService) {
+    public UserServiceImpl(UserRepository userRepository, AddressService addressService, AddressRepository addressRepository) {
         this.userRepository = userRepository;
         this.addressService = addressService;
+        this.addressRepository = addressRepository;
     }
-
 
     /**
      * {@inheritDoc}
@@ -134,20 +136,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String updateUser(UserDTO userDTO) throws CustomException {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         User user = modelMapper.map(userDTO, User.class);
-        Optional<User> existUser = userRepository.findById(user.getUserId());
-        if ( existUser.isPresent() ) {
+        Optional<User> existingUser = userRepository.findById(user.getUserId());
+        if ( existingUser.isPresent() ) {
             validByPhoneNumber(user);
             validByEmailId(user);
             user.setPassword(bCryptPasswordEncoder.encode(user.getPhoneNumber()));
-            user.setCreatedAt(existUser.get().getCreatedAt());
+            user.setCreatedAt(existingUser.get().getCreatedAt());
             user.setModifiedAt(DateTimeValidation.getDate());
 
             for (Address address : user.getAddresses()) {
-                Optional<User> existAddress = userRepository.findById(address.getAddressId());
-                if ( existAddress.isEmpty() ) {
+                Optional<Address> existingAddress = addressRepository.findById(address.getAddressId());
+                if (existingAddress.isEmpty()) {
                     throw new CustomException(HttpStatus.NOT_FOUND, Constants.ADDRESS_NOT_FOUND);
                 }
-                address.setCreatedAt(existUser.get().getCreatedAt());
+                address.setCreatedAt(existingUser.get().getCreatedAt());
                 address.setModifiedAt(DateTimeValidation.getDate());
             }
 
@@ -167,12 +169,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public String deleteUser(Long userId) throws CustomException {
-        Optional<User> fetchedUser = userRepository.findById(userId);
+        Optional<User> existingUser = userRepository.findById(userId);
 
-        if ( fetchedUser.isPresent() && !fetchedUser.get().isDeletedStatus() ) {
-            fetchedUser.get().setDeletedStatus(true);
+        if ( existingUser.isPresent() && !existingUser.get().isDeleted() ) {
+            existingUser.get().setDeleted(true);
             Optional<UserDTO> deletedUser = Optional.of(modelMapper
-                    .map(userRepository.save(fetchedUser.get()), UserDTO.class));
+                    .map(userRepository.save(existingUser.get()), UserDTO.class));
             return deletedUser.get().getName() + "." + Constants.DELETED_SUCCESSFULLY;
         }
         throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
@@ -191,8 +193,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Optional<User> fetchedUser = Optional.of(userRepository.findByEmailId(username));
-        return fetchedUser.map(CustomUserDetail::new).orElse(null);
+        Optional<User> existingUser = Optional.of(userRepository.findByEmailId(username));
+        return existingUser.map(CustomUserDetail::new).orElse(null);
     }
 
     /**
@@ -253,8 +255,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     private void validByEmailId(User user) throws CustomException {
         if ( validUserByEmailId(user.getEmailId()) ) {
-            User existUser = userRepository.findByEmailId(user.getEmailId());
-            if ( !user.getUserId().equals(existUser.getUserId()) )
+            User existingUser = userRepository.findByEmailId(user.getEmailId());
+            if ( !user.getUserId().equals(existingUser.getUserId()) )
                 throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.EMAIL_ID_EXISTS);
         }
     }
@@ -267,8 +269,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     private void validByPhoneNumber(User user) throws CustomException {
         if ( validUserByPhoneNumber(user.getPhoneNumber()) ) {
-            User existUser = userRepository.findByPhoneNumber(user.getPhoneNumber());
-            if ( !user.getUserId().equals(existUser.getUserId()) )
+            User existingUser = userRepository.findByPhoneNumber(user.getPhoneNumber());
+            if ( !user.getUserId().equals(existingUser.getUserId()) )
                 throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.PHONE_NUMBER_EXISTS);
         }
     }

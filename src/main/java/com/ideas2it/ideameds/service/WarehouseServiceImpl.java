@@ -4,7 +4,7 @@
  */
 package com.ideas2it.ideameds.service;
 
-import com.ideas2it.ideameds.dto.BrandItemsDTO;
+import com.ideas2it.ideameds.dto.BrandItemDTO;
 import com.ideas2it.ideameds.dto.WarehouseDTO;
 import com.ideas2it.ideameds.dto.WarehouseResponseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
@@ -84,8 +84,8 @@ public class WarehouseServiceImpl implements WarehouseService {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()){
             WarehouseResponseDTO warehouseResponseDTO = modelMapper.map(warehouse, WarehouseResponseDTO.class);
-            warehouseResponseDTO.setBrandItemsDTOList(warehouse.get().getBrandItemsList()
-                    .stream().map(brandItems -> modelMapper.map(brandItems, BrandItemsDTO.class)).toList());
+            warehouseResponseDTO.setBrandItemsDTOs(warehouse.get().getBrandItems()
+                    .stream().map(brandItems -> modelMapper.map(brandItems, BrandItemDTO.class)).toList());
             return warehouseResponseDTO;
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
     }
@@ -96,9 +96,9 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public WarehouseDTO updateWarehouse(WarehouseDTO warehouseDTO) throws CustomException {
         Warehouse warehouse = modelMapper.map(warehouseDTO, Warehouse.class);
-        Optional<Warehouse> existWarehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
-        if(existWarehouse.isPresent()) {
-            warehouse.setCreatedAt(existWarehouse.get().getCreatedAt());
+        Optional<Warehouse> existingWarehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
+        if(existingWarehouse.isPresent()) {
+            warehouse.setCreatedAt(existingWarehouse.get().getCreatedAt());
             warehouse.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(warehouseRepository.save(warehouse), WarehouseDTO.class);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
@@ -111,7 +111,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public Long deleteWarehouseById(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
         if (warehouse.isPresent()) {
-            warehouse.get().setDeletedStatus(true);
+            warehouse.get().setDeleted(true);
             return warehouseRepository.save(warehouse.get()).getWarehouseId();
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
     }

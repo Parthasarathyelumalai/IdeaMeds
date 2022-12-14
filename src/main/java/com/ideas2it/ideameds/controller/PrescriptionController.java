@@ -85,10 +85,10 @@ public class PrescriptionController {
      */
     @GetMapping("/prescription/user/{userId}")
     public ResponseEntity<List<PrescriptionDTO>> getPrescriptionByUserId(@PathVariable Long userId) throws CustomException {
-        List<PrescriptionDTO> prescriptions = prescriptionService.getPrescriptionByUser(userId);
-        if (prescriptions.isEmpty())
+        List<PrescriptionDTO> prescriptionDTOs = prescriptionService.getPrescriptionByUser(userId);
+        if (prescriptionDTOs.isEmpty())
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
-        return ResponseEntity.status(HttpStatus.OK).body(prescriptions);
+        return ResponseEntity.status(HttpStatus.OK).body(prescriptionDTOs);
     }
 
     /**

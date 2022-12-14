@@ -29,7 +29,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
+@Where(clause = "is_deleted = false")
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +39,10 @@ public class Warehouse {
     @NotNull
     private String location;
     @NotNull
-    private boolean isDeletedStatus;
+    private boolean isDeleted;
 
     @ManyToMany(mappedBy = "warehouses")
-    private List<BrandItems> brandItemsList;
+    private List<BrandItem> brandItems;
     @NotNull
     private LocalDateTime createdAt;
     @NotNull

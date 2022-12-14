@@ -30,7 +30,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "is_deleted_status = false")
+@Where(clause = "is_deleted = false")
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,12 +42,12 @@ public class Brand {
     @NotNull
     private String description;
     @NotNull
-    private boolean isDeletedStatus;
+    private boolean isDeleted;
     @NotNull
     private LocalDateTime createdAt;
     @NotNull
     private LocalDateTime modifiedAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
-    private List<BrandItems> brandItems;
+    private List<BrandItem> brandItems;
 }
