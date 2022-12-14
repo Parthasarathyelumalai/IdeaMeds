@@ -43,13 +43,16 @@ public class MedicineServiceImpl implements MedicineService {
      *{@inheritDoc}
      */
     public MedicineDTO addMedicine(MedicineDTO medicineDTO) throws CustomException {
+
         if (medicineRepository
                 .getMedicineByMedicineName(medicineDTO.getMedicineName()).isEmpty()) {
             Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
             medicine.setCreatedAt(DateTimeValidation.getDate());
             medicine.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(medicineRepository.save(medicine), MedicineDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.MEDICINE_NAME_EXIST);
+        } else {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.MEDICINE_NAME_EXIST);
+        }
     }
 
     /**
@@ -66,9 +69,12 @@ public class MedicineServiceImpl implements MedicineService {
      */
     public MedicineDTO getMedicineById(Long medicineId) throws CustomException {
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
+
         if(medicine.isPresent()) {
             return modelMapper.map(medicine, MedicineDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        }
     }
 
     /**
@@ -76,9 +82,12 @@ public class MedicineServiceImpl implements MedicineService {
      */
     public MedicineDTO getMedicineByName(String medicineName) throws CustomException {
         Optional<Medicine> medicine = medicineRepository.getMedicineByMedicineName(medicineName);
+
         if(medicine.isPresent()) {
             return modelMapper.map(medicine, MedicineDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        }
     }
 
     /**
@@ -87,6 +96,7 @@ public class MedicineServiceImpl implements MedicineService {
     public MedicineDTO updateMedicine(MedicineDTO medicineDTO) throws CustomException {
         Medicine medicine = modelMapper.map(medicineDTO, Medicine.class);
         Optional<Medicine> existingMedicine = medicineRepository.findById(medicineDTO.getMedicineId());
+
         if(existingMedicine.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
         }
@@ -100,10 +110,13 @@ public class MedicineServiceImpl implements MedicineService {
      */
     public Long deleteMedicine(Long medicineId) throws CustomException {
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
+
         if (medicine.isPresent()) {
             medicine.get().setDeleted(true);
             medicine.get().setModifiedAt(DateTimeValidation.getDate());
         return medicineRepository.save(medicine.get()).getMedicineId();
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.MEDICINE_NOT_FOUND);
+        }
     }
 }

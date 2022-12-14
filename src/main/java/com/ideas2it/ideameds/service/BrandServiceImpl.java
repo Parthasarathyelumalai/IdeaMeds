@@ -47,13 +47,16 @@ public class BrandServiceImpl implements BrandService {
      * {@inheritDoc}
      */
     public BrandDTO addBrand(BrandDTO brandDTO) throws CustomException {
+
         if (brandRepository
                 .getBrandByBrandName(brandDTO.getBrandName()).isEmpty()) {
             Brand brand = modelMapper.map(brandDTO, Brand.class);
             brand.setCreatedAt(DateTimeValidation.getDate());
             brand.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.BRAND_NAME_EXIST);
+        } else {
+            throw new CustomException(HttpStatus.NOT_ACCEPTABLE, Constants.BRAND_NAME_EXIST);
+        }
     }
 
     /**
@@ -70,9 +73,12 @@ public class BrandServiceImpl implements BrandService {
      */
     public BrandDTO getBrandByBrandName(String brandName) throws CustomException {
         Optional<Brand> brand = brandRepository.getBrandByBrandName(brandName);
+
         if (brand.isPresent()) {
             return modelMapper.map(brand.get(), BrandDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        }
     }
 
     /**
@@ -80,9 +86,12 @@ public class BrandServiceImpl implements BrandService {
      */
     public BrandDTO getBrandById(Long brandId) throws CustomException {
         Optional<Brand> brand = brandRepository.findById(brandId);
+
         if (brand.isPresent()) {
             return modelMapper.map(brand.get(), BrandDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        }
     }
 
     /**
@@ -91,11 +100,14 @@ public class BrandServiceImpl implements BrandService {
     public BrandDTO updateBrand(BrandDTO brandDTO) throws CustomException {
         Brand brand = modelMapper.map(brandDTO, Brand.class);
         Optional<Brand> existBrand = brandRepository.findById(brandDTO.getBrandId());
+
         if (existBrand.isPresent()) {
             brand.setCreatedAt(existBrand.get().getCreatedAt());
             brand.setModifiedAt(DateTimeValidation.getDate());
             return modelMapper.map(brandRepository.save(brand), BrandDTO.class);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        }
     }
 
     /**
@@ -103,9 +115,12 @@ public class BrandServiceImpl implements BrandService {
      */
     public Long deleteBrand(Long brandId) throws CustomException {
         Optional<Brand> brand = brandRepository.findById(brandId);
+
         if (brand.isPresent()) {
             brand.get().setDeleted(true);
             return brandRepository.save(brand.get()).getBrandId();
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_NOT_FOUND);
+        }
     }
 }

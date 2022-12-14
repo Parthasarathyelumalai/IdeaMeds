@@ -62,9 +62,12 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public String deleteAddress(User user, AddressDTO addressDTO) throws CustomException {
         List<Long> addressesId = user.getAddresses().stream().map(Address::getAddressId).toList();
+
         for (Long addressId : addressesId) {
+
             if ( Objects.equals(addressId, addressDTO.getAddressId()) ) {
                 Optional<Address> address = addressRepository.findById(addressId);
+
                 if ( address.isPresent() ) {
                     address.get().setModifiedAt(DateTimeValidation.getDate());
                     address.get().setDeleted(true);

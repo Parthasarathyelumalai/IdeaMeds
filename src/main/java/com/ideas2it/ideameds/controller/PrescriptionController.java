@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ import java.util.List;
  * @since - 2022-11-19
  */
 @RestController
+@RequestMapping("/prescription")
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
 
@@ -54,7 +56,7 @@ public class PrescriptionController {
      * @throws CustomException occurs when user not found
      *                         and occurs when prescription was exceeded by 6 months
      */
-    @PostMapping("/prescription/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<PrescriptionDTO> addPrescription(@Valid @RequestBody PrescriptionDTO prescriptionDTO,
                                                            @PathVariable Long userId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.addPrescription(prescriptionDTO, userId));
@@ -68,7 +70,7 @@ public class PrescriptionController {
      * @return returns the httpStatus and Prescription DTO
      * @throws CustomException occurs when prescription was not found
      */
-    @GetMapping("/prescription/{prescriptionId}")
+    @GetMapping("/{prescriptionId}")
     public ResponseEntity<PrescriptionDTO> getPrescriptionByPrescriptionId(@PathVariable Long prescriptionId)
             throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(prescriptionService.getPrescriptionByPrescriptionId(prescriptionId));
@@ -83,11 +85,13 @@ public class PrescriptionController {
      * @throws CustomException occurs when user not found
      *                         and occurs when prescription was not found
      */
-    @GetMapping("/prescription/user/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<PrescriptionDTO>> getPrescriptionByUserId(@PathVariable Long userId) throws CustomException {
         List<PrescriptionDTO> prescriptionDTOs = prescriptionService.getPrescriptionByUser(userId);
-        if (prescriptionDTOs.isEmpty())
+
+        if (prescriptionDTOs.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.PRESCRIPTION_NOT_FOUND);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(prescriptionDTOs);
     }
 
@@ -102,14 +106,16 @@ public class PrescriptionController {
      * @throws CustomException occurs when user not found
      *                         and occurs when prescription was not found
      */
-    @DeleteMapping("/prescription/{userId}/{prescriptionId}")
+    @DeleteMapping("/{userId}/{prescriptionId}")
     public ResponseEntity<String> deletePrescriptionById(@PathVariable Long userId,
                                                          @PathVariable Long prescriptionId) throws CustomException {
         Long prescriptionById = prescriptionService.deletePrescriptionById(prescriptionId, userId);
 
-        if (null != prescriptionById)
+        if (null != prescriptionById) {
             return ResponseEntity.status(HttpStatus.OK).body(Constants.DELETED_SUCCESSFULLY);
-        else return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
+        }
     }
 
     /**

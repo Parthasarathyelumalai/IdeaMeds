@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.Optional;
  */
 
 @RestController
+@RequestMapping("/discount")
 public class DiscountController {
     private final DiscountService discountService;
 
@@ -51,9 +53,10 @@ public class DiscountController {
      * @return ResponseEntity<DiscountDTO>
      * @throws CustomException No discount, Can not add discount.
      */
-    @PostMapping("/discount")
+    @PostMapping
     public ResponseEntity<DiscountDTO> addDiscount(@RequestBody DiscountDTO discountDTO) throws CustomException {
         Optional<DiscountDTO> savedDiscount = discountService.addDiscount(discountDTO);
+
         if (savedDiscount.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -88,9 +91,10 @@ public class DiscountController {
      * @return DiscountDto Show the discount dto after update.
      * @throws CustomException  Can not update discount, I'd not found.
      */
-    @PutMapping("/discount")
+    @PutMapping
     public ResponseEntity<DiscountDTO> updateDiscountById(@RequestBody DiscountDTO discountDTO) throws CustomException {
         Optional<DiscountDTO> discount = discountService.updateDiscountById(discountDTO);
+
         if (discount.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -107,13 +111,16 @@ public class DiscountController {
      * @return ResponseEntity<String>
      * @throws CustomException - Can not delete.
      */
-    @DeleteMapping("/discount/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDiscountById(@PathVariable("id") Long discountId) throws CustomException {
         boolean isDelete = discountService.deleteDiscountById(discountId);
-        if (isDelete)
+
+        if (isDelete) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(Constants.DELETED_SUCCESSFULLY);
-        else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_DELETE);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.CAN_NOT_DELETE);
+        }
     }
 }

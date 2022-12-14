@@ -77,8 +77,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Optional<OrderDTO> addOrder(Long userId) throws CustomException {
         User user = userService.getUserById(userId);
+        
         if (null != user) {
             Cart cart = cartService.getCartByUser(user);
+            
             if (null != cart && Objects.equals(user.getUserId(), cart.getUser().getUserId())) {
                 Order order = new Order();
                 List<CartItem> cartItems = cart.getCartItems();
@@ -198,6 +200,7 @@ public class OrderServiceImpl implements OrderService {
      */
     private BrandItemDTO convertToBrandItemDto(BrandItem brandItem) throws CustomException {
         BrandItemDTO brandItemDTO = modelMapper.map(brandItem, BrandItemDTO.class);
+
         if ( null != brandItemDTO ) {
             MedicineDTO medicineDTO = convertToMedicineDto(brandItem.getMedicine());
             BrandDTO brandDTO = convertToBrandDto(brandItem.getBrand());
@@ -217,6 +220,7 @@ public class OrderServiceImpl implements OrderService {
      * @throws CustomException - brand not found.
      */
     private BrandDTO convertToBrandDto(Brand brand) throws CustomException {
+
         if ( null != brand ) {
             return modelMapper.map(brand, BrandDTO.class);
         } else {
@@ -232,6 +236,7 @@ public class OrderServiceImpl implements OrderService {
      * @throws CustomException -  medicine not found.
      */
     public MedicineDTO convertToMedicineDto(Medicine medicine) throws CustomException {
+
         if ( null != medicine ) {
             return modelMapper.map(medicine, MedicineDTO.class);
         } else {
@@ -248,6 +253,7 @@ public class OrderServiceImpl implements OrderService {
      */
     public List<OrderItem> cartItemToOrderItem(List<CartItem> cartItems) throws CustomException {
         List<OrderItem> orderItems = new ArrayList<>();
+
         if ( cartItems != null ) {
             for (CartItem cartItem : cartItems) {
                 OrderItem orderItem = new OrderItem();
@@ -270,6 +276,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> getAllOrder() throws CustomException {
         List<Order> orders = orderRepository.findAll();
         List<OrderDTO> orderDTOs = new ArrayList<>();
+
         if ( !orders.isEmpty() ) {
             for (Order order : orders) {
                 OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
@@ -289,10 +296,11 @@ public class OrderServiceImpl implements OrderService {
     public Optional<List<OrderDTO>> getOrderByUserId(Long userId) throws CustomException {
         List<OrderDTO> orderDTOs = new ArrayList<>();
         User user = userService.getUserById(userId);
+        
         if (null != user) {
-            Optional<List<Order>> orderSystemList = orderRepository.findByUser(user);
-            if (orderSystemList.isPresent()) {
-                for (Order order : orderSystemList.get()) {
+            Optional<List<Order>> orders = orderRepository.findByUser(user);
+            if (orders.isPresent()) {
+                for (Order order : orders.get()) {
                     orderDTOs.add(convertToOrderDto(order));
                 }
             } else {
@@ -310,14 +318,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean cancelOrder(Long userId, Long orderId) throws CustomException {
         User user = userService.getUserById(userId);
+        
         if (null != user) {
             Optional<Order> orders = orderRepository.findById(orderId);
+
             if ( orders.isPresent() ) {
                 orders.get().setUser(null);
                 orders.get().setOrderItems(null);
                 orderRepository.deleteById(orderId);
                 return true;
-            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_ITEM_TO_CANCEL_THE_ORDER);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+            } else {
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_ITEM_TO_CANCEL_THE_ORDER);
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
     }
 }

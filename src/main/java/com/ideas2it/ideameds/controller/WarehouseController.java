@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.List;
  * @since 2022-11-18
  */
 @RestController
+@RequestMapping("/warehouse")
 public class WarehouseController {
     private final WarehouseService warehouseService;
 
@@ -55,7 +57,7 @@ public class WarehouseController {
      * @return warehouse which was added successfully in the database
      * @throws CustomException throws when the new warehouse name is already exist
      */
-    @PostMapping("/warehouse")
+    @PostMapping
     public ResponseEntity<WarehouseDTO> addWarehouse(@RequestBody WarehouseDTO warehouseDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(warehouseService.addWarehouse(warehouseDTO));
     }
@@ -66,7 +68,7 @@ public class WarehouseController {
      * @return list of all warehouses if it's available in the database
      *         null if there is no record
      */
-    @GetMapping("/warehouse")
+    @GetMapping
     public ResponseEntity<List<WarehouseDTO>> getAllWarehouses() {
         return ResponseEntity.status(HttpStatus.OK).body(warehouseService.getAllWarehouses());
     }
@@ -80,7 +82,7 @@ public class WarehouseController {
      * @return warehouse after the id gets a valid warehouse available in the database
      * @throws CustomException throws when the warehouse not found using the id from the request
      */
-    @GetMapping("/warehouse/{warehouseId}")
+    @GetMapping("/{warehouseId}")
     public ResponseEntity<WarehouseDTO> getWarehouseById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(warehouseService.getWarehouseById(warehouseId));
     }
@@ -107,7 +109,7 @@ public class WarehouseController {
      * @return warehouse Dto after it was updated successfully
      * @throws CustomException throws when the warehouse is not found
      */
-    @PutMapping("/warehouse")
+    @PutMapping
     public WarehouseDTO updateWarehouse(@RequestBody WarehouseDTO warehouseDTO) throws CustomException {
         return warehouseService.updateWarehouse(warehouseDTO);
     }
@@ -121,12 +123,14 @@ public class WarehouseController {
      * @return response for deletion
      * @throws CustomException throws when the warehouse is not found
      */
-    @PutMapping("/warehouse/delete/{warehouseId}")
+    @PutMapping("/delete/{warehouseId}")
     public ResponseEntity<String> deleteWarehouseById(@PathVariable("warehouseId") Long warehouseId) throws CustomException {
         Long warehouseById = warehouseService.deleteWarehouseById(warehouseId);
+
         if (warehouseById != null) {
             return ResponseEntity.status(HttpStatus.OK).body(warehouseById + Constants.DELETED_SUCCESSFULLY);
-        } else
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
+        }
     }
 }

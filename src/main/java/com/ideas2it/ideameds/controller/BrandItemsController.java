@@ -30,6 +30,7 @@ import java.util.List;
  * @since 2022-11-22
  */
 @RestController
+@RequestMapping("/brand-item")
 public class BrandItemsController {
 
     private final BrandItemService brandItemService;
@@ -71,7 +72,7 @@ public class BrandItemsController {
      *                         throws when the medicine using the medicine id not found and
      *                         throws when the new brand item name already exist
      */
-    @PostMapping("/brand-item/{medicineId}/{brandId}")
+    @PostMapping("/{medicineId}/{brandId}")
     public ResponseEntity<BrandItemDTO> addBrandItem(@Valid @RequestBody BrandItemDTO brandItemDTO,
                                                      @PathVariable("medicineId") Long medicineId,
                                                      @PathVariable("brandId") Long brandId) throws CustomException {
@@ -89,7 +90,7 @@ public class BrandItemsController {
      * @return list of all brand if it's available in the database
      *         null if there is no record
      */
-    @GetMapping("/brand-item/get-all")
+    @GetMapping("/get-all")
     public ResponseEntity<List<BrandItemDTO>> getAllBrandItems() {
         return ResponseEntity.status(HttpStatus.OK).body(brandItemService.getAllBrandItems());
     }
@@ -104,7 +105,7 @@ public class BrandItemsController {
      * @throws CustomException throws when the brand item not found
      *                         using the brand items id from the request
      */
-    @GetMapping("/brand-item/{brandItemId}")
+    @GetMapping("/{brandItemId}")
     public ResponseEntity<BrandItemDTO> getBrandItemById(@PathVariable("brandItemId") Long brandItemId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandItemService.getBrandItemDTOById(brandItemId));
     }
@@ -120,12 +121,14 @@ public class BrandItemsController {
      * @throws CustomException throws when brand item not found
      *                         using the brand Item name from the request
      */
-    @GetMapping("/brand-item/by-name/{brandItemName}")
+    @GetMapping("/by-name/{brandItemName}")
     public ResponseEntity<BrandItemDTO> getBrandItemByName(@PathVariable("brandItemName") String brandItemName) throws CustomException {
         BrandItemDTO brandItemDTO = brandItemService.getBrandItemByName(brandItemName);
         if (brandItemDTO != null) {
             return ResponseEntity.status(HttpStatus.OK).body(brandItemDTO);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
+        }
     }
 
     /**
@@ -139,7 +142,7 @@ public class BrandItemsController {
      * @return list of brand items using user input
      * @throws CustomException throws when brand item not found
      */
-    @GetMapping("/brand-items/by-search/{medicineName}")
+    @GetMapping("/by-search/{medicineName}")
     public ResponseEntity<List<BrandItemDTO>> getBrandItemBySearch(@PathVariable String medicineName) throws CustomException {
         List<BrandItemDTO> brandItemDTOs = brandItemService.getBrandItemBySearch(medicineName);
         return ResponseEntity.status(HttpStatus.OK).body(brandItemDTOs);
@@ -155,7 +158,7 @@ public class BrandItemsController {
      * @throws CustomException throws when brand Item using the id not found and
      *                         throws when brand from the brand item not found
      */
-    @GetMapping("/brand-item/get-brand/{brandItemId}")
+    @GetMapping("/get-brand/{brandItemId}")
     public ResponseEntity<BrandDTO> getBrandByBrandItemId(@PathVariable("brandItemId") Long brandItemId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandItemService.getBrandDTOByBrandItemId(brandItemId));
     }
@@ -170,7 +173,7 @@ public class BrandItemsController {
      * @throws CustomException throws when brand Item using the id not found and
      *                         throws when medicine from the brand item not found
      */
-    @GetMapping("/brand-item/get-medicine/{brandItemId}")
+    @GetMapping("/get-medicine/{brandItemId}")
     public ResponseEntity<MedicineDTO> getMedicineByBrandItemId(@PathVariable("brandItemId") Long brandItemId) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandItemService.getMedicineDTOByBrandItemId(brandItemId));
     }
@@ -187,7 +190,7 @@ public class BrandItemsController {
      * @throws CustomException throws when the brand was not found, happens when the brand Items ID
      *                         was changed before updating
      */
-    @PutMapping("/brand-items")
+    @PutMapping
     public ResponseEntity<BrandItemDTO> updateBrandItem(@Valid @RequestBody BrandItemDTO brandItemDTO) throws CustomException {
         return ResponseEntity.status(HttpStatus.OK).body(brandItemService.updateBrandItem(brandItemDTO));
     }
@@ -206,14 +209,16 @@ public class BrandItemsController {
      * @throws CustomException throws when warehouse not found and also
      *                         throws when brand item not found
      */
-    @PutMapping("/brand-item/assign/{brandItemId}/{warehouseId}")
+    @PutMapping("/assign/{brandItemId}/{warehouseId}")
     public ResponseEntity<BrandItemDTO> assignToWarehouse(@PathVariable("warehouseId") Long warehouseId,
                                                            @PathVariable("brandItemId") Long brandItemId) throws CustomException {
         WarehouseDTO warehouseDTO = warehouseService.getWarehouseById(warehouseId);
         if (warehouseDTO != null) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(brandItemService.assignToWarehouse(warehouseDTO, brandItemId));
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        }
     }
 
     /**
@@ -227,12 +232,13 @@ public class BrandItemsController {
      * @throws CustomException throws when brand item not found using the
      *                         corresponding brand items id
      */
-    @PutMapping("/brand-item/delete/{brandItemId}")
+    @PutMapping("/delete/{brandItemId}")
     public ResponseEntity<String> deleteBrandItem(@PathVariable("brandItemId") Long brandItemId) throws CustomException {
         Long brandItemById = brandItemService.deleteBrandItem(brandItemId);
         if (brandItemById != null) {
             return ResponseEntity.status(HttpStatus.OK).body(brandItemById + Constants.DELETED_SUCCESSFULLY);
-        } else
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(Constants.NOT_DELETED_SUCCESSFULLY);
+        }
     }
 }
