@@ -17,9 +17,7 @@ import com.ideas2it.ideameds.model.Cart;
 import com.ideas2it.ideameds.model.CartItem;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.User;
-import com.ideas2it.ideameds.repository.BrandItemsRepository;
 import com.ideas2it.ideameds.repository.CartRepository;
-import com.ideas2it.ideameds.repository.UserRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
@@ -42,22 +40,22 @@ import java.util.Optional;
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
-    private final UserRepository userRepository;
-    private final BrandItemsRepository brandItemsRepository;
+    private final UserService userService;
+    private final BrandItemsService brandItemsService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
-     * Create instance for the class
+     * Create instance for the class.
      *
-     * @param cartRepository       create instance for cart repository
-     * @param userRepository       create instance for user repository
-     * @param brandItemsRepository create instance for brand items repository
+     * @param cartRepository       Create instance for cart repository.
+     * @param userService          Create instance for user repository.
+     * @param brandItemsService    Create instance for brand item repository.
      */
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, BrandItemsRepository brandItemsRepository) {
+    public CartServiceImpl(CartRepository cartRepository, UserService userService, BrandItemsService brandItemsService) {
         this.cartRepository = cartRepository;
-        this.userRepository = userRepository;
-        this.brandItemsRepository = brandItemsRepository;
+        this.userService = userService;
+        this.brandItemsService = brandItemsService;
     }
 
     /**
@@ -65,11 +63,11 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Optional<CartDTO> addCart(Long userId, CartDTO cartDto) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
+        User user = userService.getUserById(userId);
+        if (null != user) {
             Cart cart = convertToCart(cartDto);
-            cart.setUser(user.get());
-            Optional<Cart> existedCart = cartRepository.findByUser(user.get());
+            cart.setUser(user);
+            Optional<Cart> existedCart = cartRepository.findByUser(user);
             if (existedCart.isPresent()) {
                 cart.setCartId(existedCart.get().getCartId());
                 existedCart = Optional.of(cart);
@@ -79,11 +77,13 @@ public class CartServiceImpl implements CartService {
                 Cart savedCart = cartRepository.save(getTotalPriceOfCart(cart));
                 return Optional.of(convertToCartDto(savedCart));
             }
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
     }
 
     /**
-     * It converts a CartDTO object to a Cart object
+     * It converts a CartDTO object to a Cart object.
      *
      * @param cartDto The CartDTO object that is passed to the method.
      * @return A Cart object
@@ -109,14 +109,18 @@ public class CartServiceImpl implements CartService {
         List<CartItem> cartItems = new ArrayList<>();
         if (null != cartItemDTOList) {
             for (CartItemDTO cartItemDto : cartItemDTOList) {
-                Optional<BrandItems> brandItems = brandItemsRepository.findById(cartItemDto.getBrandItemsDTO().getBrandItemsId());
-                if (brandItems.isPresent()) {
+                BrandItems brandItems = brandItemsService.getBrandItemById(cartItemDto.getBrandItemsDTO().getBrandItemsId());
+                if (null != brandItems) {
                     CartItem cartItem = modelMapper.map(cartItemDto, CartItem.class);
-                    cartItem.setBrandItems(brandItems.get());
+                    cartItem.setBrandItems(brandItems);
                     cartItems.add(cartItem);
-                } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
+                } else {
+                    throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
+                }
             }
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
+        }
         return cartItems;
     }
 
@@ -225,13 +229,29 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public CartDTO getCartByUserId(Long userId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            Optional<Cart> cart = cartRepository.findByUser(user.get());
+        User user = userService.getUserById(userId);
+        if (null != user) {
+            Optional<Cart> cart = cartRepository.findByUser(user);
             if (cart.isPresent()) {
                 return convertToCartDto(cart.get());
-            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+            } else {
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Cart getCartByUser(User user) throws CustomException {
+        Optional<Cart> cart = cartRepository.findByUser(user);
+        if (cart.isPresent()) {
+            return cart.get();
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
     }
 
     /**
@@ -239,14 +259,18 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public boolean deleteCartByUserId(Long userId) throws CustomException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent() && !user.get().isDeletedStatus()) {
-            Optional<Cart> cart = cartRepository.findByUser(user.get());
+        User user = userService.getUserById(userId);
+        if (null != user) {
+            Optional<Cart> cart = cartRepository.findByUser(user);
             if (cart.isPresent()) {
                 cart.get().setUser(null);
                 cartRepository.deleteById(cart.get().getCartId());
                 return true;
-            } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
-        } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+            } else {
+                throw new CustomException(HttpStatus.NOT_FOUND, Constants.CART_ITEM_NOT_FOUND);
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
     }
 }

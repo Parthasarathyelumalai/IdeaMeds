@@ -106,7 +106,7 @@ public class BrandItemsController {
      */
     @GetMapping("/brand-items/{brandItemsId}")
     public ResponseEntity<BrandItemsDTO> getBrandItemById(@PathVariable("brandItemsId") Long brandItemsId) throws CustomException {
-        return ResponseEntity.status(HttpStatus.OK).body(brandItemsService.getBrandItemById(brandItemsId));
+        return ResponseEntity.status(HttpStatus.OK).body(brandItemsService.getBrandItemDTOById(brandItemsId));
     }
 
     /**
@@ -122,7 +122,7 @@ public class BrandItemsController {
      */
     @GetMapping("/brand-items/by-name/{brandItemsName}")
     public ResponseEntity<BrandItemsDTO> getBrandItemByName(@PathVariable("brandItemsName") String brandItemName) throws CustomException {
-        BrandItemsDTO brandItemsDTO = brandItemsService.getBrandItemByName(brandItemName);
+        BrandItemsDTO brandItemsDTO = brandItemsService.getBrandItemDTOByName(brandItemName);
         if (brandItemsDTO != null) {
             return ResponseEntity.status(HttpStatus.OK).body(brandItemsDTO);
         } else throw new CustomException(HttpStatus.NOT_FOUND, Constants.BRAND_ITEM_NOT_FOUND);
@@ -141,7 +141,7 @@ public class BrandItemsController {
      */
     @GetMapping("/brand-items/by-search/{medicineName}")
     public ResponseEntity<List<BrandItemsDTO>> getBrandItemsBySearch(@PathVariable String medicineName) throws CustomException {
-        List<BrandItemsDTO> brandItemsDTOs = brandItemsService.getBrandItemsBySearch(medicineName);
+        List<BrandItemsDTO> brandItemsDTOs = brandItemsService.getBrandItemsDTOsBySearch(medicineName);
         return ResponseEntity.status(HttpStatus.OK).body(brandItemsDTOs);
     }
 
@@ -157,7 +157,7 @@ public class BrandItemsController {
      */
     @GetMapping("/brand-items/get-brand/{brandItemsId}")
     public ResponseEntity<BrandDTO> getBrandByBrandItemId(@PathVariable("brandItemsId") Long brandItemsId) throws CustomException {
-        return ResponseEntity.status(HttpStatus.OK).body(brandItemsService.getBrandByBrandItemId(brandItemsId));
+        return ResponseEntity.status(HttpStatus.OK).body(brandItemsService.getBrandDTOByBrandItemId(brandItemsId));
     }
 
     /**
@@ -172,7 +172,7 @@ public class BrandItemsController {
      */
     @GetMapping("/brand-items/get-medicine/{brandItemId}")
     public ResponseEntity<MedicineDTO> getMedicineByBrandItemId(@PathVariable("brandItemId") Long brandItemsId) throws CustomException {
-        return ResponseEntity.status(HttpStatus.OK).body(brandItemsService.getMedicineByBrandItemId(brandItemsId));
+        return ResponseEntity.status(HttpStatus.OK).body(brandItemsService.getMedicineDTOByBrandItemId(brandItemsId));
     }
 
     /**

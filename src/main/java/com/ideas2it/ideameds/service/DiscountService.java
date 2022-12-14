@@ -7,6 +7,7 @@ package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.DiscountDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.Discount;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +31,17 @@ public interface DiscountService {
     Optional<DiscountDTO> addDiscount(DiscountDTO discountDTO) throws CustomException;
 
     /**
-     * Get all discounts from repository.
+     * Get all discount DTOs from repository.
      *
      * @return A list of all discounts.
      */
-    List<DiscountDTO> getAll();
+    List<DiscountDTO> getAllDiscountDTO();
+
+    /**
+     * Get all discount from repository.
+     * @return a list of all discount.
+     */
+    List<Discount> getAllDiscount();
 
     /**
      * It updates the discount by discountDto object.

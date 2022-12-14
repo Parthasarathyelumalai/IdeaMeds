@@ -75,13 +75,21 @@ public class DiscountServiceImpl implements DiscountService {
      *{@inheritDoc}
      */
     @Override
-    public List<DiscountDTO> getAll() {
+    public List<DiscountDTO> getAllDiscountDTO() {
         List<Discount> discountList = discountRepository.findAll();
         List<DiscountDTO> discountDTOList = new ArrayList<>();
         for (Discount discount : discountList) {
             discountDTOList.add(modelMapper.map(discount, DiscountDTO.class));
         }
         return discountDTOList;
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public List<Discount> getAllDiscount() {
+        return discountRepository.findAll();
     }
 
     /**

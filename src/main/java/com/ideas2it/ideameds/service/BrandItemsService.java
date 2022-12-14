@@ -9,6 +9,7 @@ import com.ideas2it.ideameds.dto.BrandItemsDTO;
 import com.ideas2it.ideameds.dto.MedicineDTO;
 import com.ideas2it.ideameds.dto.WarehouseDTO;
 import com.ideas2it.ideameds.exception.CustomException;
+import com.ideas2it.ideameds.model.BrandItems;
 
 import java.util.List;
 
@@ -50,6 +51,17 @@ public interface BrandItemsService {
     List<BrandItemsDTO> getAllBrandItems();
 
     /**
+     * Gets brand Item Dto using the requested id
+     * The id from controller should be exact same compared with
+     * brand Item id from the database
+     *
+     * @param brandItemId used to search through and get a valid brand Item
+     * @return brand Item after the id gets a valid brand item available in the database
+     * @throws CustomException throws when the brand item not found using the id from the controller
+     */
+    BrandItemsDTO getBrandItemDTOById(Long brandItemId) throws CustomException;
+
+    /**
      * Gets brand Items using the requested id
      * The id from controller should be exact same compared with
      * brand Items id from the database
@@ -58,10 +70,10 @@ public interface BrandItemsService {
      * @return brand Item after the id gets a valid brand item available in the database
      * @throws CustomException throws when the brand item not found using the id from the controller
      */
-    BrandItemsDTO getBrandItemById(Long brandItemId) throws CustomException;
+    BrandItems getBrandItemById(Long brandItemId) throws CustomException;
 
     /**
-     * Gets a brand item by name
+     * Gets a brand item DTO by name
      * A brand Item name from the controller should be exact same
      * compared with brand item name available in the database.
      *
@@ -71,7 +83,7 @@ public interface BrandItemsService {
      * @throws CustomException throws when brand item not found
      *                         using the brand Item name from the request
      */
-    BrandItemsDTO getBrandItemByName(String brandItemName) throws CustomException;
+    BrandItemsDTO getBrandItemDTOByName(String brandItemName) throws CustomException;
 
     /**
      * Gets list of brand items related with medicine name
@@ -83,7 +95,7 @@ public interface BrandItemsService {
      * @return list of brand items using medicineName
      * @throws CustomException throws when there is no brand item found
      */
-    List<BrandItemsDTO> getBrandItemsBySearch(String medicineName) throws CustomException;
+    List<BrandItemsDTO> getBrandItemsDTOsBySearch(String medicineName) throws CustomException;
 
 
     /**
@@ -96,7 +108,7 @@ public interface BrandItemsService {
      * @throws CustomException throws when brand Item using the id not found and
      *                         throws when brand from the brand item not found
      */
-    BrandDTO getBrandByBrandItemId(Long brandItemId) throws CustomException;
+    BrandDTO getBrandDTOByBrandItemId(Long brandItemId) throws CustomException;
 
     /**
      * This function is used to get the medicine details by brand item id
@@ -108,7 +120,7 @@ public interface BrandItemsService {
      * @throws CustomException throws when brand Item using the id not found and
      *                         throws when medicine from the brand item not found
      */
-    MedicineDTO getMedicineByBrandItemId(Long brandItemId) throws CustomException;
+    MedicineDTO getMedicineDTOByBrandItemId(Long brandItemId) throws CustomException;
 
     /**
      * Updates the existing brand Items in the database

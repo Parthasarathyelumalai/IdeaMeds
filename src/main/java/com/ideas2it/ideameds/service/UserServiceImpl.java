@@ -95,11 +95,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseUserDTO getUserById(Long userId) throws CustomException {
+    public ResponseUserDTO getUserDTOById(Long userId) throws CustomException {
         Optional<User> user = userRepository.findById(userId);
 
         if ( user.isPresent() ) {
             return modelMapper.map(user, ResponseUserDTO.class);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getUserById(Long userId) throws CustomException {
+        Optional<User> user = userRepository.findById(userId);
+
+        if ( user.isPresent() ) {
+            return user.get();
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
         }
@@ -186,7 +200,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public String addUserAddress(Long userId, AddressDTO addressDTO) throws CustomException {
-        User user = modelMapper.map(getUserById(userId), User.class);
+        User user = modelMapper.map(getUserDTOById(userId), User.class);
         return addressService.addAddress(user, addressDTO);
     }
 
@@ -195,7 +209,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public String deleteUserAddress(Long userId, AddressDTO addressDTO) throws CustomException {
-        User user = modelMapper.map(getUserById(userId), User.class);
+        User user = modelMapper.map(getUserDTOById(userId), User.class);
         return addressService.deleteAddress(user, addressDTO);
     }
 

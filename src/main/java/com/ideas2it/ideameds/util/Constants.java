@@ -269,4 +269,5 @@ public class Constants {
      * Share that Address added successfully
      */
     public static final String ADDRESS_ADDED_SUCCESSFULLY = "'s address is added";
+    public static final String QUANTITY_MINIMUM_ONE = "Quantity should be minimum one";
 }

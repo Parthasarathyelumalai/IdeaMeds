@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -29,6 +30,7 @@ import java.util.Optional;
  */
 
 @RestController
+@RequestMapping("/cart")
 public class CartController {
 
     private final CartService cartService;
@@ -53,14 +55,16 @@ public class CartController {
      * @throws CustomException User not found, Cart not found, Brand not found,
      *                         Brand item not found, Medicine not found.
      */
-    @PutMapping("/cart/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CartDTO> addCart(@PathVariable("id") Long userId, @RequestBody CartDTO cartDto) throws CustomException {
         Optional<CartDTO> cartDTO = cartService.addCart(userId, cartDto);
         if (cartDTO.isPresent() && cartDTO.get().getTotalPrice() != 0) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(cartDTO.get());
-        } else throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
+        } else {
+            throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.QUANTITY_MINIMUM_ONE);
+        }
     }
 
 
@@ -71,7 +75,7 @@ public class CartController {
      * @return A cartDTO object.
      * @throws CustomException User not found, Cart not found.
      */
-    @GetMapping("/cart/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CartDTO> getCartByUserId(@PathVariable("id") Long userId) throws CustomException {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -85,7 +89,7 @@ public class CartController {
      * @return ResponseEntity<String>
      * @throws CustomException User not found, Cart not found.
      */
-    @DeleteMapping("/cart/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCartByUserId(@PathVariable("id") Long userId) throws CustomException {
         boolean isDelete = cartService.deleteCartByUserId(userId);
         if (isDelete) {

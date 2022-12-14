@@ -99,7 +99,7 @@ public class UserController {
      */
     @GetMapping("/user/{id}")
     public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable("id") Long userId) throws CustomException {
-        ResponseUserDTO fetchedUser = userService.getUserById(userId);
+        ResponseUserDTO fetchedUser = userService.getUserDTOById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(fetchedUser);
     }
 
