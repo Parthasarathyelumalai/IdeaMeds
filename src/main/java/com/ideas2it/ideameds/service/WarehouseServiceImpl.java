@@ -72,11 +72,22 @@ public class WarehouseServiceImpl implements WarehouseService {
      *{@inheritDoc}
      */
     @Override
-    public WarehouseDTO getWarehouseById(Long warehouseId) throws CustomException {
+    public WarehouseDTO getWarehouseDTOById(Long warehouseId) throws CustomException {
         Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
 
-        if (warehouse.isPresent()){
+        if (warehouse.isPresent()) {
             return modelMapper.map(warehouse, WarehouseDTO.class);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Warehouse getWarehouseById(Long warehouseId) throws CustomException {
+        Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseId);
+
+        if (warehouse.isPresent()) {
+            return warehouse.get();
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
         }

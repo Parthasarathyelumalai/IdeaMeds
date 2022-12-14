@@ -14,7 +14,6 @@ import com.ideas2it.ideameds.model.BrandItem;
 import com.ideas2it.ideameds.model.Medicine;
 import com.ideas2it.ideameds.model.Warehouse;
 import com.ideas2it.ideameds.repository.BrandItemRepository;
-import com.ideas2it.ideameds.repository.WarehouseRepository;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.DateTimeValidation;
 import org.modelmapper.ModelMapper;
@@ -38,19 +37,19 @@ import java.util.Optional;
 public class BrandItemServiceImpl implements BrandItemService {
 
     private final BrandItemRepository brandItemRepository;
-    private final WarehouseRepository warehouseRepository;
+    private final WarehouseService warehouseService;
     private final ModelMapper modelMapper = new ModelMapper();
 
     /**
      * Creates instance for the classes
      *
      * @param brandItemRepository create object for brand items repository
-     * @param warehouseRepository  create object for warehouse repository
+     * @param warehouseService    create object for warehouse service
      */
     @Autowired
-    public BrandItemServiceImpl(BrandItemRepository brandItemRepository, WarehouseRepository warehouseRepository) {
+    public BrandItemServiceImpl(BrandItemRepository brandItemRepository, WarehouseService warehouseService) {
         this.brandItemRepository = brandItemRepository;
-        this.warehouseRepository = warehouseRepository;
+        this.warehouseService = warehouseService;
     }
 
     /**
@@ -194,16 +193,12 @@ public class BrandItemServiceImpl implements BrandItemService {
      * {@inheritDoc}
      */
     @Override
-    public BrandItemDTO assignToWarehouse(WarehouseDTO warehouseDTO, Long brandItemId) throws CustomException {
+    public BrandItemDTO assignToWarehouse(Long warehouseId, Long brandItemId) throws CustomException {
         List<Warehouse> warehouses = new ArrayList<>();
-        Optional<Warehouse> warehouse = warehouseRepository.findById(warehouseDTO.getWarehouseId());
+        Warehouse warehouse = warehouseService.getWarehouseById(warehouseId);
 
-        if (warehouse.isPresent()) {
-            warehouse.get().setModifiedAt(DateTimeValidation.getDate());
-        } else {
-            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
-        }
-        warehouses.add(warehouse.get());
+        warehouse.setModifiedAt(DateTimeValidation.getDate());
+        warehouses.add(warehouse);
         Optional<BrandItem> brandItem = brandItemRepository.findById(brandItemId);
         if (brandItem.isPresent()) {
             brandItem.get().setWarehouses(warehouses);

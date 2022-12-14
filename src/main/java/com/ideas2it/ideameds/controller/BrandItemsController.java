@@ -211,14 +211,10 @@ public class BrandItemsController {
      */
     @PutMapping("/assign/{brandItemId}/{warehouseId}")
     public ResponseEntity<BrandItemDTO> assignToWarehouse(@PathVariable("warehouseId") Long warehouseId,
-                                                           @PathVariable("brandItemId") Long brandItemId) throws CustomException {
-        WarehouseDTO warehouseDTO = warehouseService.getWarehouseById(warehouseId);
-        if (warehouseDTO != null) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(brandItemService.assignToWarehouse(warehouseDTO, brandItemId));
-        } else {
-            throw new CustomException(HttpStatus.NOT_FOUND, Constants.WAREHOUSE_NOT_FOUND);
-        }
+                                                          @PathVariable("brandItemId") Long brandItemId) throws CustomException {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(brandItemService.assignToWarehouse(warehouseId, brandItemId));
+
     }
 
     /**
