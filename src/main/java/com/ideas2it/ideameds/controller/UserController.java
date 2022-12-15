@@ -5,15 +5,13 @@
 package com.ideas2it.ideameds.controller;
 
 import com.ideas2it.ideameds.dto.AddressDTO;
+import com.ideas2it.ideameds.dto.JwtRequestDTO;
 import com.ideas2it.ideameds.dto.JwtResponseDTO;
 import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
 import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
-import com.ideas2it.ideameds.dto.JwtRequestDTO;
-import com.ideas2it.ideameds.service.OrderService;
-import com.ideas2it.ideameds.service.UserMedicineService;
 import com.ideas2it.ideameds.service.UserService;
 import com.ideas2it.ideameds.util.Constants;
 import com.ideas2it.ideameds.util.JwtUtility;
@@ -51,8 +49,6 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-    private final UserMedicineService userMedicineService;
-    private final OrderService orderService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtility jwtUtility;
 
@@ -60,16 +56,12 @@ public class UserController {
      * Creates objects for the classes
      *
      * @param userService           create object for user service
-     * @param userMedicineService   create object for user medicine service
-     * @param orderService          create object for order system service
      * @param authenticationManager create object for authentication manager service
      * @param jwtUtility            create object for jwt utility class
      */
     @Autowired
-    public UserController(UserService userService, UserMedicineService userMedicineService, OrderService orderService, AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtility jwtUtility) {
         this.userService = userService;
-        this.userMedicineService = userMedicineService;
-        this.orderService = orderService;
         this.authenticationManager = authenticationManager;
         this.jwtUtility = jwtUtility;
     }
@@ -159,12 +151,7 @@ public class UserController {
      */
     @GetMapping("/user-medicine/{id}")
     public ResponseEntity<List<UserMedicineDTO>> getPreviousUserMedicine(@PathVariable("id") Long userId) throws CustomException {
-
-        if ( userService.isUserExist(userId) ) {
-            return ResponseEntity.status(HttpStatus.OK).body(userMedicineService.getPreviousUserMedicine(userId));
-        } else {
-            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getPreviousUserMedicine(userId));
     }
 
     /**
@@ -180,18 +167,7 @@ public class UserController {
      */
     @PostMapping("/user-medicine/{id}")
     public ResponseEntity<String> addUserMedicine(@PathVariable("id") Long userId, @Valid @RequestBody UserMedicineDTO userMedicine) throws CustomException {
-        boolean isUserExist = userService.isUserExist(userId);
-        Long savedCartId;
-        if ( isUserExist ) {
-            savedCartId = userMedicineService.addUserMedicine(userId, userMedicine);
-            if ( savedCartId != null ) {
-                return ResponseEntity.status(HttpStatus.OK).body(Constants.ADDED_TO_CART);
-            } else {
-                throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
-            }
-        } else {
-            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(userService.addUserMedicine(userId, userMedicine));
     }
 
     /**
@@ -203,12 +179,7 @@ public class UserController {
      */
     @GetMapping("/order/{id}")
     public ResponseEntity<List<OrderDTO>> getUserPreviousOrder(@PathVariable("id") Long userId) throws CustomException {
-        Optional<List<OrderDTO>> savedOrderDTOs = orderService.getOrderByUserId(userId);
-
-        if ( savedOrderDTOs.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(savedOrderDTOs.get());
-        }
-        throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_HISTORY_OF_ORDERS);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserPreviousOrder(userId));
     }
 
     /**

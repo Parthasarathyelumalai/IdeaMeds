@@ -5,8 +5,10 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.AddressDTO;
+import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
+import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.Address;
 import com.ideas2it.ideameds.model.User;
@@ -44,18 +46,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final AddressRepository addressRepository;
     private final AddressService addressService;
 
+    private final UserMedicineService userMedicineService;
+    private final OrderService orderService;
+
     /**
      * Create instance for the class
      *
-     * @param userRepository    create instance for user repository
-     * @param addressService    create instance for userAddress repository
-     * @param addressRepository create instance for address repository
+     * @param userRepository      create instance for user repository
+     * @param addressService      create instance for userAddress repository
+     * @param addressRepository   create instance for address repository
+     * @param userMedicineService create instance for userMedicineService
+     * @param orderService        create instance for orderService
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, AddressService addressService, AddressRepository addressRepository) {
+    public UserServiceImpl(UserRepository userRepository, AddressService addressService, AddressRepository addressRepository, UserMedicineService userMedicineService, OrderService orderService) {
         this.userRepository = userRepository;
         this.addressService = addressService;
         this.addressRepository = addressRepository;
+        this.userMedicineService = userMedicineService;
+        this.orderService = orderService;
     }
 
     /**
@@ -283,5 +292,48 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean isValidUserName(String emailId) {
         return userRepository.existsByEmailId(emailId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException {
+        Long savedCartId;
+        if ( isUserExist(userId) ) {
+            savedCartId = userMedicineService.addUserMedicine(userId, userMedicine);
+            if ( savedCartId != null ) {
+                return Constants.ADDED_TO_CART;
+            } else {
+                throw new CustomException(HttpStatus.UNPROCESSABLE_ENTITY, Constants.CAN_NOT_ADD_ITEMS_IN_CART);
+            }
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UserMedicineDTO> getPreviousUserMedicine(Long userId) throws CustomException {
+        if ( isUserExist(userId) ) {
+            return userMedicineService.getPreviousUserMedicine(userId);
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, Constants.USER_NOT_FOUND);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<OrderDTO> getUserPreviousOrder(Long userId) throws CustomException {
+        Optional<List<OrderDTO>> savedOrderDTOs = orderService.getOrderByUserId(userId);
+
+        if ( savedOrderDTOs.isPresent() ) {
+            return savedOrderDTOs.get();
+        }
+        throw new CustomException(HttpStatus.NOT_FOUND, Constants.NO_HISTORY_OF_ORDERS);
     }
 }

@@ -5,8 +5,10 @@
 package com.ideas2it.ideameds.service;
 
 import com.ideas2it.ideameds.dto.AddressDTO;
+import com.ideas2it.ideameds.dto.OrderDTO;
 import com.ideas2it.ideameds.dto.ResponseUserDTO;
 import com.ideas2it.ideameds.dto.UserDTO;
+import com.ideas2it.ideameds.dto.UserMedicineDTO;
 import com.ideas2it.ideameds.exception.CustomException;
 import com.ideas2it.ideameds.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -131,4 +133,35 @@ public interface UserService {
      *                                 or else return false.
      */
     boolean isValidUserName(String emailId);
+
+    /**
+     * Adds a new medicine to the user's medicine list
+     *
+     * @param userId       The id of the user to whom the medicine is to be added.
+     * @param userMedicine This is the object of UserMedicineDTO class.
+     * @return String  - gives a response statement
+     * @throws CustomException - occur when User is not Found
+     *                         occur when User medicine is not added
+     */
+    String addUserMedicine(Long userId, UserMedicineDTO userMedicine) throws CustomException;
+
+    /**
+     * This function returns a list of UserMedicineDTO objects for a given userId
+     * Get usage history of user medicine. if medicines presents, it will show the list of medicine
+     * otherwise it will show empty list.
+     *
+     * @param userId The userId of the user whose previous medicines are to be fetched.
+     * @return List of UserMedicineDTO  -  list of user medicine.
+     * @throws CustomException - Occur when user is not found
+     */
+    List<UserMedicineDTO> getPreviousUserMedicine(Long userId) throws CustomException;
+
+    /**
+     * It returns a list of orders for a user with the given userId
+     *
+     * @param userId The userId of the user whose order history is to be fetched.
+     * @return A list of OrderDTO objects  - gives response as list of order by user.
+     * @throws CustomException - occur when there is no order history
+     */
+    List<OrderDTO> getUserPreviousOrder(Long userId) throws CustomException;
 }
